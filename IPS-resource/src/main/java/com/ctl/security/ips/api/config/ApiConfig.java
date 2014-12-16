@@ -1,8 +1,8 @@
 package com.ctl.security.ips.api.config;
 
+import com.ctl.security.acegi.api.config.SecurityConfig;
 import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
 import com.ctl.security.ips.crud.config.CoreConfig;
-import com.ctl.security.library.api.config.SecurityConfig;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
