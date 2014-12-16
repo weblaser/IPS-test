@@ -1,0 +1,148 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ctl.security.ips</groupId>
+    <artifactId>IPS-api</artifactId>
+    <name>IPS-api</name>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>com.ctl.security.library</groupId>
+        <artifactId>Security-library</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modules>
+        <module>IPS-client</module>
+        <module>IPS-common</module>
+        <module>IPS-crud</module>
+        <module>IPS-resource</module>
+        <module>IPS-test</module>
+        <module>IPS-maestro</module>
+    </modules>
+
+    <scm>
+        <connection>scm:svn:http://code.it.savvis.net/svn/Projects/Security/IPS-api/trunk</connection>
+        <developerConnection>scm:svn:http://code.it.savvis.net/svn/Projects/Security/IPS-api/trunk</developerConnection>
+        <url>http://code.it.savvis.net/svn/Projects/Security/IPS-api/trunk</url>
+    </scm>
+
+    <properties>
+        <spring.version>4.1.0.RELEASE</spring.version>
+        <jersey.version>2.6</jersey.version>
+        <java.version>1.6</java.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <!-- Note that you can override this in your project pom.xml -->
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <dependencies>
+    
+        <dependency>
+			<groupId>com.ctl.security.library</groupId>
+		    <artifactId>Security-library-common</artifactId>
+		    <version>1.0-SNAPSHOT</version>
+        </dependency>
+    
+        <!--Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!--log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+        </dependency>
+
+        <!--Jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-bean-validation</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+        <!--Test -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.8</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>hamcrest-core</artifactId>
+                    <groupId>org.hamcrest</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        
+	    <dependency>
+	      <groupId>com.ctl.security.library</groupId>
+	      <artifactId>security-library-test</artifactId>
+	      <version>${project.version}</version>
+	      <type>test-jar</type>
+	      <scope>test</scope>
+	    </dependency>
+        
+    </dependencies>
+
+</project>
