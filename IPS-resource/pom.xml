@@ -38,9 +38,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.ctl.security.library</groupId>
-            <artifactId>Security-library-resource</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>com.ctl.security.acegi</groupId>
+            <artifactId>security-acegi</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <!--Jersey -->
