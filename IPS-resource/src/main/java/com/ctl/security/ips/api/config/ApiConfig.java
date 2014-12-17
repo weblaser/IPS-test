@@ -1,7 +1,5 @@
 package com.ctl.security.ips.api.config;
 
-import com.ctl.security.acegi.api.config.SecurityConfig;
-import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
 import com.ctl.security.ips.crud.config.CoreConfig;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +9,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @ComponentScan(basePackages = {"com.ctl.security.ips"})
-@Import({CoreConfig.class, SecurityConfig.class, ClcClientCoreAppConfig.class})
+@Import({CoreConfig.class/*SecurityConfig.class, ClcClientCoreAppConfig.class*/})
 public class ApiConfig {
 
     public static final String COM_CTL_SECURITY_IPS_API = "com.ctl.security.ips.api";
