@@ -55,8 +55,8 @@ public class RestInitializerTest {
         verify(servletRegistration).setLoadOnStartup(1);
         verify(servletRegistration).addMapping("/api/*");
 
-//        verify(servletContext).addFilter("springSecurityFilterChain", DelegatingFilterProxy.class.getName());
-//        verify(filterRegistration).addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
+        verify(servletContext).addFilter("springSecurityFilterChain", DelegatingFilterProxy.class.getName());
+        verify(filterRegistration).addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
     }
 
 }

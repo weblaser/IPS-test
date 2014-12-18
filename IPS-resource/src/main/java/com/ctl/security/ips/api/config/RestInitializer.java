@@ -31,9 +31,9 @@ public class RestInitializer implements WebApplicationInitializer {
         servletRegistration.setInitParameter("jersey.config.server.provider.classnames", LoggingFilter.class.getName());
         servletRegistration.setLoadOnStartup(1);
         servletRegistration.addMapping("/api/*");
-//
-//        FilterRegistration.Dynamic springSecurityFilterChain = servletContext.addFilter("springSecurityFilterChain", DelegatingFilterProxy.class.getName());
-//        springSecurityFilterChain.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*" );
+
+        FilterRegistration.Dynamic springSecurityFilterChain = servletContext.addFilter("springSecurityFilterChain", DelegatingFilterProxy.class.getName());
+        springSecurityFilterChain.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*" );
 
     }
 
