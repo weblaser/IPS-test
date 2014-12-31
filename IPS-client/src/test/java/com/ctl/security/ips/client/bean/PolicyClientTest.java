@@ -39,7 +39,7 @@ public class PolicyClientTest {
     private RestTemplate restTemplate;
 
     @Mock
-    private ResponseEntity<List<Policy>> listEntity;
+    private ResponseEntity<Policy[]> listEntity;
 
     @Mock
     private ResponseEntity<Policy> entity;
@@ -54,8 +54,8 @@ public class PolicyClientTest {
     public void testGetPoliciesForAccount() {
         //arrange
         List<Policy> policyList = buildPolicyList();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq((Class<List<Policy>>) (Class) List.class))).thenReturn(listEntity);
-        when(listEntity.getBody()).thenReturn(policyList);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(Policy[].class))).thenReturn(listEntity);
+        when(listEntity.getBody()).thenReturn(policyList.toArray(new Policy[policyList.size()]));
 
         //act
         List<Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT, SAMPLE_TOKEN);
@@ -73,7 +73,7 @@ public class PolicyClientTest {
     public void testGetPoliciesForAccountPolicyNotFoundException() {
         //arrange
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET),
-                any(HttpEntity.class), eq((Class<List<Policy>>) (Class) List.class))).thenThrow(new RestClientException("400 Bad Request."));
+                any(HttpEntity.class), eq(Policy[].class))).thenThrow(new RestClientException("400 Bad Request."));
 
         //act
         classUnderTest.getPoliciesForAccount(INVALID_ACCOUNT, SAMPLE_TOKEN);
