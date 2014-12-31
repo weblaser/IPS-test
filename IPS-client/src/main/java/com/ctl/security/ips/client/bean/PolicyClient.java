@@ -25,7 +25,7 @@ public class PolicyClient {
     private static final String AUTHORIZATION = "Authorization";
     private static final String BEARER = "Bearer ";
 
-    @Value("${${srping.profiles.active:local}.ips.host}")
+    @Value("${${spring.profiles.active:local}.ips.host}")
     private String hostUrl;
 
     @Autowired
