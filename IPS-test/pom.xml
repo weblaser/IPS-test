@@ -93,9 +93,11 @@
                             <testSourceDirectory>${basedir}/src/main/java/</testSourceDirectory>
                             <testClassesDirectory>${project.build.directory}/classes/</testClassesDirectory>
                             <includes>
-                                <include>com/ctl/security/ips/test/cucumber/runner/SecurityAcceptanceTestRunner.java
-                                </include>
+                                <include>com/ctl/security/ips/test/cucumber/runner/SecurityAcceptanceTestRunner.java</include>
                             </includes>
+                            <systemPropertyVariables>
+                                <spring.profiles.active>local</spring.profiles.active>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -118,7 +120,7 @@
                                 </include>
                             </includes>
                             <systemPropertyVariables>
-                                <ENV_SERVER>dev</ENV_SERVER>
+                                <spring.profiles.active>dev</spring.profiles.active>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -141,7 +143,7 @@
                                 <include>com/ctl/security/ips/test/cucumber/runner/NightlyTestRunner.java</include>
                             </includes>
                             <systemPropertyVariables>
-                                <ENV_SERVER>dev</ENV_SERVER>
+                                <spring.profiles.active>dev</spring.profiles.active>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -164,7 +166,7 @@
                                 <include>com/ctl/security/ips/test/cucumber/runner/NightlyTestRunner.java</include>
                             </includes>
                             <systemPropertyVariables>
-                                <ENV_SERVER>ts</ENV_SERVER>
+                                <spring.profiles.active>ts</spring.profiles.active>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>
@@ -187,7 +189,7 @@
                                 <include>com/ctl/security/ips/test/cucumber/runner/NightlyTestRunner.java</include>
                             </includes>
                             <systemPropertyVariables>
-                                <ENV_SERVER>qa</ENV_SERVER>
+                                <spring.profiles.active>qa</spring.profiles.active>
                             </systemPropertyVariables>
                         </configuration>
                     </plugin>

@@ -14,7 +14,6 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.*;
-
 import java.util.EnumSet;
 
 import static org.mockito.Mockito.verify;

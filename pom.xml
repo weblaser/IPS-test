@@ -7,9 +7,9 @@
     <packaging>pom</packaging>
 
     <parent>
-        <groupId>com.ctl.security.library</groupId>
-        <artifactId>Security-library</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>com.ctl.security</groupId>
+        <artifactId>security-pom</artifactId>
+        <version>1.0.4</version>
     </parent>
 
     <modules>
@@ -30,15 +30,10 @@
     <properties>
         <spring.version>4.1.0.RELEASE</spring.version>
         <jersey.version>2.6</jersey.version>
+        <sonar.exclusions>**/*Exception.java</sonar.exclusions>
     </properties>
 
     <dependencies>
-    
-        <dependency>
-			<groupId>com.ctl.security.library</groupId>
-		    <artifactId>Security-library-common</artifactId>
-		    <version>1.0-SNAPSHOT</version>
-        </dependency>
     
         <!--Spring -->
         <dependency>
@@ -60,6 +55,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3</version>
         </dependency>
 
         <!--log4j -->
@@ -117,15 +117,5 @@
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        
-	    <dependency>
-	      <groupId>com.ctl.security.library</groupId>
-	      <artifactId>security-library-test</artifactId>
-	      <version>${project.version}</version>
-	      <type>test-jar</type>
-	      <scope>test</scope>
-	    </dependency>
-        
     </dependencies>
-
 </project>
