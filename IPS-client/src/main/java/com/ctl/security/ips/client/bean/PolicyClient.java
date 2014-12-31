@@ -13,6 +13,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.ws.rs.core.Response.Status;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,8 +37,8 @@ public class PolicyClient {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add(AUTHORIZATION, "Bearer " + token);
-            response = restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.GET, new HttpEntity<>(headers), (Class<List<Policy>>) (Class) List.class).getBody();
+            response = Arrays.asList(restTemplate.exchange(hostUrl + POLICIES + account,
+                    HttpMethod.GET, new HttpEntity<>(headers), Policy[].class).getBody());
         } catch (RestClientException rce) {
             fail(rce);
         }
