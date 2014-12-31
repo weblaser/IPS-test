@@ -12,7 +12,7 @@ Feature:  Security - policies
 
     Given I have an invalid account
     When I GET the policies
-    Then I receive a response with an error message
+    Then I receive a response with error message 403 Forbidden.
 
   Scenario: Get valid response when getting a single policy from an account
 
