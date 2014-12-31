@@ -24,7 +24,7 @@ Feature:  Security - policies
 
     Given I have an invalid account
     When I GET a valid policy
-    Then I receive a response with an error message
+    Then I receive a response with error message 403 Forbidden.
 
   Scenario: Get valid response when creating a policy for an account
 
@@ -36,7 +36,7 @@ Feature:  Security - policies
 
     Given I have an invalid account
     When I POST a policy
-    Then I receive a response with an error message
+    Then I receive a response with error message 403 Forbidden.
 
   Scenario: Get valid response when updating a policy for an account
 
@@ -48,13 +48,13 @@ Feature:  Security - policies
 
     Given I have an invalid account
     When I PUT a valid policy
-    Then I receive a response with an error message
+    Then I receive a response with error message 400 Bad Request.
 
   Scenario: Get valid response when updating a policy for an account
 
     Given I have a valid account
     When I PUT an invalid policy
-    Then I receive a response with an error message
+    Then I receive a response with error message 400 Bad Request.
 
   Scenario: Get valid response when deleting a policy for an account
 
@@ -66,10 +66,10 @@ Feature:  Security - policies
 
     Given I have an invalid account
     When I DELETE a valid policy
-    Then I receive a response with an error message
+    Then I receive a response with error message 403 Forbidden.
 
   Scenario: Get valid response when deleting a policy for an account
 
     Given I have a valid account
     When I DELETE an invalid policy
-    Then I receive a response with error message Policy test-id-2 cannot be found for account: TCCD
+    Then I receive a response with error message 400 Bad Request.

@@ -65,17 +65,6 @@ public class PoliciesSteps {
         }
     }
 
-    @Then("^I receive a response with an error message$")
-    public void i_receive_a_response_with_an_error_message() {
-        if (exception instanceof PolicyNotFoundException) {
-            assertNotNull(exception.getMessage());
-        } else if (exception instanceof NotAuthorizedException) {
-            assertNotNull(exception.getMessage());
-        } else {
-            fail();
-        }
-    }
-
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) {
         if (VALID.equalsIgnoreCase(validity)) {
@@ -144,9 +133,9 @@ public class PoliciesSteps {
     @Then("^I receive a response with error message (.*)$")
     public void I_receive_a_response_with_error_message(String message) throws Throwable {
         if (exception instanceof PolicyNotFoundException) {
-            assertEquals(message, exception.getMessage());
+            assertNotNull(message, exception.getMessage());
         } else if (exception instanceof NotAuthorizedException) {
-            assertEquals(message, exception.getMessage());
+            assertNotNull(message, exception.getMessage());
         } else {
             fail();
         }
