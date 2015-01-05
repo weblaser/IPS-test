@@ -11,7 +11,7 @@
 
     <artifactId>IPS-dsm</artifactId>
 
-    <name>dns-soap-service</name>
+    <name>IPS-dsm</name>
     <url>http://maven.apache.org</url>
 
     <properties>
