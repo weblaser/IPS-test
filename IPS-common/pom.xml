@@ -12,8 +12,7 @@
     </parent>
 
     <properties>
-        <sonar.exclusions>**/domain/*.java</sonar.exclusions>
-        <sonar.exclusions>**/exception/*.java</sonar.exclusions>
+        <sonar.exclusions>**/domain/*.java,**/exception/*.java</sonar.exclusions>
     </properties>
 
     <dependencies>
