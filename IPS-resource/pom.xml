@@ -13,7 +13,7 @@
     </parent>
 
     <properties>
-        <sonar.exclusions>**/*JerseyLog4jLoggerWrapper.class</sonar.exclusions>
+        <sonar.exclusions>**/JerseyApplication.java</sonar.exclusions>
     </properties>
 
     <build>
