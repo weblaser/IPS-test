@@ -1,6 +1,6 @@
 package com.ctl.security.ips.client.config;
 
-import com.ctl.security.library.config.SecurityLibraryCommonAppConfig;
+import com.ctl.security.library.common.config.SecurityLibraryCommonAppConfig;
 import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
