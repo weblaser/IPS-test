@@ -35,10 +35,8 @@ public class PolicyClient {
     public List<Policy> getPoliciesForAccount(String account, String token) {
         List<Policy> response = null;
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(AUTHORIZATION, "Bearer " + token);
             response = Arrays.asList(restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.GET, new HttpEntity<>(headers), Policy[].class).getBody());
+                    HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy[].class).getBody());
         } catch (RestClientException rce) {
             fail(rce);
         }
@@ -48,10 +46,8 @@ public class PolicyClient {
     public Policy getPolicyForAccount(String account, String id, String token) {
         Policy response = null;
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(AUTHORIZATION, "Bearer " + token);
             response = restTemplate.exchange(hostUrl + POLICIES + account + "/" + id,
-                    HttpMethod.GET, new HttpEntity<>(headers), Policy.class).getBody();
+                    HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy.class).getBody();
         } catch (RestClientException rce) {
             fail(rce);
         }
@@ -61,10 +57,8 @@ public class PolicyClient {
     public String createPolicyForAccount(String account, Policy policy, String token) {
         String response = null;
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(AUTHORIZATION, "Bearer " + token);
             response = restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.POST, new HttpEntity<>(policy, headers), String.class).getBody();
+                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), String.class).getBody();
         } catch (RestClientException rce) {
             fail(rce);
         }
@@ -73,10 +67,8 @@ public class PolicyClient {
 
     public void updatePolicyForAccount(String account, String id, Policy policy, String token) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(AUTHORIZATION, "Bearer " + token);
             restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.PUT, new HttpEntity<>(policy, headers), String.class);
+                    HttpMethod.PUT, new HttpEntity<>(policy, createHeaders(token)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
@@ -84,13 +76,17 @@ public class PolicyClient {
 
     public void deletePolicyForAccount(String account, String id, String token) {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(AUTHORIZATION, "Bearer " + token);
             restTemplate.exchange(hostUrl + POLICIES + account + "/" + id,
-                    HttpMethod.DELETE, new HttpEntity<>(headers), String.class);
+                    HttpMethod.DELETE, new HttpEntity<>(createHeaders(token)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
+    }
+
+    private HttpHeaders createHeaders(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(AUTHORIZATION, "Bearer " + token);
+        return headers;
     }
 
     private void fail(RestClientException rce) {
