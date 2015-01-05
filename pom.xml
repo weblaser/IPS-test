@@ -20,6 +20,7 @@
         <module>IPS-resource</module>
         <module>IPS-test</module>
         <module>IPS-maestro</module>
+        <module>IPS-dsm</module>
     </modules>
 
     <scm>
