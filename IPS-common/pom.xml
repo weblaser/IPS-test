@@ -13,9 +13,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.3.2</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.14.8</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.openpojo</groupId>
