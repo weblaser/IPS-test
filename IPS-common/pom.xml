@@ -13,6 +13,7 @@
 
     <properties>
         <sonar.exclusions>**/domain/*.java</sonar.exclusions>
+        <sonar.exclusions>**/exception/*.java</sonar.exclusions>
     </properties>
 
     <dependencies>
