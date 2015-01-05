@@ -1,5 +1,6 @@
 package com.ctl.security.ips.api.jersey;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
 import java.util.logging.Handler;
@@ -15,12 +16,8 @@ class JerseyLog4jLoggerWrapper extends Handler {
         String sourceClassName = record.getSourceClassName();
         Level level = record.getLevel();
 
-        if (sourceClassName != null
-                && (level.intValue() >= Level.WARNING.intValue() || sourceClassName
-                .contains("org.glassfish.jersey"))) {
-
-            org.apache.log4j.Logger logger = org.apache.log4j.Logger
-                    .getLogger(sourceClassName);
+        if (sourceClassName != null || sourceClassName.contains("org.glassfish.jersey")) {
+            Logger logger = Logger.getLogger(sourceClassName);
             logger.log(convertToLog4JPriority(level), record.getMessage());
         }
     }

@@ -12,10 +12,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <sonar.exclusions>**/JerseyLog4jLoggerWrapper.java</sonar.exclusions>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
