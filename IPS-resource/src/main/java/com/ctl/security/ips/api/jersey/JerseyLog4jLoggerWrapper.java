@@ -16,7 +16,7 @@ class JerseyLog4jLoggerWrapper extends Handler {
         String sourceClassName = record.getSourceClassName();
         Level level = record.getLevel();
 
-        if (sourceClassName != null && (level.intValue() >= Level.WARNING.intValue() || sourceClassName.contains("org.glassfish.jersey"))) {
+        if (sourceClassName != null && (level.intValue() >= Level.ALL.intValue() || sourceClassName.contains("org.glassfish.jersey"))) {
             Logger logger = Logger.getLogger(sourceClassName);
             logger.log(convertToLog4JPriority(level), record.getMessage());
         }
