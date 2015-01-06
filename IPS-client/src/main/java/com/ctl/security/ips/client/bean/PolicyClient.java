@@ -85,7 +85,7 @@ public class PolicyClient {
 
     private HttpHeaders createHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, "Bearer " + token);
+        headers.add(AUTHORIZATION, BEARER + token);
         return headers;
     }
 
