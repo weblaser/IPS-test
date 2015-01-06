@@ -20,6 +20,24 @@ public class JerseyLog4jLoggerWrapperTest {
     }
 
     @Test
+    public void testPublishNull() throws Exception {
+        //arrange
+        LogRecord record = new LogRecord(Level.ALL, null);
+        record.setSourceClassName(SOURCE_CLASS);
+        //act
+        underTest.publish(record);
+    }
+
+    @Test
+    public void testPublishGlassfish() throws Exception {
+        //arrange
+        LogRecord record = new LogRecord(Level.ALL, "org.glassfish.jersey");
+        record.setSourceClassName(SOURCE_CLASS);
+        //act
+        underTest.publish(record);
+    }
+
+    @Test
     public void testPublishConfig() throws Exception {
         //arrange
         LogRecord record = new LogRecord(Level.CONFIG, "some message");
