@@ -1,4 +1,4 @@
-@ALL_TESTS @WIP @Regression
+@ALL_TESTS @Regression
 Feature:  Security - policies
 
 
