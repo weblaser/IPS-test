@@ -1,4 +1,4 @@
-package com.ctl.security.authenticate;
+package com.ctl.security.dsm.authenticate;
 
 import manager.*;
 
