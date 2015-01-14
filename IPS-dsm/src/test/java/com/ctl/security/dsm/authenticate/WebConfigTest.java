@@ -34,9 +34,12 @@ public class WebConfigTest {
     }
 
     @Test
-    public void managerTest(){
+    public void managerTestPass(){
         //arrange
         //act
+        Manager actual = classUnderTest.manager();
         //assert
+        assertNotNull(actual);
     }
+
 }
