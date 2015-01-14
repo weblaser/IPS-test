@@ -35,6 +35,8 @@ public class WebConfigTest {
 
     @Test
     public void managerTest(){
-
+        //arrange
+        //act
+        //assert
     }
 }

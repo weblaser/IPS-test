@@ -38,11 +38,11 @@ public class WebConfig {
                 }
 
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
+                    }
 
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                    }
                 }
-            }
             };
 
             // Install the all-trusting trust manager
@@ -55,7 +55,6 @@ public class WebConfig {
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-
 
             Map<String, Object> customProperties = new HashMap<>();
             customProperties.put("com.sun.xml.ws.request.timeout", 60000);
@@ -73,7 +72,6 @@ public class WebConfig {
         } catch (NoSuchAlgorithmException | KeyManagementException | MalformedURLException e) {
             logger.error(e);
         }
-
         return null;
     }
 
