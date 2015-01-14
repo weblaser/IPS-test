@@ -2,6 +2,7 @@ package com.ctl.security.dsm.authenticate;
 
 import manager.Manager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean;
@@ -22,8 +23,9 @@ public class WebConfig {
     private static final Logger logger = Logger.getLogger(WebConfig.class);
 
     @Bean
-    public LogInClient client() throws MalformedURLException {
-        return new LogInClient(manager());
+    @Autowired
+    public LogInClient logInClient(Manager manager) throws MalformedURLException {
+        return new LogInClient(manager);
     }
 
     @Bean

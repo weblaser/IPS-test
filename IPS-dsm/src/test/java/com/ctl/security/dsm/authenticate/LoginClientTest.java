@@ -1,6 +1,5 @@
 package com.ctl.security.dsm.authenticate;
 
-import com.ctl.security.dsm.authenticate.LogInClient;
 import manager.Manager;
 import manager.ManagerAuthenticationException_Exception;
 import org.junit.Test;

@@ -1,15 +1,40 @@
 package com.ctl.security.dsm.authenticate;
 
+import manager.Manager;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.net.MalformedURLException;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Chad.Middleton on 1/14/2015.
  */
+
+@RunWith(MockitoJUnitRunner.class)
 public class WebConfigTest {
 
-    @Test
-    public void clientTest(){
+    @InjectMocks
+    WebConfig classUnderTest;
 
+    @Mock
+    private Manager manager;
+
+    @Test
+    public void clientTest() throws MalformedURLException {
+        //arrange
+        //act
+        LogInClient actual = classUnderTest.logInClient(manager);
+        //assert
+        assertNotNull(actual);
     }
 
+    @Test
+    public void managerTest(){
+
+    }
 }
