@@ -1,5 +1,5 @@
 @ALL_TESTS @WIP @Regression
-Feature: Security - LoginClient To be able to log into the DSM API
+Feature: To be able to log into the DSM API
 
   Scenario: Log in successfully to the the DSM API
     Given I have user account credentials
