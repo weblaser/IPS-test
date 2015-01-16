@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @ContextConfiguration("classpath*:cucumber.xml")
-public class PoliciesSteps {
+public class PolicySteps {
 
     private static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
     private static final String VALID_POLICY_ID = "test-id";
