@@ -19,16 +19,14 @@ public class LoginClientTest {
     private Manager manager;
 
     @InjectMocks
-    private LogInClient client;
+    private LogInClient underTest;
 
     @Test
     public void loginSuccess() throws Exception {
         // Arrange
         when(manager.authenticate(eq("username"), eq("password"))).thenReturn("123");
-
         // Act
-        String sessionId = client.connectToDSMClient("username", "password");
-
+        String sessionId = underTest.connectToDSMClient("username", "password");
         // Assert
         assertEquals("123", sessionId);
     }
@@ -37,8 +35,7 @@ public class LoginClientTest {
     public void loginFail() throws Exception{
         //Arrange
         when(manager.authenticate(eq("wrongUsername"), eq("wrongPassword"))).thenThrow(ManagerAuthenticationException_Exception.class);
-
         //Act
-        String sessionId = client.connectToDSMClient("wrongUsername","wrongPassword");
+        String sessionId = underTest.connectToDSMClient("wrongUsername","wrongPassword");
     }
 }

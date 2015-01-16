@@ -62,7 +62,7 @@ public class WebConfig {
 
             JaxWsPortProxyFactoryBean proxyFactoryBean = new JaxWsPortProxyFactoryBean();
             proxyFactoryBean.setServiceInterface(Manager.class);
-            proxyFactoryBean.setWsdlDocumentUrl(new URL("https://206.128.154.197:4119/webservice/Manager?WSDL"));
+            proxyFactoryBean.setWsdlDocumentUrl(new URL("https://10.126.155.12:4119/webservice/Manager?WSDL"));
             proxyFactoryBean.setNamespaceUri("urn:Manager");
             proxyFactoryBean.setServiceName("ManagerService");
             proxyFactoryBean.setLookupServiceOnStartup(false);
@@ -76,3 +76,5 @@ public class WebConfig {
     }
 
 }
+//        Private IP Address 10.126.155.12:4119
+//        Public IP Address 206.128.154.197:4119

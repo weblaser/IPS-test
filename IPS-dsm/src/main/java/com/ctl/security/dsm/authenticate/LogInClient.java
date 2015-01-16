@@ -4,7 +4,7 @@ import manager.*;
 
 public class LogInClient {
 
-    private Manager manager;
+    private final Manager manager;
 
     public LogInClient(Manager manager) {
         this.manager = manager;
