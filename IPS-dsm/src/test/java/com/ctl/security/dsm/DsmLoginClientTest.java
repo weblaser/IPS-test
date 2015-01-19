@@ -1,5 +1,6 @@
-package com.ctl.security.dsm.authenticate;
+package com.ctl.security.dsm;
 
+import com.ctl.security.dsm.DsmLogInClient;
 import manager.Manager;
 import manager.ManagerAuthenticationException_Exception;
 import org.junit.Test;
@@ -13,13 +14,13 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LoginClientTest {
+public class DsmLoginClientTest {
 
     @Mock
     private Manager manager;
 
     @InjectMocks
-    private LogInClient underTest;
+    private DsmLogInClient underTest;
 
     @Test
     public void loginSuccess() throws Exception {
@@ -36,6 +37,6 @@ public class LoginClientTest {
         //Arrange
         when(manager.authenticate(eq("wrongUsername"), eq("wrongPassword"))).thenThrow(ManagerAuthenticationException_Exception.class);
         //Act
-        String sessionId = underTest.connectToDSMClient("wrongUsername","wrongPassword");
+        underTest.connectToDSMClient("wrongUsername","wrongPassword");
     }
 }

@@ -1,6 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
-import com.ctl.security.dsm.authenticate.LogInClient;
+import com.ctl.security.dsm.DsmLogInClient;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -23,7 +23,7 @@ public class LogInClientSteps {
     private Boolean authenticationError;
 
     @Autowired
-    private LogInClient client;
+    private DsmLogInClient client;
 
     @Given("^I have user account credentials$")
     public void i_have_user_account_credentials() throws Throwable {

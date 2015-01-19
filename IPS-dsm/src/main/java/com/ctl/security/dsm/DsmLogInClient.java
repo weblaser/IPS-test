@@ -1,12 +1,12 @@
-package com.ctl.security.dsm.authenticate;
+package com.ctl.security.dsm;
 
 import manager.*;
 
-public class LogInClient {
+public class DsmLogInClient {
 
     private final Manager manager;
 
-    public LogInClient(Manager manager) {
+    public DsmLogInClient(Manager manager) {
         this.manager = manager;
     }
 
