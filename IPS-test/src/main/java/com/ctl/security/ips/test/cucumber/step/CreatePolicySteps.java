@@ -1,6 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
-import com.ctl.security.dsm.authenticate.DsmPolicyClient;
+import com.ctl.security.dsm.DsmPolicyClient;
 import cucumber.api.java.en.Given;
 
 

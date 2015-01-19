@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.authenticate;
+package com.ctl.security.dsm;
 
 import manager.Manager;
 import org.apache.log4j.Logger;

@@ -1,5 +1,7 @@
 package com.ctl.security.dsm.authenticate;
 
+import com.ctl.security.dsm.DsmPolicyClient;
+import com.ctl.security.dsm.LogInClient;
 import manager.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

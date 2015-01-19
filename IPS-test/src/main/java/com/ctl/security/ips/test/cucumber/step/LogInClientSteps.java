@@ -1,6 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
-import com.ctl.security.dsm.authenticate.LogInClient;
+import com.ctl.security.dsm.LogInClient;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
