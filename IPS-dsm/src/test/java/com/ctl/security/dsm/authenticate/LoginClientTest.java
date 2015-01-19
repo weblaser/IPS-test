@@ -36,6 +36,6 @@ public class LoginClientTest {
         //Arrange
         when(manager.authenticate(eq("wrongUsername"), eq("wrongPassword"))).thenThrow(ManagerAuthenticationException_Exception.class);
         //Act
-        String sessionId = underTest.connectToDSMClient("wrongUsername","wrongPassword");
+        underTest.connectToDSMClient("wrongUsername","wrongPassword");
     }
 }

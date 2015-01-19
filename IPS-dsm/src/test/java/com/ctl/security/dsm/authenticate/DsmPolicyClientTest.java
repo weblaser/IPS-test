@@ -1,7 +1,6 @@
 package com.ctl.security.dsm.authenticate;
 
-import manager.Manager;
-import manager.SecurityProfileTransport;
+import manager.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,16 +38,14 @@ public class DsmPolicyClientTest {
         //assert
         assertEquals(transport, actual);
     }
-//
-//    @Test (expected = Exception.class)
-//    public void createPolicyOnDSMClientTestFail()throws Exception{
-//        //arrange
-//        SecurityProfileTransport transport = new SecurityProfileTransport();
-//        when(logInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
-//        when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq("12345"))).thenThrow(Exception.class);
-//        //act
-//        SecurityProfileTransport actual = underTest.createPolicyOnDSMClient("joe", "12345", new SecurityProfileTransport());
-//        //assert
-//    }
+
+    @Test (expected = ManagerLockoutException_Exception.class)
+    public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception {
+        //arrange
+        when(logInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
+        when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq("12345"))).thenThrow(ManagerLockoutException_Exception.class);
+        //act
+        classUnderTest.createPolicyOnDSMClient("joe", "password", new SecurityProfileTransport());
+    }
 
 }
