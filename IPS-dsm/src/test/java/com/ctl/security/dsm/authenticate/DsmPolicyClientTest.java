@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
  * Created by Chad.Middleton on 1/15/2015.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class PolicyClientTest {
+public class DsmPolicyClientTest {
 
     @Mock
     private Manager manager;
@@ -26,7 +26,7 @@ public class PolicyClientTest {
     private LogInClient logInClient;
 
     @InjectMocks
-    private PolicyClient underTest;
+    private DsmPolicyClient classUnderTest;
 
     @Test
     public void createPolicyOnDSMClientTestSuccess() throws Exception {
@@ -35,7 +35,7 @@ public class PolicyClientTest {
         when(logInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq("12345"))).thenReturn(transport);
         //act
-        SecurityProfileTransport actual = underTest.createPolicyOnDSMClient("joe", "password", new SecurityProfileTransport());
+        SecurityProfileTransport actual = classUnderTest.createPolicyOnDSMClient("joe", "password", new SecurityProfileTransport());
         //assert
         assertEquals(transport, actual);
     }

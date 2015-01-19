@@ -1,4 +1,4 @@
-@ALL_TESTS @WIP @Regression
+@ALL_TESTS @Regression
 Feature: Security - LogInClient To be able to log into the DSM API
 
   Scenario: Log in successfully to the the DSM API
