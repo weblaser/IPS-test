@@ -1,6 +1,6 @@
-package com.ctl.security.dsm.authenticate;
+package com.ctl.security.dsm;
 
-import com.ctl.security.dsm.LogInClient;
+import com.ctl.security.dsm.DsmLogInClient;
 import manager.Manager;
 import manager.ManagerAuthenticationException_Exception;
 import org.junit.Test;
@@ -14,13 +14,13 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LoginClientTest {
+public class DsmLoginClientTest {
 
     @Mock
     private Manager manager;
 
     @InjectMocks
-    private LogInClient underTest;
+    private DsmLogInClient underTest;
 
     @Test
     public void loginSuccess() throws Exception {

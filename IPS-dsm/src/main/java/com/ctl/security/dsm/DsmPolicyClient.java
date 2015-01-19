@@ -14,11 +14,11 @@ public class DsmPolicyClient {
     private Manager manager;
 
     @Autowired
-    private LogInClient logInClient;
+    private DsmLogInClient dsmLogInClient;
 
 
     public SecurityProfileTransport createPolicyOnDSMClient(String username, String password, SecurityProfileTransport securityProfileTransport) throws ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerAuthorizationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
-        String sessionID = logInClient.connectToDSMClient(username, password);
+        String sessionID = dsmLogInClient.connectToDSMClient(username, password);
         return manager.securityProfileSave(securityProfileTransport, sessionID);
     }
 }

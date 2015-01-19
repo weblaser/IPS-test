@@ -1,7 +1,7 @@
-package com.ctl.security.dsm.authenticate;
+package com.ctl.security.dsm;
 
 import com.ctl.security.dsm.DsmPolicyClient;
-import com.ctl.security.dsm.LogInClient;
+import com.ctl.security.dsm.DsmLogInClient;
 import manager.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ public class DsmPolicyClientTest {
     private Manager manager;
 
     @Mock
-    private LogInClient logInClient;
+    private DsmLogInClient dsmLogInClient;
 
     @InjectMocks
     private DsmPolicyClient classUnderTest;
@@ -33,7 +33,7 @@ public class DsmPolicyClientTest {
     public void createPolicyOnDSMClientTestSuccess() throws Exception {
         //arrange
         SecurityProfileTransport transport = new SecurityProfileTransport();
-        when(logInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
+        when(dsmLogInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq("12345"))).thenReturn(transport);
         //act
         SecurityProfileTransport actual = classUnderTest.createPolicyOnDSMClient("joe", "password", new SecurityProfileTransport());
@@ -44,7 +44,7 @@ public class DsmPolicyClientTest {
     @Test (expected = ManagerLockoutException_Exception.class)
     public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception {
         //arrange
-        when(logInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
+        when(dsmLogInClient.connectToDSMClient(eq("joe"), eq("password"))).thenReturn("12345");
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq("12345"))).thenThrow(ManagerLockoutException_Exception.class);
         //act
         classUnderTest.createPolicyOnDSMClient("joe", "password", new SecurityProfileTransport());

@@ -1,6 +1,6 @@
-package com.ctl.security.dsm.authenticate;
+package com.ctl.security.dsm;
 
-import com.ctl.security.dsm.LogInClient;
+import com.ctl.security.dsm.DsmLogInClient;
 import com.ctl.security.dsm.WebConfig;
 import manager.Manager;
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class WebConfigTest {
     public void clientTest() throws MalformedURLException {
         //arrange
         //act
-        LogInClient actual = classUnderTest.logInClient(manager);
+        DsmLogInClient actual = classUnderTest.logInClient(manager);
         //assert
         assertNotNull(actual);
     }
