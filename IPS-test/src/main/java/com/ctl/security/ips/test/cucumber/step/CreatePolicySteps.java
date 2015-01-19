@@ -19,6 +19,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertNotNull;
 
+
 /**
  * Created by chad.middleton on 1/16/2015.
  */

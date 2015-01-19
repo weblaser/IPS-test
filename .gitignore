@@ -4,3 +4,5 @@
 .classpath
 .settings
 .svn
+**/target/*
+target
