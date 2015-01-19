@@ -1,7 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.dsm.DsmPolicyClient;
-import com.ctl.security.dsm.authenticate.DsmPolicyClient;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import cucumber.api.java.en.Given;
