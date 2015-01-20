@@ -1,5 +1,5 @@
 @ALL_TESTS @Regression
-Feature: Security - CreatePolicy  To log into the DSM API and create a new policy for a customer
+Feature: Security - DsmClientCreatePolicy  To log into the DSM API and create a new policy for a customer
 
 @WIP
 Scenario: Successfully create a new policy for a tenant
