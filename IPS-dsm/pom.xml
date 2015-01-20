@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.ctl.security.ips</groupId>
+            <artifactId>IPS-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.ctl.security</groupId>
             <artifactId>dsm-api-client</artifactId>
             <version>1.0</version>

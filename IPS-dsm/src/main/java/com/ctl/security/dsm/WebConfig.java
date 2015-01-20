@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean;
 
 import javax.net.ssl.*;
@@ -16,8 +18,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
+@PropertySources({@PropertySource("classpath:/dsm.client.properties")})
 @Configuration
 public class WebConfig {
     private static final Logger logger = Logger.getLogger(WebConfig.class);
@@ -38,11 +39,11 @@ public class WebConfig {
                 }
 
                 public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                    }
+                }
 
                 public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                    }
                 }
+            }
             };
 
             // Install the all-trusting trust manager

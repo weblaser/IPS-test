@@ -8,9 +8,11 @@ import cucumber.api.java.en.Given;
 
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import manager.SecurityProfileTransport;
+import manager.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -28,6 +30,9 @@ public class CreatePolicySteps {
 
     @Autowired
     private DsmPolicyClient policyClient;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     private SecurityProfileTransport securityProfileTransportToBeCreated;
     private SecurityProfileTransport newlyCreatedSecurityProfileTransport;
@@ -48,19 +53,47 @@ public class CreatePolicySteps {
     @When("^I execute the \"(.*?)\" operation against the DSM API$")
     public void i_execute_the_operation_against_the_DSM_API(String arg1) throws Throwable {
 
+        newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(securityProfileTransportToBeCreated);
+
+//        WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(8089)); //No-args constructor will start on port 8080, no HTTPS
+////        WireMockServer wireMockServer = new WireMockServer(8089); //No-args constructor will start on port 8080, no HTTPS
+//        wireMockServer.start();
+//
+//        WireMock.configureFor("localhost", 8089);
+//
+//        try{
+//            stubFor(get(urlEqualTo("/some/thing"))
+////            stubFor(get(urlEqualTo("/"))
+//                    .willReturn(aResponse()
+//                            .withHeader("Content-Type", "text/plain")
+//                            .withBody("Hello world!")));
+//
+//            ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8089/some/thing", String.class);
+//
+//            newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(username, password, securityProfileTransportToBeCreated);
+//        }
+//        finally{
+//            wireMockServer.stop();
+//        }
+    }
+
+    private void getHelloWorld() throws ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerAuthorizationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
         WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(8089)); //No-args constructor will start on port 8080, no HTTPS
+//        WireMockServer wireMockServer = new WireMockServer(8089); //No-args constructor will start on port 8080, no HTTPS
         wireMockServer.start();
 
         WireMock.configureFor("localhost", 8089);
 
         try{
-        stubFor(get(urlEqualTo("/some/thing"))
+            stubFor(get(urlEqualTo("/some/thing"))
 //            stubFor(get(urlEqualTo("/"))
                     .willReturn(aResponse()
                             .withHeader("Content-Type", "text/plain")
                             .withBody("Hello world!")));
 
-        newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(username, password, securityProfileTransportToBeCreated);
+            ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8089/some/thing", String.class);
+
+            newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(securityProfileTransportToBeCreated);
         }
         finally{
             wireMockServer.stop();
