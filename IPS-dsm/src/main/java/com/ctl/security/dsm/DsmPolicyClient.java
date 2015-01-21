@@ -30,7 +30,7 @@ public class DsmPolicyClient {
     private DsmLogInClient dsmLogInClient;
 
     @Autowired
-    SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
+    private SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
 
 
     public SecurityProfileTransport createPolicyOnDSMClient(SecurityProfileTransport securityProfileTransport) throws ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerAuthorizationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {

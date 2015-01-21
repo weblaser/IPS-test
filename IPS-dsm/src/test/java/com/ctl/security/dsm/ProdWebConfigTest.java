@@ -1,15 +1,12 @@
 package com.ctl.security.dsm;
 
-import com.ctl.security.dsm.DsmLogInClient;
-import com.ctl.security.dsm.WebConfig;
+import com.ctl.security.dsm.domain.ProdWebConfig;
 import manager.Manager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import java.net.MalformedURLException;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -18,22 +15,14 @@ import static org.junit.Assert.assertNotNull;
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class WebConfigTest {
+public class ProdWebConfigTest {
 
     @InjectMocks
-    WebConfig classUnderTest;
+    ProdWebConfig classUnderTest;
 
     @Mock
     private Manager manager;
 
-    @Test
-    public void clientTest() throws MalformedURLException {
-        //arrange
-        //act
-        DsmLogInClient actual = classUnderTest.logInClient(manager);
-        //assert
-        assertNotNull(actual);
-    }
 
     @Test
     public void managerTestPass(){

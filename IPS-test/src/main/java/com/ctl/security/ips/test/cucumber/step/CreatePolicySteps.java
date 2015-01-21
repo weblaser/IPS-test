@@ -93,7 +93,6 @@ public class CreatePolicySteps {
 
             ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8089/some/thing", String.class);
 
-            newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(securityProfileTransportToBeCreated);
         }
         finally{
             wireMockServer.stop();
@@ -102,6 +101,9 @@ public class CreatePolicySteps {
 
     @Then("^I receive a new policy response$")
     public void i_receive_a_new_policy_response() throws Throwable {
+
+        getHelloWorld();
+
         assertNotNull(newlyCreatedSecurityProfileTransport);
     }
 
