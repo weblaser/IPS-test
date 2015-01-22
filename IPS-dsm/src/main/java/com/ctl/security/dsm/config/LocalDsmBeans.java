@@ -26,7 +26,7 @@ import java.util.Map;
 @Configuration
 @Profile("local")
 @ComponentScan("com.ctl.security.dsm")
-public class Local {
+public class LocalDsmBeans {
 
     private static final Logger logger = Logger.getLogger(Prod.class);
 

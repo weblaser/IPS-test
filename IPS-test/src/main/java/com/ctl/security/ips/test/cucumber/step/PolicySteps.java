@@ -8,17 +8,21 @@ import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration("classpath*:cucumber.xml")
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
+@ActiveProfiles("local")
 public class PolicySteps {
 
     private static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

@@ -1,31 +1,25 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.dsm.DsmPolicyClient;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
+import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
-
-
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import manager.*;
+import manager.SecurityProfileTransport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.web.client.RestTemplate;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.junit.Assert.assertNotNull;
 
 
 /**
  * Created by chad.middleton on 1/16/2015.
  */
-@ContextConfiguration("classpath*:cucumber.xml")
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
+@ActiveProfiles("local")
 public class CreatePolicySteps {
 
     @Autowired
@@ -55,56 +49,18 @@ public class CreatePolicySteps {
 
         newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(securityProfileTransportToBeCreated);
 
-//        WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(8089)); //No-args constructor will start on port 8080, no HTTPS
-////        WireMockServer wireMockServer = new WireMockServer(8089); //No-args constructor will start on port 8080, no HTTPS
-//        wireMockServer.start();
-//
-//        WireMock.configureFor("localhost", 8089);
-//
-//        try{
-//            stubFor(get(urlEqualTo("/some/thing"))
-////            stubFor(get(urlEqualTo("/"))
-//                    .willReturn(aResponse()
-//                            .withHeader("Content-Type", "text/plain")
-//                            .withBody("Hello world!")));
-//
-//            ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8089/some/thing", String.class);
-//
-//            newlyCreatedSecurityProfileTransport = policyClient.createPolicyOnDSMClient(username, password, securityProfileTransportToBeCreated);
-//        }
-//        finally{
-//            wireMockServer.stop();
-//        }
     }
 
-    private void getHelloWorld() throws ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerAuthorizationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
-        WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(8089)); //No-args constructor will start on port 8080, no HTTPS
-//        WireMockServer wireMockServer = new WireMockServer(8089); //No-args constructor will start on port 8080, no HTTPS
-        wireMockServer.start();
 
-        WireMock.configureFor("localhost", 8089);
-
-        try{
-            stubFor(get(urlEqualTo("/some/thing"))
-//            stubFor(get(urlEqualTo("/"))
-                    .willReturn(aResponse()
-                            .withHeader("Content-Type", "text/plain")
-                            .withBody("Hello world!")));
-
-            ResponseEntity<String> responseEntity = restTemplate.getForEntity("http://localhost:8089/some/thing", String.class);
-
-        }
-        finally{
-            wireMockServer.stop();
-        }
-    }
 
     @Then("^I receive a new policy response$")
     public void i_receive_a_new_policy_response() throws Throwable {
 
-        getHelloWorld();
-
         assertNotNull(newlyCreatedSecurityProfileTransport);
+    }
+
+    @Then("^I handle the error correctly$")
+    public void i_handle_the_error_correctly() throws Throwable {
     }
 
 

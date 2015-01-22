@@ -1,7 +1,7 @@
 @ALL_TESTS @Regression
 Feature:  Security - policy
 
-  @ALL_TESTS @Regression
+  @WIP
   Scenario: Get valid response when getting all policies for account
 
     Given I have a valid account
