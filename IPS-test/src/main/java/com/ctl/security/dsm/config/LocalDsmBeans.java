@@ -1,21 +1,18 @@
 package com.ctl.security.dsm.config;
 
-import manager.Manager;
+import manager.*;
 import org.apache.log4j.Logger;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean;
 
-import javax.net.ssl.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Map;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by kevin.wilde on 1/21/2015.
@@ -27,51 +24,23 @@ public class LocalDsmBeans {
 
     private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);
 
+    @Mock
+    private Manager manager;
+
+    public LocalDsmBeans(){
+        MockitoAnnotations.initMocks(this);
+    }
+
     @Bean
-    public Manager manager() {
-        try {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
+    public Manager manager() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
 
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
+        String sessionId = "123";
+        when(manager.authenticate(anyString(), anyString())).thenReturn(sessionId);
+        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
+        when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq(sessionId))).thenReturn(expectedSecurityProfileTransport);
 
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
-            }
-            };
+        return manager;
 
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = (hostname, session) -> true;
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-
-            Map<String, Object> customProperties = new HashMap<>();
-            customProperties.put("com.sun.xml.ws.request.timeout", 60000);
-            customProperties.put("com.sun.xml.ws.connect.timeout", 60000);
-
-            JaxWsPortProxyFactoryBean proxyFactoryBean = new JaxWsPortProxyFactoryBean();
-            proxyFactoryBean.setServiceInterface(Manager.class);
-            proxyFactoryBean.setWsdlDocumentUrl(new URL("https://10.126.155.12:4119/webservice/Manager?WSDL"));
-            proxyFactoryBean.setNamespaceUri("urn:Manager");
-            proxyFactoryBean.setServiceName("ManagerService");
-            proxyFactoryBean.setLookupServiceOnStartup(false);
-            proxyFactoryBean.setCustomProperties(customProperties);
-            proxyFactoryBean.afterPropertiesSet();
-            return (Manager) proxyFactoryBean.getObject();
-        } catch (NoSuchAlgorithmException | KeyManagementException | MalformedURLException e) {
-            logger.error(e);
-        }
-        return null;
     }
 
 }
