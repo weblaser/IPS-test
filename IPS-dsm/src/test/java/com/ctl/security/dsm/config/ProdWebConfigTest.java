@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 public class ProdWebConfigTest {
 
     @InjectMocks
-    Prod classUnderTest;
+    ProdDsmBeans classUnderTest;
 
     @Mock
     private Manager manager;

@@ -21,9 +21,9 @@ import java.util.Map;
  */
 @Configuration
 @Profile("prod")
-public class Prod {
+public class ProdDsmBeans {
 
-    private static final Logger logger = Logger.getLogger(Prod.class);
+    private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);
 
 
     @Bean

@@ -1,10 +1,7 @@
 package com.ctl.security.dsm.config;
 
-import com.ctl.security.dsm.DsmPolicyClient;
-import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
 import manager.Manager;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +25,7 @@ import java.util.Map;
 @ComponentScan("com.ctl.security.dsm")
 public class LocalDsmBeans {
 
-    private static final Logger logger = Logger.getLogger(Prod.class);
+    private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);
 
     @Bean
     public Manager manager() {
