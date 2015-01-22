@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 public class DsmLogInClient {
 
     @Autowired
+    public DsmLogInClient(Manager manager){
+        this.manager = manager;
+    }
+
     private Manager manager;
 
     public String connectToDSMClient(String username, String password) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {

@@ -3,22 +3,23 @@ package com.ctl.security.dsm;
 import com.ctl.security.dsm.domain.CtlSecurityProfile;
 import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
 import manager.*;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
  */
 @Component
+@Profile("local")
 public class DsmPolicyClient {
 
     @Autowired
     private Manager manager;
-
-    @Autowired
-    Environment environment;
 
     @Value("${${spring.profiles.active:local}.dsm.username}")
     private String username;

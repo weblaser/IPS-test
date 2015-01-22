@@ -1,9 +1,10 @@
-package com.ctl.security.dsm.domain;
+package com.ctl.security.dsm.config;
 
 import manager.Manager;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean;
 
 import javax.net.ssl.*;
@@ -19,9 +20,10 @@ import java.util.Map;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
-public class ProdWebConfig {
+@Profile("prod")
+public class Prod {
 
-    private static final Logger logger = Logger.getLogger(ProdWebConfig.class);
+    private static final Logger logger = Logger.getLogger(Prod.class);
 
 
     @Bean

@@ -1,6 +1,5 @@
-package com.ctl.security.dsm;
+package com.ctl.security.dsm.config;
 
-import com.ctl.security.dsm.domain.ProdWebConfig;
 import manager.Manager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 public class ProdWebConfigTest {
 
     @InjectMocks
-    ProdWebConfig classUnderTest;
+    Prod classUnderTest;
 
     @Mock
     private Manager manager;
