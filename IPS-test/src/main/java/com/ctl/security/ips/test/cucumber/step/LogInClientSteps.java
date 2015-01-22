@@ -21,6 +21,10 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
 @ActiveProfiles("dev")
 public class LogInClientSteps {
+    public static final String APIUSER = "apiuser";
+    public static final String PASSWORD_CORRECT = "trejachad32jUgEs";
+    public static final String APIUSER_WRONG = "wrong";
+    public static final String PASSWORD_WRONG = "wrong";
     private String user;
     private String password;
     private String sessionID;
@@ -31,20 +35,20 @@ public class LogInClientSteps {
 
     @Given("^I have user account credentials$")
     public void i_have_user_account_credentials() throws Throwable {
-        this.user = "apiuser";
-        this.password = "trejachad32jUgEs";
+        this.user = APIUSER;
+        this.password = PASSWORD_CORRECT;
     }
 
     @Given("^I have an incorrect user$")
     public void i_have_an_incorrect_user() throws Throwable {
-        this.user = "wrong";
-        this.password = "trejachad32jUgEs";
+        this.user = APIUSER_WRONG;
+        this.password = PASSWORD_CORRECT;
     }
 
     @Given("^I have an incorrect password$")
     public void i_have_an_incorrect_password() throws Throwable {
-        this.user = "apiuser";
-        this.password = "wrong";
+        this.user = APIUSER;
+        this.password = PASSWORD_WRONG;
     }
 
     @When("^I attempt to authenticate against the dsm api$")
