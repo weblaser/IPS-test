@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
-@ActiveProfiles("local")
+@ActiveProfiles("dev")
 public class LogInClientSteps {
     private String user;
     private String password;

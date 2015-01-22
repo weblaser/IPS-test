@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
  * Created by Chad.Middleton on 1/15/2015.
  */
 @Component
-@Profile("local")
 public class DsmPolicyClient {
 
     @Autowired

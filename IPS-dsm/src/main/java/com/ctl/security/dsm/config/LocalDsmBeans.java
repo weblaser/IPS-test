@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
-@Profile("local")
+@Profile({"local", "dev"})
 @ComponentScan("com.ctl.security.dsm")
 public class LocalDsmBeans {
 
