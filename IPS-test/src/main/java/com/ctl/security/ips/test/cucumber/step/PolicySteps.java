@@ -22,7 +22,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
-@ActiveProfiles("dev")
 public class PolicySteps {
 
     private static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";

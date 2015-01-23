@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
  */
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
-@ActiveProfiles("dev")
 public class LogInClientSteps {
     public static final String APIUSER = "apiuser";
     public static final String PASSWORD_CORRECT = "trejachad32jUgEs";

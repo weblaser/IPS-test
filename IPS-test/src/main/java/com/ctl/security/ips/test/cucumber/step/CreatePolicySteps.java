@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNotNull;
  * Created by chad.middleton on 1/16/2015.
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
-@ActiveProfiles("dev")
 public class CreatePolicySteps {
 
     @Autowired
