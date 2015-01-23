@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * Created by kevin.wilde on 1/20/2015.
  */
+
 @Component
 public class SecurityProfileTransportMarshaller {
 
@@ -14,4 +15,11 @@ public class SecurityProfileTransportMarshaller {
         securityProfileTransport.setName("name");
         return securityProfileTransport;
     }
+
+    public CtlSecurityProfile convert(SecurityProfileTransport securityProfileTransport){
+        CtlSecurityProfile ctlSecurityProfile = new CtlSecurityProfile();
+        ctlSecurityProfile.setName("name");
+        return ctlSecurityProfile;
+    }
+
 }

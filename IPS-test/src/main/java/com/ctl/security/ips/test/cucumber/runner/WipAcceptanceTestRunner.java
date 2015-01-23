@@ -5,7 +5,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
-
 @RunWith(Cucumber.class)
 @Cucumber.Options(tags = {"@WIP"}, monochrome = true, format = {"html:target/cucumber", "junit:target/junit.xml", "json:target/cucumber-report.json"},
         features = {"src/main/java/com/ctl/security/ips/test/cucumber/feature"},

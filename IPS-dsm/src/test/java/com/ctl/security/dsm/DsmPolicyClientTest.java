@@ -1,9 +1,8 @@
 package com.ctl.security.dsm;
 
-import com.ctl.security.dsm.DsmPolicyClient;
-import com.ctl.security.dsm.DsmLogInClient;
 import com.ctl.security.dsm.domain.CtlSecurityProfile;
 import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
+import com.ctl.security.dsm.exception.DsmPolicyClientException;
 import manager.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +13,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -48,15 +45,22 @@ public class DsmPolicyClientTest {
     }
 
     @Test
-    public void createPolicyOnDSMClientTestSuccess() throws Exception {
+    public void createCtlSecurityProfile_createsCtlSecurityProfile() throws Exception {
         //arrange
+        CtlSecurityProfile ctlSecurityProfileToBeCreated = new CtlSecurityProfile();
+        SecurityProfileTransport securityProfileTransportToBeCreated = new SecurityProfileTransport();
         SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
+        CtlSecurityProfile expectedCtlSecurityProfile = new CtlSecurityProfile();
 
-        when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq("12345"))).thenReturn(expectedSecurityProfileTransport);
+        when(securityProfileTransportMarshaller.convert(ctlSecurityProfileToBeCreated)).thenReturn(securityProfileTransportToBeCreated);
+        when(manager.securityProfileSave(securityProfileTransportToBeCreated, sessionId)).thenReturn(expectedSecurityProfileTransport);
+        when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedCtlSecurityProfile);
+
         //act
-        SecurityProfileTransport actualSecurityProfileTransport = classUnderTest.createPolicyOnDSMClient(new SecurityProfileTransport());
+        CtlSecurityProfile actualCtlSecurityProfile = classUnderTest.createCtlSecurityProfile(ctlSecurityProfileToBeCreated);
+
         //assert
-        assertEquals(expectedSecurityProfileTransport, actualSecurityProfileTransport);
+        assertEquals(expectedCtlSecurityProfile, actualCtlSecurityProfile);
     }
 
     private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {
@@ -65,30 +69,14 @@ public class DsmPolicyClientTest {
         when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenReturn(sessionId);
     }
 
-    @Test (expected = ManagerLockoutException_Exception.class)
-    public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception {
+    @Test (expected = DsmPolicyClientException.class)
+    public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
         //arrange
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq(sessionId))).thenThrow(ManagerLockoutException_Exception.class);
 
         //act
-        classUnderTest.createPolicyOnDSMClient(new SecurityProfileTransport());
+        classUnderTest.createCtlSecurityProfile(new CtlSecurityProfile());
     }
 
-
-    @Test
-    public void createCtlSecurityProfile_createsCtlSecurityProfile() throws ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerAuthorizationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerException_Exception, ManagerMaxSessionsException_Exception, ManagerLockoutException_Exception, ManagerSecurityException_Exception, ManagerCommunicationException_Exception {
-        CtlSecurityProfile ctlSecurityProfileToBeCreated = new CtlSecurityProfile();
-
-        CtlSecurityProfile newlyCreatedCtlSecurityProfile = classUnderTest.createCtlSecurityProfile(ctlSecurityProfileToBeCreated);
-
-        assertNotNull(newlyCreatedCtlSecurityProfile);
-
-        verify(securityProfileTransportMarshaller).convert(ctlSecurityProfileToBeCreated);
-
-        verify(dsmLogInClient).connectToDSMClient(username, password);
-
-        SecurityProfileTransport securityProfileTransport = null;
-        verify(manager).securityProfileSave(securityProfileTransport, sessionId);
-    }
 
 }
