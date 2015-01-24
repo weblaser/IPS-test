@@ -12,13 +12,13 @@ public class SecurityProfileTransportMarshaller {
 
     public SecurityProfileTransport convert(CtlSecurityProfile ctlSecurityProfile) {
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
-        securityProfileTransport.setName("name");
+        securityProfileTransport.setName(ctlSecurityProfile.getName());
         return securityProfileTransport;
     }
 
     public CtlSecurityProfile convert(SecurityProfileTransport securityProfileTransport){
         CtlSecurityProfile ctlSecurityProfile = new CtlSecurityProfile();
-        ctlSecurityProfile.setName("name");
+        ctlSecurityProfile.setName(securityProfileTransport.getName());
         return ctlSecurityProfile;
     }
 

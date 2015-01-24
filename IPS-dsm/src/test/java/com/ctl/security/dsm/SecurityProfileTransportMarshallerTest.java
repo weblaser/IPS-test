@@ -22,13 +22,25 @@ public class SecurityProfileTransportMarshallerTest {
 
     @Test
     public void securityProfileTransportMarshaller_marshallsCtlSecurityProfileToSecurityProfileTransport(){
-        String name = "name";
-        CtlSecurityProfile ctlSecurityProfile = null;
+        String name = "name" + System.currentTimeMillis();
+        CtlSecurityProfile ctlSecurityProfile = new CtlSecurityProfile();
+        ctlSecurityProfile.setName(name);
 
         SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(ctlSecurityProfile);
 
         assertNotNull(securityProfileTransport);
         assertEquals(securityProfileTransport.getName(), name);
+    }
+    @Test
+    public void securityProfileTransportMarshaller_marshallsSecurityProfileTransportToCtlSecurityProfile(){
+        String name = "name" + System.currentTimeMillis();
+        SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
+        securityProfileTransport.setName(name);
+
+        CtlSecurityProfile ctlSecurityProfile = securityProfileTransportMarshaller.convert(securityProfileTransport);
+
+        assertNotNull(ctlSecurityProfile);
+        assertEquals(ctlSecurityProfile.getName(), name);
     }
 
 }
