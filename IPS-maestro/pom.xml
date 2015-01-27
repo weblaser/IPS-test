@@ -6,7 +6,7 @@
 
     <artifactId>IPS-maestro</artifactId>
     <name>IPS-maestro</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <parent>
         <artifactId>IPS-api</artifactId>
