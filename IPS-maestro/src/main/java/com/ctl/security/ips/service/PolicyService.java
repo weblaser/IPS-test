@@ -1,9 +1,13 @@
 package com.ctl.security.ips.service;
 
+import com.ctl.security.dsm.DsmPolicyClient;
+import com.ctl.security.dsm.domain.CtlSecurityProfile;
+import com.ctl.security.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.dao.PolicyDao;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +19,14 @@ public class PolicyService {
 
     private static final String VALID_ACCOUNT = "TCCD";
     private static final String TEST_ID = "test-id";
+
+    private DsmPolicyClient dsmPolicyClient;
+    private PolicyDao policyDao;
+
+    public PolicyService(DsmPolicyClient dsmPolicyClient, PolicyDao policyDao) {
+        this.dsmPolicyClient = dsmPolicyClient;
+        this.policyDao = policyDao;
+    }
 
     public List<Policy> getPoliciesForAccount(String account) {
 
@@ -69,4 +81,9 @@ public class PolicyService {
         return policy;
     }
 
+    public CtlSecurityProfile createPolicy(CtlSecurityProfile ctlSecurityProfileToBeCreated) throws DsmPolicyClientException {
+        CtlSecurityProfile newlyCreatedCtlSecurityProfile = dsmPolicyClient.createCtlSecurityProfile(ctlSecurityProfileToBeCreated);
+        CtlSecurityProfile newlyPersistedCtlSecurityProfile = policyDao.saveCtlSecurityProfile(newlyCreatedCtlSecurityProfile);
+        return newlyPersistedCtlSecurityProfile;
+    }
 }
