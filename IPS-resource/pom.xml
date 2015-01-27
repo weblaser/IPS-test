@@ -29,7 +29,7 @@
     <dependencies>
         <dependency>
             <groupId>com.ctl.security.ips</groupId>
-            <artifactId>IPS-crud</artifactId>
+            <artifactId>IPS-maestro</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

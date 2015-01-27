@@ -2,7 +2,7 @@ package com.ctl.security.ips.api.resource.impl;
 
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.crud.service.PolicyService;
+import com.ctl.security.ips.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

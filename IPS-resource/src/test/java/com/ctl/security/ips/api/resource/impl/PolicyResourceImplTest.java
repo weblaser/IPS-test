@@ -3,7 +3,7 @@ package com.ctl.security.ips.api.resource.impl;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
-import com.ctl.security.ips.crud.service.PolicyService;
+import com.ctl.security.ips.service.PolicyService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
