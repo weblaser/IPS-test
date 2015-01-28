@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.domain;
+package com.ctl.security.ips.dsm.domain;
 
 import manager.SecurityProfileTransport;
 import org.springframework.stereotype.Component;

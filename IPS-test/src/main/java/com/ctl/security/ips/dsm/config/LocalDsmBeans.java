@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.config;
+package com.ctl.security.ips.dsm.config;
 
 import com.ctl.security.ips.test.cucumber.step.LogInClientSteps;
 import manager.*;
@@ -9,10 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 

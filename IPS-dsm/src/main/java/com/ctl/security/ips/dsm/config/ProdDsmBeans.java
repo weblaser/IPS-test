@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.config;
+package com.ctl.security.ips.dsm.config;
 
 import manager.Manager;
 import org.apache.log4j.Logger;

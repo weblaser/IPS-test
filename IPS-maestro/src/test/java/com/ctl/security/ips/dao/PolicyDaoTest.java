@@ -1,6 +1,6 @@
 package com.ctl.security.ips.dao;
 
-import com.ctl.security.dsm.domain.CtlSecurityProfile;
+import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

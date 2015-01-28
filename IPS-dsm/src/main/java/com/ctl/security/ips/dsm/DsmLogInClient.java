@@ -1,4 +1,4 @@
-package com.ctl.security.dsm;
+package com.ctl.security.ips.dsm;
 
 import manager.*;
 import org.springframework.beans.factory.annotation.Autowired;

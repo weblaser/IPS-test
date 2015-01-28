@@ -1,6 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
-import com.ctl.security.dsm.DsmLogInClient;
+import com.ctl.security.ips.dsm.DsmLogInClient;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -8,7 +8,6 @@ import cucumber.api.java.en.When;
 import manager.ManagerAuthenticationException_Exception;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 

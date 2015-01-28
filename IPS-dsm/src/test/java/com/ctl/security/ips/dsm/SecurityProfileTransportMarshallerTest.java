@@ -1,7 +1,7 @@
-package com.ctl.security.dsm;
+package com.ctl.security.ips.dsm;
 
-import com.ctl.security.dsm.domain.CtlSecurityProfile;
-import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
+import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
+import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import manager.SecurityProfileTransport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
