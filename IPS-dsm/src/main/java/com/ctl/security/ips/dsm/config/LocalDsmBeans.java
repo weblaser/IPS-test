@@ -1,18 +1,15 @@
 package com.ctl.security.ips.dsm.config;
 
-import com.ctl.security.ips.test.cucumber.step.LogInClientSteps;
 import manager.*;
 import org.apache.log4j.Logger;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by kevin.wilde on 1/21/2015.
@@ -24,10 +21,15 @@ public class LocalDsmBeans {
 
     private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);
 
+    public static final String APIUSER = "apiuser";
+    public static final String PASSWORD_CORRECT = "trejachad32jUgEs";
+    public static final String APIUSER_WRONG = "wrong";
+    public static final String PASSWORD_WRONG = "wrong";
+
     @Mock
     private Manager manager;
 
-    public LocalDsmBeans(){
+    public LocalDsmBeans() {
         MockitoAnnotations.initMocks(this);
     }
 
@@ -35,13 +37,13 @@ public class LocalDsmBeans {
     public Manager manager() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
 
         String sessionId = "123";
-        when(manager.authenticate(LogInClientSteps.APIUSER, LogInClientSteps.PASSWORD_CORRECT)).thenReturn(sessionId);
+        Mockito.when(manager.authenticate(APIUSER, PASSWORD_CORRECT)).thenReturn(sessionId);
 
-        when(manager.authenticate(LogInClientSteps.APIUSER, LogInClientSteps.PASSWORD_WRONG)).thenThrow(ManagerAuthenticationException_Exception.class);
-        when(manager.authenticate(LogInClientSteps.APIUSER_WRONG, LogInClientSteps.PASSWORD_CORRECT)).thenThrow(ManagerAuthenticationException_Exception.class);
+        Mockito.when(manager.authenticate(APIUSER, PASSWORD_WRONG)).thenThrow(ManagerAuthenticationException_Exception.class);
+        Mockito.when(manager.authenticate(APIUSER_WRONG, PASSWORD_CORRECT)).thenThrow(ManagerAuthenticationException_Exception.class);
 
         SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
-        when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq(sessionId))).thenReturn(expectedSecurityProfileTransport);
+        Mockito.when(manager.securityProfileSave(Matchers.any(SecurityProfileTransport.class), Matchers.eq(sessionId))).thenReturn(expectedSecurityProfileTransport);
 
         return manager;
 

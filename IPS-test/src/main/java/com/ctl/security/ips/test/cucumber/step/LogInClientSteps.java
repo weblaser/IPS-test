@@ -1,6 +1,7 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.ips.dsm.DsmLogInClient;
+import com.ctl.security.ips.dsm.config.LocalDsmBeans;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -19,10 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
 public class LogInClientSteps {
-    public static final String APIUSER = "apiuser";
-    public static final String PASSWORD_CORRECT = "trejachad32jUgEs";
-    public static final String APIUSER_WRONG = "wrong";
-    public static final String PASSWORD_WRONG = "wrong";
+
     private String user;
     private String password;
     private String sessionID;
@@ -33,20 +31,20 @@ public class LogInClientSteps {
 
     @Given("^I have user account credentials$")
     public void i_have_user_account_credentials() throws Throwable {
-        this.user = APIUSER;
-        this.password = PASSWORD_CORRECT;
+        this.user = LocalDsmBeans.APIUSER;
+        this.password = LocalDsmBeans.PASSWORD_CORRECT;
     }
 
     @Given("^I have an incorrect user$")
     public void i_have_an_incorrect_user() throws Throwable {
-        this.user = APIUSER_WRONG;
-        this.password = PASSWORD_CORRECT;
+        this.user = LocalDsmBeans.APIUSER_WRONG;
+        this.password = LocalDsmBeans.PASSWORD_CORRECT;
     }
 
     @Given("^I have an incorrect password$")
     public void i_have_an_incorrect_password() throws Throwable {
-        this.user = APIUSER;
-        this.password = PASSWORD_WRONG;
+        this.user = LocalDsmBeans.APIUSER;
+        this.password = LocalDsmBeans.PASSWORD_WRONG;
     }
 
     @When("^I attempt to authenticate against the dsm api$")
