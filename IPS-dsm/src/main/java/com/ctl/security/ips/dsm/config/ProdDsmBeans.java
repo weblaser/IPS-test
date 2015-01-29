@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
-@Profile({"ts", "qa", "prod"})
+@Profile({"dev", "ts", "qa", "prod"})
 public class ProdDsmBeans {
 
     private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);
