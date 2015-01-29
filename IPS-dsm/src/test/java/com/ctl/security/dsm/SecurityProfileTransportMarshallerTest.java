@@ -1,7 +1,7 @@
 package com.ctl.security.dsm;
 
-import com.ctl.security.dsm.domain.CtlSecurityProfile;
 import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
+import com.ctl.security.ips.common.domain.Policy;
 import manager.SecurityProfileTransport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +23,10 @@ public class SecurityProfileTransportMarshallerTest {
     @Test
     public void securityProfileTransportMarshaller_marshallsCtlSecurityProfileToSecurityProfileTransport(){
         String name = "name" + System.currentTimeMillis();
-        CtlSecurityProfile ctlSecurityProfile = new CtlSecurityProfile();
-        ctlSecurityProfile.setName(name);
+        Policy policy = new Policy();
+        policy.setName(name);
 
-        SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(ctlSecurityProfile);
+        SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
 
         assertNotNull(securityProfileTransport);
         assertEquals(securityProfileTransport.getName(), name);
@@ -37,10 +37,10 @@ public class SecurityProfileTransportMarshallerTest {
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
         securityProfileTransport.setName(name);
 
-        CtlSecurityProfile ctlSecurityProfile = securityProfileTransportMarshaller.convert(securityProfileTransport);
+        Policy policy = securityProfileTransportMarshaller.convert(securityProfileTransport);
 
-        assertNotNull(ctlSecurityProfile);
-        assertEquals(ctlSecurityProfile.getName(), name);
+        assertNotNull(policy);
+        assertEquals(policy.getName(), name);
     }
 
 }

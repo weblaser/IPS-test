@@ -1,8 +1,8 @@
 package com.ctl.security.dsm;
 
-import com.ctl.security.dsm.domain.CtlSecurityProfile;
 import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.common.domain.Policy;
 import manager.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,10 +38,10 @@ public class DsmPolicyClient {
         }
     }
 
-    public CtlSecurityProfile createCtlSecurityProfile(CtlSecurityProfile ctlSecurityProfileToBeCreated) throws DsmPolicyClientException {
+    public Policy createCtlSecurityProfile(Policy policy) throws DsmPolicyClientException {
 
         try {
-          SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(ctlSecurityProfileToBeCreated));
+          SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(policy));
             return securityProfileTransportMarshaller.convert(securityProfileTransport);
         } catch (DsmPolicyClientException e) {
             throw new DsmPolicyClientException(e);

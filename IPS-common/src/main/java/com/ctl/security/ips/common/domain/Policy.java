@@ -1,8 +1,7 @@
 package com.ctl.security.ips.common.domain;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
@@ -12,13 +11,12 @@ import lombok.experimental.Accessors;
 @ToString
 @EqualsAndHashCode()
 @Accessors(chain = true)
+@Data
 public class Policy {
 
-    @Getter
-    @Setter
     private String id;
 
-    @Getter
-    @Setter
     private PolicyStatus status;
+
+    private String name;
 }

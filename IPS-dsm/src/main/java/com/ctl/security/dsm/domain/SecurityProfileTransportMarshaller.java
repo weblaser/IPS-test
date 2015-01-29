@@ -1,5 +1,6 @@
 package com.ctl.security.dsm.domain;
 
+import com.ctl.security.ips.common.domain.Policy;
 import manager.SecurityProfileTransport;
 import org.springframework.stereotype.Component;
 
@@ -10,16 +11,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityProfileTransportMarshaller {
 
-    public SecurityProfileTransport convert(CtlSecurityProfile ctlSecurityProfile) {
+    public SecurityProfileTransport convert(Policy policy) {
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
-        securityProfileTransport.setName(ctlSecurityProfile.getName());
+        securityProfileTransport.setName(policy.getName());
         return securityProfileTransport;
     }
 
-    public CtlSecurityProfile convert(SecurityProfileTransport securityProfileTransport){
-        CtlSecurityProfile ctlSecurityProfile = new CtlSecurityProfile();
-        ctlSecurityProfile.setName(securityProfileTransport.getName());
-        return ctlSecurityProfile;
+    public Policy convert(SecurityProfileTransport securityProfileTransport){
+        Policy policy = new Policy();
+        policy.setName(securityProfileTransport.getName());
+        return policy;
     }
 
 }
