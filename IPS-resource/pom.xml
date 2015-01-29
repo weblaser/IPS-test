@@ -96,23 +96,5 @@
         </dependency>
     </dependencies>
 
-    <profiles>
 
-        <profile>
-            <id>prod</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/src/main/java/com/ctl/security/ips/dsm/config/LocalDsmBeans.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
