@@ -1,13 +1,12 @@
 package com.ctl.security.ips.service;
 
-import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dao.PolicyDao;
+import com.ctl.security.ips.dsm.DsmPolicyClient;
+import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import manager.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,31 +39,31 @@ public class PolicyServiceTest {
 
     @Test
     public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
-        CtlSecurityProfile ctlSecurityProfileToBeCreated = new CtlSecurityProfile();
-        CtlSecurityProfile expectedNewlyCreatedCtlSecurityProfile = new CtlSecurityProfile();
-        when(dsmPolicyClient.createCtlSecurityProfile(ctlSecurityProfileToBeCreated)).thenReturn(expectedNewlyCreatedCtlSecurityProfile);
-        CtlSecurityProfile expectedNewlyPersistedCtlSecurityProfile = new CtlSecurityProfile();
-        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedCtlSecurityProfile)).thenReturn(expectedNewlyPersistedCtlSecurityProfile);
+        Policy policyToBeCreated = new Policy();
+        Policy expectedNewlyCreatedPolicy = new Policy();
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
+        Policy expectedNewlyPersistedPolicy = new Policy();
+        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
 
 
-        CtlSecurityProfile actualNewlyPersistedCtlSecurityProfile = classUnderTest.createPolicy(ctlSecurityProfileToBeCreated);
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicy(policyToBeCreated);
 
 
-        verify(dsmPolicyClient).createCtlSecurityProfile(ctlSecurityProfileToBeCreated);
-        verify(policyDao).saveCtlSecurityProfile(actualNewlyPersistedCtlSecurityProfile);
-        assertNotNull(actualNewlyPersistedCtlSecurityProfile);
-        assertEquals(expectedNewlyCreatedCtlSecurityProfile, actualNewlyPersistedCtlSecurityProfile);
+        verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
+        verify(policyDao).saveCtlSecurityProfile(actualNewlyPersistedPolicy);
+        assertNotNull(actualNewlyPersistedPolicy);
+        assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
     }
 
 
     @Test
     public void testGetPoliciesForAccount() {
         //act
-        List<Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
+        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
 
         //assert
-        Policy expected = buildPolicy();
-        for (Policy actual : policies) {
+        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
+        for (com.ctl.security.ips.common.domain.Policy actual : policies) {
             assertEquals(expected, actual);
         }
     }
@@ -72,17 +71,17 @@ public class PolicyServiceTest {
     @Test(expected = PolicyNotFoundException.class)
     public void testGetPoliciesForAccountPolicyNotFoundException() {
         //act
-        List<Policy> policies = classUnderTest.getPoliciesForAccount(INVALID_ACCOUNT);
+        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(INVALID_ACCOUNT);
     }
 
 
     @Test
     public void testGetPolicyForAccount() {
         //act
-        Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
+        com.ctl.security.ips.common.domain.Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
 
         //assert
-        Policy expected = buildPolicy();
+        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
         assertEquals(expected, actual);
     }
 
@@ -96,7 +95,7 @@ public class PolicyServiceTest {
     public void testCreatePolicyForAccount() {
 
         //act
-        String actual = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, new Policy());
+        String actual = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, new com.ctl.security.ips.common.domain.Policy());
 
         //assert
         String expectedRegex = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -107,25 +106,25 @@ public class PolicyServiceTest {
     @Test(expected = NotAuthorizedException.class)
     public void testCreatePolicyForAccountNotAuthorizedException() {
         //act
-        classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, new Policy());
+        classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, new com.ctl.security.ips.common.domain.Policy());
     }
 
     @Test
     public void testUpdatePolicyForAccount() {
         //act
-        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new Policy());
+        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new com.ctl.security.ips.common.domain.Policy());
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void testUpdatePolicyForAccountNotAuthorizedException() {
         //act
-        classUnderTest.updatePolicyForAccount(INVALID_ACCOUNT, TEST_ID, new Policy());
+        classUnderTest.updatePolicyForAccount(INVALID_ACCOUNT, TEST_ID, new com.ctl.security.ips.common.domain.Policy());
     }
 
     @Test(expected = PolicyNotFoundException.class)
     public void testUpdatePolicyForAccountPolicyNotFoundException() {
         //act
-        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID_2, new Policy());
+        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID_2, new com.ctl.security.ips.common.domain.Policy());
     }
 
     @Test
@@ -146,7 +145,7 @@ public class PolicyServiceTest {
         classUnderTest.deletePolicyForAccount(VALID_ACCOUNT, TEST_ID_2);
     }
 
-    private Policy buildPolicy() {
-        return new Policy().setId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+    private com.ctl.security.ips.common.domain.Policy buildPolicy() {
+        return new com.ctl.security.ips.common.domain.Policy().setId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
 }

@@ -1,6 +1,6 @@
 package com.ctl.security.ips.dao;
 
-import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
+import com.ctl.security.ips.common.domain.Policy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -20,10 +20,10 @@ public class PolicyDaoTest {
 
     @Test
     public void saveCtlSecurityProfile_savesCtlSecurityProfile(){
-        CtlSecurityProfile ctlSecurityProfileToBeCreated = new CtlSecurityProfile();
+        Policy policyToBeCreated = new Policy();
 
-        CtlSecurityProfile newlyCreatedCtlSecurityProfile = classUnderTest.saveCtlSecurityProfile(ctlSecurityProfileToBeCreated);
+        Policy newlyCreatedPolicy = classUnderTest.saveCtlSecurityProfile(policyToBeCreated);
 
-        assertNotNull(newlyCreatedCtlSecurityProfile);
+        assertNotNull(newlyCreatedPolicy);
     }
 }

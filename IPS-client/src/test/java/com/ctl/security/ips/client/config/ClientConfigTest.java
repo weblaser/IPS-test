@@ -1,7 +1,6 @@
 package com.ctl.security.ips.client.config;
 
 import org.junit.Test;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.client.RestTemplate;
 
 import static org.junit.Assert.assertNotNull;

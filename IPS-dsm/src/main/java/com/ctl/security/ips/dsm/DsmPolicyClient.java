@@ -1,6 +1,6 @@
 package com.ctl.security.ips.dsm;
 
-import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
+import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import manager.*;
@@ -38,10 +38,10 @@ public class DsmPolicyClient {
         }
     }
 
-    public CtlSecurityProfile createCtlSecurityProfile(CtlSecurityProfile ctlSecurityProfileToBeCreated) throws DsmPolicyClientException {
+    public Policy createCtlSecurityProfile(Policy policy) throws DsmPolicyClientException {
 
         try {
-          SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(ctlSecurityProfileToBeCreated));
+          SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(policy));
             return securityProfileTransportMarshaller.convert(securityProfileTransport);
         } catch (DsmPolicyClientException e) {
             throw new DsmPolicyClientException(e);

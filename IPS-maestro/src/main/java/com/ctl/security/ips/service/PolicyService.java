@@ -1,13 +1,12 @@
 package com.ctl.security.ips.service;
 
-import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dao.PolicyDao;
+import com.ctl.security.ips.dsm.DsmPolicyClient;
+import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,18 +29,18 @@ public class PolicyService {
         this.policyDao = policyDao;
     }
 
-    public List<Policy> getPoliciesForAccount(String account) {
+    public List<com.ctl.security.ips.common.domain.Policy> getPoliciesForAccount(String account) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            List<Policy> hopeful = new ArrayList<Policy>();
-            Policy policy = buildPolicy();
+            List<com.ctl.security.ips.common.domain.Policy> hopeful = new ArrayList<com.ctl.security.ips.common.domain.Policy>();
+            com.ctl.security.ips.common.domain.Policy policy = buildPolicy();
             hopeful.add(policy);
             return hopeful;
         }
         throw new PolicyNotFoundException("Policy not found for account: " + account);
     }
 
-    public Policy getPolicyForAccount(String account, String id) {
+    public com.ctl.security.ips.common.domain.Policy getPolicyForAccount(String account, String id) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
             return buildPolicy();
@@ -49,7 +48,7 @@ public class PolicyService {
         throw new PolicyNotFoundException("Policy " + id + " not found for account: " + account);
     }
 
-    public String createPolicyForAccount(String account, Policy policy) {
+    public String createPolicyForAccount(String account, com.ctl.security.ips.common.domain.Policy policy) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
             return UUID.randomUUID().toString();
@@ -57,7 +56,7 @@ public class PolicyService {
         throw new NotAuthorizedException("Policy cannot be created under account: " + account);
     }
 
-    public void updatePolicyForAccount(String account, String id, Policy policy) {
+    public void updatePolicyForAccount(String account, String id, com.ctl.security.ips.common.domain.Policy policy) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account) && TEST_ID.equalsIgnoreCase(id)) {
             return;
@@ -76,16 +75,16 @@ public class PolicyService {
         throw new PolicyNotFoundException("Policy " + id + " cannot be found for account: " + account);
     }
 
-    private Policy buildPolicy() {
-        Policy policy = new Policy();
+    private com.ctl.security.ips.common.domain.Policy buildPolicy() {
+        com.ctl.security.ips.common.domain.Policy policy = new com.ctl.security.ips.common.domain.Policy();
         policy.setId(TEST_ID);
         policy.setStatus(PolicyStatus.ACTIVE);
         return policy;
     }
 
-    public CtlSecurityProfile createPolicy(CtlSecurityProfile ctlSecurityProfileToBeCreated) throws DsmPolicyClientException {
-        CtlSecurityProfile newlyCreatedCtlSecurityProfile = dsmPolicyClient.createCtlSecurityProfile(ctlSecurityProfileToBeCreated);
-        CtlSecurityProfile newlyPersistedCtlSecurityProfile = policyDao.saveCtlSecurityProfile(newlyCreatedCtlSecurityProfile);
-        return newlyPersistedCtlSecurityProfile;
+    public Policy createPolicy(Policy policyToBeCreated) throws DsmPolicyClientException {
+        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated);
+        Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
+        return newlyPersistedPolicy;
     }
 }

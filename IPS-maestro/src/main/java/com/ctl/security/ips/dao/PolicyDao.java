@@ -1,6 +1,6 @@
 package com.ctl.security.ips.dao;
 
-import com.ctl.security.ips.dsm.domain.CtlSecurityProfile;
+import com.ctl.security.ips.common.domain.Policy;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PolicyDao {
 
-    public CtlSecurityProfile saveCtlSecurityProfile(CtlSecurityProfile ctlSecurityProfileToBeCreated) {
-        return new CtlSecurityProfile();
+    public Policy saveCtlSecurityProfile(Policy policyToBeCreated) {
+        return new Policy();
     }
 }
