@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySources;
 
 @PropertySources({@PropertySource("classpath:/dsm.client.properties")})
 @Configuration
-@Import({ProdDsmBeans.class})
+@Import({DsmBeans.class})
 public class SpringConfiguration {
     private static final Logger logger = Logger.getLogger(SpringConfiguration.class);
 

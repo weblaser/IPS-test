@@ -17,9 +17,9 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @Profile({"local", "dev"})
 @ComponentScan("com.ctl.security.dsm")
-public class LocalDsmBeans {
+public class MockDsmBeans {
 
-    private static final Logger logger = Logger.getLogger(LocalDsmBeans.class);
+    private static final Logger logger = Logger.getLogger(MockDsmBeans.class);
 
     public static final String APIUSER = "apiuser";
     public static final String PASSWORD_CORRECT = "trejachad32jUgEs";
@@ -29,7 +29,7 @@ public class LocalDsmBeans {
     @Mock
     private Manager manager;
 
-    public LocalDsmBeans() {
+    public MockDsmBeans() {
         MockitoAnnotations.initMocks(this);
     }
 

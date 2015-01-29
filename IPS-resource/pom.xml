@@ -98,7 +98,7 @@
 
     <profiles>
         <profile>
-            <id>dev</id>
+            <id>mock</id>
             <dependencies>
                 <dependency>
                     <groupId>com.ctl.security.ips</groupId>

@@ -20,10 +20,10 @@ import java.util.Map;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
-@Profile({"dev", "ts", "qa", "prod"})
-public class ProdDsmBeans {
+@Profile({"ts", "qa", "prod"})
+public class DsmBeans {
 
-    private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);
+    private static final Logger logger = Logger.getLogger(DsmBeans.class);
 
 
     @Bean
