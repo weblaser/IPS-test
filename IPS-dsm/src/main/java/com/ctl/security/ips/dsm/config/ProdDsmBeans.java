@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.config;
+package com.ctl.security.ips.dsm.config;
 
 import manager.Manager;
 import org.apache.log4j.Logger;
@@ -20,7 +20,7 @@ import java.util.Map;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
-@Profile({"ts", "qa", "prod"})
+@Profile({"dev", "ts", "qa", "prod"})
 public class ProdDsmBeans {
 
     private static final Logger logger = Logger.getLogger(ProdDsmBeans.class);

@@ -1,4 +1,4 @@
-package com.ctl.security.dsm;
+package com.ctl.security.ips.dsm;
 
 import com.ctl.security.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.common.domain.Policy;

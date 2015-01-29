@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@ComponentScan(basePackages = {"com.ctl.security.ips"})
+@ComponentScan(basePackages = {"com.ctl.security"})
 @Import({SecurityConfig.class, ClcClientCoreAppConfig.class})
 public class ApiConfig {
 

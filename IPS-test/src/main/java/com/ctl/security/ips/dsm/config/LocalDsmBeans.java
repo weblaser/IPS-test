@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.config;
+package com.ctl.security.ips.dsm.config;
 
 import com.ctl.security.ips.test.cucumber.step.LogInClientSteps;
 import manager.*;

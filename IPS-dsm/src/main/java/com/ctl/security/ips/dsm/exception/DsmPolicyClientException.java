@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.exception;
+package com.ctl.security.ips.dsm.exception;
 
 /**
  * Created by chad.middleton on 1/23/2015.

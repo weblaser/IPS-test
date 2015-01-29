@@ -1,4 +1,4 @@
-package com.ctl.security.dsm.domain;
+package com.ctl.security.ips.dsm.domain;
 
 import com.ctl.security.ips.common.domain.Policy;
 import manager.SecurityProfileTransport;
