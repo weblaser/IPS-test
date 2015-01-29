@@ -28,7 +28,7 @@
             <dependencies>
                 <dependency>
                     <groupId>com.ctl.security.ips</groupId>
-                    <artifactId>IPS-dsm</artifactId>
+                    <artifactId>IPS-dsm-mock-config</artifactId>
                     <version>1.0-SNAPSHOT</version>
                 </dependency>
             </dependencies>
