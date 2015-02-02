@@ -207,6 +207,30 @@
             </build>
         </profile>
         <profile>
+            <id>acceptance-test-ts</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.17</version>
+                        <dependencies/>
+                        <configuration>
+                            <testSourceDirectory>${basedir}/src/main/java/</testSourceDirectory>
+                            <testClassesDirectory>${project.build.directory}/classes/</testClassesDirectory>
+                            <includes>
+                                <include>com/ctl/security/ips/test/cucumber/runner/SecurityAcceptanceTestRunner.java
+                                </include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <spring.profiles.active>ts</spring.profiles.active>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>nightly-test-dev</id>
             <build>
                 <plugins>
