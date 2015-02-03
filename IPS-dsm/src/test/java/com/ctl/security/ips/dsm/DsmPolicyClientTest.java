@@ -12,7 +12,11 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -81,4 +85,29 @@ public class DsmPolicyClientTest {
     }
 
 
+    @Test
+    public void retrieveSecurityProfileById_retrievesSecurityProfileById() throws DsmPolicyClientException, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
+        int id = 0;
+        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
+        when(manager.securityProfileRetrieve(id, sessionId)).thenReturn(expectedSecurityProfileTransport);
+        Policy expectedPolicy = new Policy();
+        when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedPolicy);
+
+        Policy actualPolicy = classUnderTest.retrieveSecurityProfileById(id);
+
+        assertNotNull(actualPolicy);
+        assertEquals(expectedPolicy.getId(), actualPolicy.getId());
+        verify(dsmLogInClient).endSession(sessionId);
+    }
+
+    @Test
+    public void securityProfileDelete_deletesSecurityProfile() throws DsmPolicyClientException, ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception {
+        int id = 0;
+        List<Integer> ids = Arrays.asList(id);
+        classUnderTest.securityProfileDelete(ids);
+
+        verify(dsmLogInClient).endSession(sessionId);
+        verify(manager).securityProfileDelete(ids, sessionId);
+
+    }
 }

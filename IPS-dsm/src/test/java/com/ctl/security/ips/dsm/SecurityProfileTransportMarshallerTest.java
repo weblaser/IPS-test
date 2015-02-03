@@ -10,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by kevin.wilde on 1/20/2015.
@@ -21,26 +22,64 @@ public class SecurityProfileTransportMarshallerTest {
     private SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
 
     @Test
-    public void securityProfileTransportMarshaller_marshallsCtlSecurityProfileToSecurityProfileTransport(){
+    public void convertPolicyToSecurityProfileTransport_marshallsCtlSecurityProfileToSecurityProfileTransport(){
+        Integer id = new Integer(0);
         String name = "name" + System.currentTimeMillis();
         Policy policy = new Policy();
+        policy.setId(id.toString());
         policy.setName(name);
 
         SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
 
         assertNotNull(securityProfileTransport);
         assertEquals(securityProfileTransport.getName(), name);
+        assertEquals(securityProfileTransport.getID(), id);
     }
+
     @Test
-    public void securityProfileTransportMarshaller_marshallsSecurityProfileTransportToCtlSecurityProfile(){
+    public void convertPolicyToSecurityProfileTransport_handlesNullMembers(){
+        String id = null;
+        String name = null;
+        Policy policy = new Policy();
+        policy.setId(id);
+        policy.setName(name);
+
+        SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
+
+        assertNotNull(securityProfileTransport);
+        assertEquals(securityProfileTransport.getName(), name);
+        assertEquals(securityProfileTransport.getID(), id);
+    }
+
+    @Test
+    public void convertSecurityProfileTransportToPolicy_marshallsSecurityProfileTransportToCtlSecurityProfile(){
+        Integer id = new Integer(0);
         String name = "name" + System.currentTimeMillis();
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
+        securityProfileTransport.setID(id);
         securityProfileTransport.setName(name);
 
         Policy policy = securityProfileTransportMarshaller.convert(securityProfileTransport);
 
         assertNotNull(policy);
         assertEquals(policy.getName(), name);
+        assertEquals(policy.getId(), id.toString());
+    }
+
+
+    @Test
+    public void convertSecurityProfileTransportToPolicy_handlesNullMembers(){
+        Integer id = null;
+        String name = null;
+        SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
+        securityProfileTransport.setID(id);
+        securityProfileTransport.setName(name);
+
+        Policy policy = securityProfileTransportMarshaller.convert(securityProfileTransport);
+
+        assertNotNull(policy);
+        assertEquals(policy.getName(), name);
+        assertNull(policy.getId());
     }
 
 }

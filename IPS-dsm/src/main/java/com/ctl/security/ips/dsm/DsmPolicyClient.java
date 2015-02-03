@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Created by Chad.Middleton on 1/15/2015.
  */
@@ -31,9 +33,9 @@ public class DsmPolicyClient {
 
     private SecurityProfileTransport createPolicyOnDSMClient(SecurityProfileTransport securityProfileTransport) throws DsmPolicyClientException{
         try {
-            String sessionID = dsmLogInClient.connectToDSMClient(username, password);
-            SecurityProfileTransport newlyCreatedSecurityProfileTransport = manager.securityProfileSave(securityProfileTransport, sessionID);
-            dsmLogInClient.endSession(sessionID);
+            String sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            SecurityProfileTransport newlyCreatedSecurityProfileTransport = manager.securityProfileSave(securityProfileTransport, sessionId);
+            dsmLogInClient.endSession(sessionId);
             return newlyCreatedSecurityProfileTransport;
         } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception | ManagerAuthenticationException_Exception | ManagerAuthorizationException_Exception | ManagerIntegrityConstraintException_Exception | ManagerTimeoutException_Exception | ManagerValidationException_Exception e) {
             throw new DsmPolicyClientException(e);
@@ -46,6 +48,28 @@ public class DsmPolicyClient {
           SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(policy));
             return securityProfileTransportMarshaller.convert(securityProfileTransport);
         } catch (DsmPolicyClientException e) {
+            throw new DsmPolicyClientException(e);
+        }
+    }
+
+
+    public Policy retrieveSecurityProfileById(int id) throws DsmPolicyClientException {
+        try {
+            String sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            SecurityProfileTransport securityProfileTransport = manager.securityProfileRetrieve(id, sessionId);
+            dsmLogInClient.endSession(sessionId);
+            return securityProfileTransportMarshaller.convert(securityProfileTransport);
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception | ManagerAuthenticationException_Exception | ManagerTimeoutException_Exception e) {
+            throw new DsmPolicyClientException(e);
+        }
+    }
+
+    public void securityProfileDelete(List<Integer> ids) throws DsmPolicyClientException {
+        try {
+            String sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            manager.securityProfileDelete(ids, sessionId);
+            dsmLogInClient.endSession(sessionId);
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception | ManagerAuthenticationException_Exception | ManagerException_Exception | ManagerTimeoutException_Exception | ManagerAuthorizationException_Exception e) {
             throw new DsmPolicyClientException(e);
         }
     }
