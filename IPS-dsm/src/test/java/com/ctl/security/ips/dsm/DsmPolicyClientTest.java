@@ -15,6 +15,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -61,6 +62,7 @@ public class DsmPolicyClientTest {
 
         //assert
         assertEquals(expectedPolicy, actualPolicy);
+        verify(dsmLogInClient).endSession(sessionId);
     }
 
     private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {

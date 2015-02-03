@@ -32,7 +32,9 @@ public class DsmPolicyClient {
     private SecurityProfileTransport createPolicyOnDSMClient(SecurityProfileTransport securityProfileTransport) throws DsmPolicyClientException{
         try {
             String sessionID = dsmLogInClient.connectToDSMClient(username, password);
-            return manager.securityProfileSave(securityProfileTransport, sessionID);
+            SecurityProfileTransport newlyCreatedSecurityProfileTransport = manager.securityProfileSave(securityProfileTransport, sessionID);
+            dsmLogInClient.endSession(sessionID);
+            return newlyCreatedSecurityProfileTransport;
         } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception | ManagerAuthenticationException_Exception | ManagerAuthorizationException_Exception | ManagerIntegrityConstraintException_Exception | ManagerTimeoutException_Exception | ManagerValidationException_Exception e) {
             throw new DsmPolicyClientException(e);
         }

@@ -18,4 +18,7 @@ public class DsmLogInClient {
         return manager.authenticate(username, password);
     }
 
+    public void endSession(String sessionId) {
+        manager.endSession(sessionId);
+    }
 }

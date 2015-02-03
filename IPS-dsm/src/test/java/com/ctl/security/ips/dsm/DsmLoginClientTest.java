@@ -10,6 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,5 +38,14 @@ public class DsmLoginClientTest {
         when(manager.authenticate(eq("wrongUsername"), eq("wrongPassword"))).thenThrow(ManagerAuthenticationException_Exception.class);
         //Act
         underTest.connectToDSMClient("wrongUsername","wrongPassword");
+    }
+
+    @Test
+    public void endSession_endsSession(){
+        String sessionId = "sessionId";
+
+        underTest.endSession(sessionId);
+
+        verify(manager).endSession(sessionId);
     }
 }
