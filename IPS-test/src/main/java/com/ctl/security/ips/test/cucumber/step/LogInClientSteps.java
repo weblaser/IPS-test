@@ -1,6 +1,7 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.ips.dsm.DsmLogInClient;
+import com.ctl.security.ips.dsm.config.MockDsmBeans;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -30,20 +31,20 @@ public class LogInClientSteps {
 
     @Given("^I have user account credentials$")
     public void i_have_user_account_credentials() throws Throwable {
-        this.user = CreatePolicySteps.APIUSER;
-        this.password = CreatePolicySteps.PASSWORD_CORRECT;
+        this.user = PolicyStepSetup.APIUSER;
+        this.password = PolicyStepSetup.PASSWORD_CORRECT;
     }
 
     @Given("^I have an incorrect user$")
     public void i_have_an_incorrect_user() throws Throwable {
-        this.user = CreatePolicySteps.APIUSER_WRONG;
-        this.password = CreatePolicySteps.PASSWORD_CORRECT;
+        this.user = PolicyStepSetup.APIUSER_WRONG;
+        this.password = PolicyStepSetup.PASSWORD_CORRECT;
     }
 
     @Given("^I have an incorrect password$")
     public void i_have_an_incorrect_password() throws Throwable {
-        this.user = CreatePolicySteps.APIUSER;
-        this.password = CreatePolicySteps.PASSWORD_WRONG;
+        this.user = PolicyStepSetup.APIUSER;
+        this.password = PolicyStepSetup.PASSWORD_WRONG;
     }
 
     @When("^I attempt to authenticate against the dsm api$")

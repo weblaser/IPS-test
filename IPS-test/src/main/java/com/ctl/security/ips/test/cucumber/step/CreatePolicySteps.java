@@ -26,10 +26,6 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
 public class CreatePolicySteps {
 
-    public static final String APIUSER = "apiuser";
-    public static final String PASSWORD_CORRECT = "trejachad32jUgEs";
-    public static final String APIUSER_WRONG = "wrong";
-    public static final String PASSWORD_WRONG = "wrong";
 
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
@@ -40,10 +36,12 @@ public class CreatePolicySteps {
     @Autowired
     private Manager manager;
 
+    @Autowired
+    private PolicyStepSetup policyStepSetup;
+
     private Policy policy;
     private Policy newlyCreatedCtlPolicy;
 
-    private String sessionId;
 
     private String username = "apiuser";
     private String password = "trejachad32jUgEs";
@@ -51,13 +49,15 @@ public class CreatePolicySteps {
 
     @Given("^I have a policy that I want to create in DSM$")
     public void i_have_a_policy_that_I_want_to_create_in_DSM() throws Throwable {
+
+        policyStepSetup.setupDsmAuthentication();
+        policyStepSetup.setupCreatePolicyRetrievePolicy();
+
         policy = new Policy();
 
         String name = "name" + System.currentTimeMillis();
         policy.setName(name);
 
-        sessionId = setupDsmAuthentication();
-        setupCreatePolicyRetrievePolicy();
     }
 
     @When("^I execute the \"(.*?)\" operation against the DSM API$")
@@ -82,7 +82,8 @@ public class CreatePolicySteps {
 
         dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getId())));
 
-        setupDeletePolicyRetrievePolicy();
+        policyStepSetup.setupDeletePolicyRetrievePolicy();
+
         Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getId()));
         assertTrue(deletedPolicy.getId() == null);
     }
@@ -91,29 +92,5 @@ public class CreatePolicySteps {
     public void i_handle_the_error_correctly() throws Throwable {
     }
 
-    private void setupCreatePolicyRetrievePolicy() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerTimeoutException_Exception, ManagerAuthorizationException_Exception {
 
-        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
-        int id = 0;
-        expectedSecurityProfileTransport.setID(id);
-        when(manager.securityProfileSave(Matchers.any(SecurityProfileTransport.class), Matchers.eq(sessionId))).thenReturn(expectedSecurityProfileTransport);
-
-        when(manager.securityProfileRetrieve(id, sessionId)).thenReturn(expectedSecurityProfileTransport);
-    }
-
-    private String setupDsmAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
-        String sessionId = "123";
-        when(manager.authenticate(APIUSER, PASSWORD_CORRECT)).thenReturn(sessionId);
-
-        when(manager.authenticate(APIUSER, PASSWORD_WRONG)).thenThrow(ManagerAuthenticationException_Exception.class);
-        when(manager.authenticate(APIUSER_WRONG, PASSWORD_CORRECT)).thenThrow(ManagerAuthenticationException_Exception.class);
-        return sessionId;
-    }
-
-
-    private void setupDeletePolicyRetrievePolicy() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
-        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
-        int id = 0;
-        when(manager.securityProfileRetrieve(id, sessionId)).thenReturn(expectedSecurityProfileTransport);
-    }
 }
