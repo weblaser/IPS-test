@@ -2,6 +2,19 @@
 Feature:  Security - policy
 
 
+  Scenario: Get valid response when creating a policy for an account
+
+    Given I have a valid account
+    When I POST a policy
+    Then I receive a response that contains a uuid for the created policy
+
+
+  Scenario: Get invalid response when creating a policy for an account
+
+    Given I have an invalid account
+    When I POST a policy
+    Then I receive a response with error message 403 Forbidden.
+
 
   Scenario: Get valid response when getting all policies for account
 
@@ -28,20 +41,6 @@ Feature:  Security - policy
 
     Given I have an invalid account
     When I GET a valid policy
-    Then I receive a response with error message 403 Forbidden.
-
-
-  Scenario: Get valid response when creating a policy for an account
-
-    Given I have a valid account
-    When I POST a policy
-    Then I receive a response that contains a uuid for the created policy
-
-
-  Scenario: Get invalid response when creating a policy for an account
-
-    Given I have an invalid account
-    When I POST a policy
     Then I receive a response with error message 403 Forbidden.
 
 
