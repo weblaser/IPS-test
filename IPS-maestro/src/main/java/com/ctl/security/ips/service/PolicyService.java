@@ -34,8 +34,8 @@ public class PolicyService {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
             Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
-            Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
-            return newlyPersistedPolicy;
+//            Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
+            return newlyCreatedPolicy;
         }
         throw new NotAuthorizedException("Policy cannot be created under account: " + account);
     }

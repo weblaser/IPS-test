@@ -8,6 +8,7 @@ import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.dsm.config.BaseDsmBeans;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -123,6 +124,7 @@ public class PolicySteps {
 
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() {
+        assertEquals(BaseDsmBeans.VALID_DSM_POLICY_ID, policyId);
 //        assertTrue(policyId.matches(UUID_REGEX));
     }
 
