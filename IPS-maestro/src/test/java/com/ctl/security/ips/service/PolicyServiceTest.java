@@ -37,6 +37,8 @@ public class PolicyServiceTest {
     @Mock
     private PolicyDao policyDao;
 
+
+
     @Test
     public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
         Policy policyToBeCreated = new Policy();
@@ -46,7 +48,7 @@ public class PolicyServiceTest {
         when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
 
 
-        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicy(policyToBeCreated);
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToBeCreated);
 
 
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
@@ -91,20 +93,9 @@ public class PolicyServiceTest {
         classUnderTest.getPolicyForAccount(INVALID_ACCOUNT, TEST_ID);
     }
 
-    @Test
-    public void testCreatePolicyForAccount() {
-
-        //act
-        String actual = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, new com.ctl.security.ips.common.domain.Policy());
-
-        //assert
-        String expectedRegex = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-        assertNotNull(actual);
-        assertTrue(actual.matches(expectedRegex));
-    }
 
     @Test(expected = NotAuthorizedException.class)
-    public void testCreatePolicyForAccountNotAuthorizedException() {
+    public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
         //act
         classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, new com.ctl.security.ips.common.domain.Policy());
     }

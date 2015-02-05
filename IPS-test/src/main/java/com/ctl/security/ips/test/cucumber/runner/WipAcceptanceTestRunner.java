@@ -4,6 +4,7 @@ import cucumber.api.junit.Cucumber;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
 
 @RunWith(Cucumber.class)
 @Cucumber.Options(tags = {"@WIP"}, monochrome = true, format = {"html:target/cucumber", "junit:target/junit.xml", "json:target/cucumber-report.json"},

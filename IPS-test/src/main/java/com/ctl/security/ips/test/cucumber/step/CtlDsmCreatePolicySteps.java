@@ -2,6 +2,7 @@ package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
+import com.ctl.security.ips.dsm.config.BaseDsmBeans;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -9,14 +10,22 @@ import cucumber.api.java.en.When;
 import manager.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.mockito.Matchers;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 
@@ -24,7 +33,8 @@ import static org.mockito.Mockito.when;
  * Created by chad.middleton on 1/16/2015.
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
-public class CreatePolicySteps {
+public class CtlDsmCreatePolicySteps {
+
 
 
     @Autowired
@@ -36,9 +46,6 @@ public class CreatePolicySteps {
     @Autowired
     private Manager manager;
 
-    @Autowired
-    private PolicyStepSetup policyStepSetup;
-
     private Policy policy;
     private Policy newlyCreatedCtlPolicy;
 
@@ -49,9 +56,6 @@ public class CreatePolicySteps {
 
     @Given("^I have a policy that I want to create in DSM$")
     public void i_have_a_policy_that_I_want_to_create_in_DSM() throws Throwable {
-
-        policyStepSetup.setupDsmAuthentication();
-        policyStepSetup.setupCreatePolicyRetrievePolicy();
 
         policy = new Policy();
 
@@ -82,8 +86,6 @@ public class CreatePolicySteps {
 
         dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getId())));
 
-        policyStepSetup.setupDeletePolicyRetrievePolicy();
-
         Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getId()));
         assertTrue(deletedPolicy.getId() == null);
     }
@@ -91,6 +93,7 @@ public class CreatePolicySteps {
     @Then("^I handle the error correctly$")
     public void i_handle_the_error_correctly() throws Throwable {
     }
+
 
 
 }

@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Configuration
 @Profile({"ts", "qa", "prod"})
-public class DsmBeans {
+public class DsmBeans extends BaseDsmBeans {
 
     private static final Logger logger = Logger.getLogger(DsmBeans.class);
 

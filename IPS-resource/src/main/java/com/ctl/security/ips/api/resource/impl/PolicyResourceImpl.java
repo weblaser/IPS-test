@@ -2,6 +2,7 @@ package com.ctl.security.ips.api.resource.impl;
 
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,13 @@ public class PolicyResourceImpl implements PolicyResource {
 
     @Override
     public String createPolicyForAccount(String account, Policy policy) {
-        return policyService.createPolicyForAccount(account, policy);
+        try {
+            return policyService.createPolicyForAccount(account, policy).getId();
+        } catch (DsmPolicyClientException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override

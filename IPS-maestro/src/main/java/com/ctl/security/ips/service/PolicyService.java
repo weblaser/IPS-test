@@ -29,6 +29,18 @@ public class PolicyService {
         this.policyDao = policyDao;
     }
 
+
+    public Policy createPolicyForAccount(String account, Policy policy) throws DsmPolicyClientException {
+
+        if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
+            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
+            Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
+            return newlyPersistedPolicy;
+        }
+        throw new NotAuthorizedException("Policy cannot be created under account: " + account);
+    }
+
+
     public List<com.ctl.security.ips.common.domain.Policy> getPoliciesForAccount(String account) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
@@ -48,13 +60,6 @@ public class PolicyService {
         throw new PolicyNotFoundException("Policy " + id + " not found for account: " + account);
     }
 
-    public String createPolicyForAccount(String account, com.ctl.security.ips.common.domain.Policy policy) {
-
-        if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            return UUID.randomUUID().toString();
-        }
-        throw new NotAuthorizedException("Policy cannot be created under account: " + account);
-    }
 
     public void updatePolicyForAccount(String account, String id, com.ctl.security.ips.common.domain.Policy policy) {
 
@@ -80,11 +85,5 @@ public class PolicyService {
         policy.setId(TEST_ID);
         policy.setStatus(PolicyStatus.ACTIVE);
         return policy;
-    }
-
-    public Policy createPolicy(Policy policyToBeCreated) throws DsmPolicyClientException {
-        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated);
-        Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
-        return newlyPersistedPolicy;
     }
 }
