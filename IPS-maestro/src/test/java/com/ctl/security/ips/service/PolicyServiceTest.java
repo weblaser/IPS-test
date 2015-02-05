@@ -44,15 +44,15 @@ public class PolicyServiceTest {
         Policy policyToBeCreated = new Policy();
         Policy expectedNewlyCreatedPolicy = new Policy();
         when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
-        Policy expectedNewlyPersistedPolicy = new Policy();
-        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
+//        Policy expectedNewlyPersistedPolicy = new Policy();
+//        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
 
 
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToBeCreated);
 
 
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
-        verify(policyDao).saveCtlSecurityProfile(actualNewlyPersistedPolicy);
+//        verify(policyDao).saveCtlSecurityProfile(actualNewlyPersistedPolicy);
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
     }
