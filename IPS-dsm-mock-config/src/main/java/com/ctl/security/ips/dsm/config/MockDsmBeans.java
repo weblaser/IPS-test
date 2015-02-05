@@ -43,6 +43,9 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     @Bean
     public Manager manager() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
+
+        logger.error("loading mock dsm manager!!!!!");
+
         setupMockManagerPolicyInteraction();
         return manager;
     }
