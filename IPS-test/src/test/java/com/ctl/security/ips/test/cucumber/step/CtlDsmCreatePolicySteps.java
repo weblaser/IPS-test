@@ -7,13 +7,10 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import manager.Manager;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -24,8 +21,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
 public class CtlDsmCreatePolicySteps {
 
-
-
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
 
@@ -34,6 +29,9 @@ public class CtlDsmCreatePolicySteps {
 
     @Autowired
     private Manager manager;
+
+    @Autowired
+    private DsmClientComponent dsmClientComponent;
 
     private Policy policy;
     private Policy newlyCreatedCtlPolicy;
@@ -69,14 +67,7 @@ public class CtlDsmCreatePolicySteps {
 
     @Then("^I am able to retrieve the newly created policy$")
     public void i_am_able_to_retrieve_the_newly_created_policy() throws Throwable {
-        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileById(new Integer(newlyCreatedCtlPolicy.getId()).intValue());
-        assertNotNull(retrievedPolicy);
-        assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
-
-        dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getId())));
-
-        Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getId()));
-        assertTrue(deletedPolicy.getId() == null);
+        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, newlyCreatedCtlPolicy);
     }
 
     @Then("^I handle the error correctly$")

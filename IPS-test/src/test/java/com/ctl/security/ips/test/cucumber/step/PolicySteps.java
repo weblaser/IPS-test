@@ -8,7 +8,9 @@ import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.config.BaseDsmBeans;
+import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -49,6 +51,12 @@ public class PolicySteps {
 
     @Autowired
     private PolicyClient policyClient;
+
+    @Autowired
+    private DsmClientComponent dsmClientComponent;
+
+    @Autowired
+    private DsmPolicyClient dsmPolicyClient;
 
     @When("^I GET the policies$")
     public void i_GET_the_policies() {
@@ -116,15 +124,21 @@ public class PolicySteps {
     @When("^I POST a policy$")
     public void I_POST_a_policy() {
         try {
-            policyId = policyClient.createPolicyForAccount(aa, new Policy(), bearerToken);
+            Policy policy1 = new Policy();
+            String name = "name" + System.currentTimeMillis();
+            policy1.setName(name);
+
+            policyId = policyClient.createPolicyForAccount(aa, policy1, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
     }
 
     @Then("^I receive a response that contains a uuid for the created policy$")
-    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() {
-        assertEquals(BaseDsmBeans.VALID_DSM_POLICY_ID, policyId);
+    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
+        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policyId);
+
+//        assertEquals(BaseDsmBeans.VALID_DSM_POLICY_ID, policyId);
 //        assertTrue(policyId.matches(UUID_REGEX));
     }
 
