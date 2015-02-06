@@ -13,6 +13,7 @@
     </parent>
 
     <build>
+        <finalName>ips</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
