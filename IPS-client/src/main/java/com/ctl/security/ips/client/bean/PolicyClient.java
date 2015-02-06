@@ -54,11 +54,11 @@ public class PolicyClient {
         return response;
     }
 
-    public String createPolicyForAccount(String account, Policy policy, String token) {
-        String response = null;
+    public Policy createPolicyForAccount(String account, Policy policy, String token) {
+        Policy response = null;
         try {
             response = restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), String.class).getBody();
+                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), Policy.class).getBody();
         } catch (RestClientException rce) {
             fail(rce);
         }

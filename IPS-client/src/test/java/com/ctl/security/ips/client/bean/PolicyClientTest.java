@@ -106,16 +106,17 @@ public class PolicyClientTest {
     @Test
     public void testCreatePolicyForAccount() {
         //arrange
-        String expectedId = UUID.randomUUID().toString();
-        Policy inserted = new Policy().setId(expectedId).setStatus(PolicyStatus.ACTIVE);
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class))).thenReturn(stringEntity);
-        when(stringEntity.getBody()).thenReturn(expectedId);
+        Policy expectedPolicy = buildPolicy();
+        Policy policyToCreate = new Policy().setId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Policy.class))).thenReturn(entity);
+        when(entity.getBody()).thenReturn(expectedPolicy);
 
         //act
-        String actualId = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, inserted, SAMPLE_TOKEN);
+        Policy actualPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToCreate, SAMPLE_TOKEN);
 
         //assert
-        assertEquals(expectedId, actualId);
+        assertEquals(expectedPolicy, actualPolicy);
+        assertEquals(TEST_ID, actualPolicy.getId());
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -123,7 +124,7 @@ public class PolicyClientTest {
         //arrange
         Policy policy = new Policy();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST),
-                any(HttpEntity.class), eq(String.class))).thenThrow(new RestClientException("403 Forbidden."));
+                any(HttpEntity.class), eq(Policy.class))).thenThrow(new RestClientException("403 Forbidden."));
 
         //act
         classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, policy, SAMPLE_TOKEN);

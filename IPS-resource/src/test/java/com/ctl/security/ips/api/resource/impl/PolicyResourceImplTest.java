@@ -72,10 +72,10 @@ public class PolicyResourceImplTest {
         when(policyService.createPolicyForAccount(eq(TEST_ACCOUNT), any(Policy.class))).thenReturn(expectedPolicy);
 
         //act
-        String actual = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, new Policy());
+        Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, new Policy());
 
         //assert
-        assertEquals(TEST_ID, actual);
+        assertEquals(TEST_ID, actualPolicy.getId());
         verify(policyService).createPolicyForAccount(eq(TEST_ACCOUNT), any(Policy.class));
     }
 

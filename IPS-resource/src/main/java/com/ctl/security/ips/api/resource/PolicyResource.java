@@ -25,6 +25,15 @@ public interface PolicyResource {
     int BAD_REQUEST = 400;
     int FORBIDDEN = 403;
 
+
+    @POST
+    @Path("/{acct}")
+    @ApiOperation(value = "Create Policy for Given Account")
+    @ApiResponses(value = {@ApiResponse(code = OK, message = "Policy Created"),
+            @ApiResponse(code = FORBIDDEN, message = UNAUTHORIZED)})
+    Policy createPolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
+                                  @ApiParam(value = POLICY, required = true) Policy policy);
+
     @GET
     @Path("/{acct}")
     @ApiOperation(value = "Get Policies for Given Account")
@@ -40,13 +49,6 @@ public interface PolicyResource {
     Policy getPolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId);
 
-    @POST
-    @Path("/{acct}")
-    @ApiOperation(value = "Create Policy for Given Account")
-    @ApiResponses(value = {@ApiResponse(code = OK, message = "Policy Created"),
-            @ApiResponse(code = FORBIDDEN, message = UNAUTHORIZED)})
-    String createPolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
-                                  @ApiParam(value = POLICY, required = true) Policy policy);
 
     @PUT
     @Path("/{acct}/{policyId}")

@@ -128,7 +128,7 @@ public class PolicySteps {
             String name = "name" + System.currentTimeMillis();
             policy1.setName(name);
 
-            policyId = policyClient.createPolicyForAccount(aa, policy1, bearerToken);
+            policy = policyClient.createPolicyForAccount(aa, policy1, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -136,7 +136,7 @@ public class PolicySteps {
 
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
-        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policyId);
+        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
 
 //        assertEquals(BaseDsmBeans.VALID_DSM_POLICY_ID, policyId);
 //        assertTrue(policyId.matches(UUID_REGEX));
