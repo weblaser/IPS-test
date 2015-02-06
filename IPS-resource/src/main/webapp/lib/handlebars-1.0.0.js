@@ -694,7 +694,7 @@ Handlebars.AST.MustacheNode = function(rawParams, hash, unescaped) {
   var params = this.params = rawParams.slice(1);
 
   // a mustache is an eligible helper if:
-  // * its id is simple (a single part, not `this` or `..`)
+  // * its vendorPolicyId is simple (a single part, not `this` or `..`)
   var eligibleHelper = this.eligibleHelper = id.isSimple;
 
   // a mustache is definitely a helper if:
@@ -1634,9 +1634,9 @@ JavaScriptCompiler.prototype = {
   // [lookupData]
   //
   // On stack, before: ...
-  // On stack, after: data[id], ...
+  // On stack, after: data[vendorPolicyId], ...
   //
-  // Push the result of looking up `id` on the current data
+  // Push the result of looking up `vendorPolicyId` on the current data
   lookupData: function(id) {
     this.push('data');
   },

@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 public class PolicyServiceTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-id";
+    private static final String TEST_ID = "test-vendorPolicyId";
     private static final String INVALID_ACCOUNT = "TCCX";
-    private static final String TEST_ID_2 = "test-id-2";
+    private static final String TEST_ID_2 = "test-vendorPolicyId-2";
 
     @InjectMocks
     private PolicyService classUnderTest;
@@ -137,6 +137,6 @@ public class PolicyServiceTest {
     }
 
     private com.ctl.security.ips.common.domain.Policy buildPolicy() {
-        return new com.ctl.security.ips.common.domain.Policy().setId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+        return new com.ctl.security.ips.common.domain.Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
 }

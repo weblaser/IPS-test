@@ -9,7 +9,6 @@ import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.config.BaseDsmBeans;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
@@ -28,11 +27,11 @@ import static org.junit.Assert.*;
 public class PolicySteps {
 
     private static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
-    private static final String VALID_POLICY_ID = "test-id";
+    private static final String VALID_POLICY_ID = "test-vendorPolicyId";
     private static final String VALID = "valid";
     private static final String VALID_AA = "TCCD";
     private static final String INVALID_AA = "TCCX";
-    private static final String INVALID_POLICY_ID = "test-id-2";
+    private static final String INVALID_POLICY_ID = "test-vendorPolicyId-2";
 
     private static final String VALID_USERNAME = "kweber.tccd";
     private static final String VALID_PASSWORD = "1qaz@WSX";
@@ -147,7 +146,7 @@ public class PolicySteps {
     }
 
     private Policy buildPolicy() {
-        return new Policy().setId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
+        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
     }
 
     @Then("^I receive a response with error message (.*)$")

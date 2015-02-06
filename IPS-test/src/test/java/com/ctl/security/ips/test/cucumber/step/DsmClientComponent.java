@@ -20,14 +20,14 @@ import static org.junit.Assert.assertTrue;
 public class DsmClientComponent {
 
     public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy) throws DsmPolicyClientException {
-        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileById(new Integer(newlyCreatedCtlPolicy.getId()).intValue());
+        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileById(new Integer(newlyCreatedCtlPolicy.getVendorPolicyId()).intValue());
         assertNotNull(retrievedPolicy);
         assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
 
-        dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getId())));
+        dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId())));
 
-        Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getId()));
-        assertTrue(deletedPolicy.getId() == null);
+        Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId()));
+        assertTrue(deletedPolicy.getVendorPolicyId() == null);
     }
 
     public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, String newlyCreatedCtlPolicyId) throws DsmPolicyClientException {
@@ -35,9 +35,9 @@ public class DsmClientComponent {
         assertNotNull(retrievedPolicy);
 //        assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
 
-        dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getId())));
+        dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId())));
 
-        Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getId()));
-        assertTrue(deletedPolicy.getId() == null);
+        Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId()));
+        assertTrue(deletedPolicy.getVendorPolicyId() == null);
     }
 }

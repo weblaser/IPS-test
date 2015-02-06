@@ -15,7 +15,7 @@ public class SecurityProfileTransportMarshaller {
 
     public SecurityProfileTransport convert(Policy policy) {
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
-        securityProfileTransport.setID(NumberUtils.createInteger(policy.getId()));
+        securityProfileTransport.setID(NumberUtils.createInteger(policy.getVendorPolicyId()));
         securityProfileTransport.setName(policy.getName());
         return securityProfileTransport;
     }
@@ -23,7 +23,7 @@ public class SecurityProfileTransportMarshaller {
     public Policy convert(SecurityProfileTransport securityProfileTransport){
         Policy policy = new Policy();
         if(securityProfileTransport.getID() != null){
-            policy.setId(securityProfileTransport.getID().toString());
+            policy.setVendorPolicyId(securityProfileTransport.getID().toString());
         }
         policy.setName(securityProfileTransport.getName());
         return policy;

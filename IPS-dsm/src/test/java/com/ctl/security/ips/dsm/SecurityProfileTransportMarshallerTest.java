@@ -26,7 +26,7 @@ public class SecurityProfileTransportMarshallerTest {
         Integer id = new Integer(0);
         String name = "name" + System.currentTimeMillis();
         Policy policy = new Policy();
-        policy.setId(id.toString());
+        policy.setVendorPolicyId(id.toString());
         policy.setName(name);
 
         SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
@@ -41,7 +41,7 @@ public class SecurityProfileTransportMarshallerTest {
         String id = null;
         String name = null;
         Policy policy = new Policy();
-        policy.setId(id);
+        policy.setVendorPolicyId(id);
         policy.setName(name);
 
         SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
@@ -63,7 +63,7 @@ public class SecurityProfileTransportMarshallerTest {
 
         assertNotNull(policy);
         assertEquals(policy.getName(), name);
-        assertEquals(policy.getId(), id.toString());
+        assertEquals(policy.getVendorPolicyId(), id.toString());
     }
 
 
@@ -79,7 +79,7 @@ public class SecurityProfileTransportMarshallerTest {
 
         assertNotNull(policy);
         assertEquals(policy.getName(), name);
-        assertNull(policy.getId());
+        assertNull(policy.getVendorPolicyId());
     }
 
 }

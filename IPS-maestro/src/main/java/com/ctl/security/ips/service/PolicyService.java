@@ -12,13 +12,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class PolicyService {
 
     private static final String VALID_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-id";
+    private static final String TEST_ID = "test-vendorPolicyId";
 
     private DsmPolicyClient dsmPolicyClient;
     private PolicyDao policyDao;
@@ -82,7 +81,7 @@ public class PolicyService {
 
     private com.ctl.security.ips.common.domain.Policy buildPolicy() {
         com.ctl.security.ips.common.domain.Policy policy = new com.ctl.security.ips.common.domain.Policy();
-        policy.setId(TEST_ID);
+        policy.setVendorPolicyId(TEST_ID);
         policy.setStatus(PolicyStatus.ACTIVE);
         return policy;
     }

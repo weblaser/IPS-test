@@ -471,7 +471,7 @@ var Logger = function(options) {
     logger.stream = process.stderr;
       else if(process.title === "browser")
     logger.stream = function () {
-      // Work around weird console context issue: http://code.google.com/p/chromium/issues/detail?id=48662
+      // Work around weird console context issue: http://code.google.com/p/chromium/issues/detail?vendorPolicyId=48662
       return console[logger.options.level].apply(console, arguments);
     };
   }

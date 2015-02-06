@@ -96,7 +96,7 @@ public class DsmPolicyClientTest {
         Policy actualPolicy = classUnderTest.retrieveSecurityProfileById(id);
 
         assertNotNull(actualPolicy);
-        assertEquals(expectedPolicy.getId(), actualPolicy.getId());
+        assertEquals(expectedPolicy.getVendorPolicyId(), actualPolicy.getVendorPolicyId());
         verify(dsmLogInClient).endSession(sessionId);
     }
 

@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class PolicyResourceImplTest {
 
     private static final String TEST_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-id";
+    private static final String TEST_ID = "test-vendorPolicyId";
 
     @InjectMocks
     PolicyResource classUnderTest = new PolicyResourceImpl();
@@ -68,14 +68,14 @@ public class PolicyResourceImplTest {
     public void testCreatePolicyForAccount() throws DsmPolicyClientException {
         //arrange
         Policy expectedPolicy = new Policy();
-        expectedPolicy.setId(TEST_ID);
+        expectedPolicy.setVendorPolicyId(TEST_ID);
         when(policyService.createPolicyForAccount(eq(TEST_ACCOUNT), any(Policy.class))).thenReturn(expectedPolicy);
 
         //act
         Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, new Policy());
 
         //assert
-        assertEquals(TEST_ID, actualPolicy.getId());
+        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
         verify(policyService).createPolicyForAccount(eq(TEST_ACCOUNT), any(Policy.class));
     }
 
@@ -99,7 +99,7 @@ public class PolicyResourceImplTest {
 
     private Policy buildPolicy() {
         Policy policy = new Policy();
-        policy.setId(TEST_ID);
+        policy.setVendorPolicyId(TEST_ID);
         policy.setStatus(PolicyStatus.ACTIVE);
         return policy;
     }

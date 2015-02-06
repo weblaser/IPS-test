@@ -17,7 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class PolicyClientTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-id";
+    private static final String TEST_ID = "test-vendorPolicyId";
     private static final String INVALID_ACCOUNT = "TCCX";
     private static final String SAMPLE_TOKEN = "Bearer sampletoken";
 
@@ -107,7 +106,7 @@ public class PolicyClientTest {
     public void testCreatePolicyForAccount() {
         //arrange
         Policy expectedPolicy = buildPolicy();
-        Policy policyToCreate = new Policy().setId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+        Policy policyToCreate = new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Policy.class))).thenReturn(entity);
         when(entity.getBody()).thenReturn(expectedPolicy);
 
@@ -116,7 +115,7 @@ public class PolicyClientTest {
 
         //assert
         assertEquals(expectedPolicy, actualPolicy);
-        assertEquals(TEST_ID, actualPolicy.getId());
+        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -200,6 +199,6 @@ public class PolicyClientTest {
     }
 
     private Policy buildPolicy() {
-        return new Policy().setId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+        return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
 }
