@@ -1,10 +1,13 @@
 package com.ctl.security.ips.service;
 
+import com.ctl.security.data.client.service.CmdbService;
+import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
-import com.ctl.security.ips.dao.PolicyDao;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import manager.*;
@@ -35,9 +38,7 @@ public class PolicyServiceTest {
     private DsmPolicyClient dsmPolicyClient;
 
     @Mock
-    private PolicyDao policyDao;
-
-
+    private CmdbService cmdbService;
 
     @Test
     public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
@@ -48,13 +49,28 @@ public class PolicyServiceTest {
 //        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
 
 
-        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToBeCreated);
+        PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
+        String username = null;
+        String accountId = VALID_ACCOUNT;
+        String serverDomainName = null;
+        Product product = null;
+        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+        policyInstallationBean.setInstallationBean(installationBean);
+
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyInstallationBean);
 
 
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
 //        verify(policyDao).saveCtlSecurityProfile(actualNewlyPersistedPolicy);
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
+
+//        String username = null;
+//        String accountId = null;
+//        String serverDomainName = null;
+//        Product product = null;
+//        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+//        verify(cmdbService).installProduct(installationBean);
     }
 
 
@@ -97,7 +113,14 @@ public class PolicyServiceTest {
     @Test(expected = NotAuthorizedException.class)
     public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
         //act
-        classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, new com.ctl.security.ips.common.domain.Policy());
+        PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
+        String username = null;
+        String accountId = INVALID_ACCOUNT;
+        String serverDomainName = null;
+        Product product = null;
+        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+        policyInstallationBean.setInstallationBean(installationBean);
+        classUnderTest.createPolicyForAccount(policyInstallationBean);
     }
 
     @Test

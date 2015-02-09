@@ -1,7 +1,10 @@
 package com.ctl.security.ips.api.resource.impl;
 
+import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +31,15 @@ public class PolicyResourceImpl implements PolicyResource {
     @Override
     public Policy createPolicyForAccount(String account, Policy policy) {
         try {
-            return policyService.createPolicyForAccount(account, policy);
+            PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
+            String username = null;
+            String accountId = account;
+            String serverDomainName = null;
+            Product product = null;
+            InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+            policyInstallationBean.setInstallationBean(installationBean);
+
+            return policyService.createPolicyForAccount(policyInstallationBean);
         } catch (DsmPolicyClientException e) {
             e.printStackTrace();
         }

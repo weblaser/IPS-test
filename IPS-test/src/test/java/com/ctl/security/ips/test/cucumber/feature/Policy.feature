@@ -1,7 +1,7 @@
 @ALL_TESTS @Regression
 Feature:  Security - policy
 
-
+@WIP
   Scenario: Get valid response when creating a policy for an account
 
     Given I have a valid account
@@ -43,7 +43,7 @@ Feature:  Security - policy
     When I GET a valid policy
     Then I receive a response with error message 403 Forbidden.
 
-
+@SMOKE
   Scenario: Get valid response when updating a policy for an account
 
     Given I have an valid account

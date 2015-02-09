@@ -1,7 +1,10 @@
 package com.ctl.security.ips.api.resource.impl;
 
+import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.service.PolicyService;
@@ -69,14 +72,23 @@ public class PolicyResourceImplTest {
         //arrange
         Policy expectedPolicy = new Policy();
         expectedPolicy.setVendorPolicyId(TEST_ID);
-        when(policyService.createPolicyForAccount(eq(TEST_ACCOUNT), any(Policy.class))).thenReturn(expectedPolicy);
+
+        PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
+        String username = null;
+        String accountId = TEST_ACCOUNT;
+        String serverDomainName = null;
+        Product product = null;
+        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+        policyInstallationBean.setInstallationBean(installationBean);
+
+        when(policyService.createPolicyForAccount(eq(policyInstallationBean))).thenReturn(expectedPolicy);
 
         //act
         Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, new Policy());
 
         //assert
         assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
-        verify(policyService).createPolicyForAccount(eq(TEST_ACCOUNT), any(Policy.class));
+        verify(policyService).createPolicyForAccount(eq(policyInstallationBean));
     }
 
     @Test

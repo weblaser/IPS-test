@@ -1,10 +1,12 @@
 package com.ctl.security.ips.service;
 
+
+import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
-import com.ctl.security.ips.dao.PolicyDao;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +22,26 @@ public class PolicyService {
     private static final String TEST_ID = "test-vendorPolicyId";
 
     private DsmPolicyClient dsmPolicyClient;
-    private PolicyDao policyDao;
+    private CmdbService cmdbService;
 
     @Autowired
-    public PolicyService(DsmPolicyClient dsmPolicyClient, PolicyDao policyDao) {
+    public PolicyService(DsmPolicyClient dsmPolicyClient, CmdbService cmdbService) {
         this.dsmPolicyClient = dsmPolicyClient;
-        this.policyDao = policyDao;
+        this.cmdbService = cmdbService;
     }
 
 
-    public Policy createPolicyForAccount(String account, Policy policy) throws DsmPolicyClientException {
+    public Policy createPolicyForAccount(PolicyInstallationBean policyInstallationBean) throws DsmPolicyClientException {
 
-        if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
+        if (VALID_ACCOUNT.equalsIgnoreCase(policyInstallationBean.getInstallationBean().getAcountId())) {
+            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyInstallationBean.getPolicy());
 //            Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
+
+            cmdbService.installProduct(policyInstallationBean.getInstallationBean());
+
             return newlyCreatedPolicy;
         }
-        throw new NotAuthorizedException("Policy cannot be created under account: " + account);
+        throw new NotAuthorizedException("Policy cannot be created under account: " + policyInstallationBean.getInstallationBean().getAcountId());
     }
 
 
