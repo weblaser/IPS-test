@@ -3,8 +3,11 @@ package com.ctl.security.ips.test.cucumber.step;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
-import com.ctl.security.data.common.domain.mongo.Product;
-import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
+import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.UserClient;
+import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
+import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
+import com.ctl.security.data.common.domain.mongo.User;
 import com.ctl.security.ips.client.bean.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
@@ -25,7 +28,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
 public class PolicySteps {
 
     private static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
@@ -44,7 +47,7 @@ public class PolicySteps {
     private Policy policy;
     private String policyId;
 
-    private String aa;
+    private String accountId;
     private String bearerToken;
 
     @Autowired
@@ -59,10 +62,16 @@ public class PolicySteps {
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
 
+    @Autowired
+    private ConfigurationItemClient configurationItemClient;
+
+    @Autowired
+    private UserClient userClient;
+
     @When("^I GET the policies$")
     public void i_GET_the_policies() {
         try {
-            policyList = policyClient.getPoliciesForAccount(aa, bearerToken);
+            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -82,12 +91,12 @@ public class PolicySteps {
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
 
         if (VALID.equalsIgnoreCase(validity)) {
-            aa = VALID_AA;
+            accountId = VALID_AA;
             ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
             bearerToken = clcAuthenticationResponse.getBearerToken();
         }
         else {
-            aa = INVALID_AA;
+            accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
         }
     }
@@ -103,13 +112,13 @@ public class PolicySteps {
         }
         try {
             if ("GET".equals(method)) {
-                policy = policyClient.getPolicyForAccount(aa, id, bearerToken);
+                policy = policyClient.getPolicyForAccount(accountId, id, bearerToken);
             }
             else if ("PUT".equals(method)) {
-                policyClient.updatePolicyForAccount(aa, id, new Policy(), bearerToken);
+                policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             }
             else {
-                policyClient.deletePolicyForAccount(aa, id, bearerToken);
+                policyClient.deletePolicyForAccount(accountId, id, bearerToken);
             }
         } catch (Exception e) {
             exception = e;
@@ -127,9 +136,10 @@ public class PolicySteps {
         try {
             Policy policy1 = new Policy();
             String name = "name" + System.currentTimeMillis();
-            policy1.setName(name);
+            String serverDomainName = "server.domain.name." + System.currentTimeMillis();
+            policy1.setName(name).setServerDomainName(serverDomainName);
 
-            policy = policyClient.createPolicyForAccount(aa, policy1, bearerToken);
+            policy = policyClient.createPolicyForAccount(accountId, policy1, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -138,9 +148,19 @@ public class PolicySteps {
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
+        verifyInstalledProduct();
+    }
 
-//        assertEquals(BaseDsmBeans.VALID_DSM_POLICY_ID, policyId);
-//        assertTrue(policyId.matches(UUID_REGEX));
+    private void verifyInstalledProduct() {
+        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
+        assertNotNull(configurationItem);
+//        assertNotNull(configurationItem.getId());
+
+        User user = userClient.getUser(policy.getUsername(), accountId);
+        assertNotNull(user);
+//        assertNotNull(user.getId());
+//        assertNotNull(user.getProductUserActivities());
+//        assertTrue(user.getProductUserActivities().size() > 0);
     }
 
     @Then("^I receive a response that does not contain an error message$")
