@@ -3,6 +3,8 @@ package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.ProductStatus;
+import com.ctl.security.data.common.domain.mongo.ProductType;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
@@ -21,16 +23,13 @@ public class PolicyService {
 
     private static final String VALID_ACCOUNT = "TCCD";
     private static final String TEST_ID = "test-vendorPolicyId";
-
-    private DsmPolicyClient dsmPolicyClient;
-    private CmdbService cmdbService;
+    public static final String TREND_MICRO_IPS = "Trend Micro IPS";
 
     @Autowired
-    public PolicyService(DsmPolicyClient dsmPolicyClient, CmdbService cmdbService) {
-        this.dsmPolicyClient = dsmPolicyClient;
-        this.cmdbService = cmdbService;
-    }
+    private DsmPolicyClient dsmPolicyClient;
 
+    @Autowired
+    private CmdbService cmdbService;
 
     public Policy createPolicyForAccount(String accountId, Policy policy) throws DsmPolicyClientException {
 
@@ -39,7 +38,10 @@ public class PolicyService {
 
             String username = policy.getUsername();
             String serverDomainName = policy.getServerDomainName();
-            Product product = null;
+            Product product = new Product().
+                    setName(TREND_MICRO_IPS).
+                    setStatus(ProductStatus.ACTIVE).
+                    setType(ProductType.IPS);
             InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
 
 
