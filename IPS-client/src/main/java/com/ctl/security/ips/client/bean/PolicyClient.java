@@ -1,7 +1,6 @@
 package com.ctl.security.ips.client.bean;
 
 import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

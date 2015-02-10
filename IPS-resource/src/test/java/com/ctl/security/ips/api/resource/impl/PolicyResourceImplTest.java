@@ -4,7 +4,6 @@ import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.service.PolicyService;

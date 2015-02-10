@@ -3,7 +3,6 @@ package com.ctl.security.ips.client.bean;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
