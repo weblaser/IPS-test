@@ -2,6 +2,8 @@ package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.ProductStatus;
+import com.ctl.security.data.common.domain.mongo.ProductType;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
@@ -20,6 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,7 +53,10 @@ public class PolicyServiceTest {
         String username = null;
         String accountId = VALID_ACCOUNT;
         String serverDomainName = null;
-        Product product = null;
+        Product product = new Product().
+                setName(PolicyService.TREND_MICRO_IPS).
+                setStatus(ProductStatus.ACTIVE).
+                setType(ProductType.IPS);
         InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
 
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(accountId, policyToBeCreated);
@@ -59,7 +65,7 @@ public class PolicyServiceTest {
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
-        verify(cmdbService).installProduct(installationBean);
+        verify(cmdbService).installProduct(eq(installationBean));
     }
 
 
