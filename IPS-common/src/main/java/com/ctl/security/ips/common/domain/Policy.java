@@ -14,8 +14,11 @@ import lombok.experimental.Accessors;
 @Data
 public class Policy {
 
-    private String id;
     private String vendorPolicyId;
-    private PolicyStatus status;
     private String name;
+    private PolicyStatus status;
+
+    private String serverDomainName;
+    private String tenantId;
+    private String username;
 }

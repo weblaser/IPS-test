@@ -1,7 +1,7 @@
 @ALL_TESTS @Regression
 Feature: Security - LogInClient To be able to log into the DSM API
 
-@WIP
+
   Scenario: Log in successfully to the the DSM API
     Given I have user account credentials
     When I attempt to authenticate against the dsm api

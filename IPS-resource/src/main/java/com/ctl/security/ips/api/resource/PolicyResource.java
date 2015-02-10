@@ -1,6 +1,7 @@
 package com.ctl.security.ips.api.resource;
 
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.wordnik.swagger.annotations.*;
 
 import javax.ws.rs.*;

@@ -4,7 +4,6 @@ import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
@@ -19,7 +18,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,32 +47,34 @@ public class PolicyServiceTest {
         when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
 //        Policy expectedNewlyPersistedPolicy = new Policy();
 //        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
-
-
-        PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
         String username = null;
         String accountId = VALID_ACCOUNT;
         String serverDomainName = null;
         Product product = null;
         InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
-        policyInstallationBean.setInstallationBean(installationBean);
 
-        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyInstallationBean);
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(accountId, policyToBeCreated);
 
 
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
-//        verify(policyDao).saveCtlSecurityProfile(actualNewlyPersistedPolicy);
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
-
-//        String username = null;
-//        String accountId = null;
-//        String serverDomainName = null;
-//        Product product = null;
-//        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
-//        verify(cmdbService).installProduct(installationBean);
+        verify(cmdbService).installProduct(installationBean);
     }
 
+
+    @Test(expected = NotAuthorizedException.class)
+    public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
+        //act
+        String username = null;
+        String accountId = INVALID_ACCOUNT;
+        String serverDomainName = null;
+        Product product = null;
+        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+        Policy policy = new Policy();
+
+        classUnderTest.createPolicyForAccount(accountId, policy);
+    }
 
     @Test
     public void testGetPoliciesForAccount() {
@@ -109,19 +111,6 @@ public class PolicyServiceTest {
         classUnderTest.getPolicyForAccount(INVALID_ACCOUNT, TEST_ID);
     }
 
-
-    @Test(expected = NotAuthorizedException.class)
-    public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
-        //act
-        PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
-        String username = null;
-        String accountId = INVALID_ACCOUNT;
-        String serverDomainName = null;
-        Product product = null;
-        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
-        policyInstallationBean.setInstallationBean(installationBean);
-        classUnderTest.createPolicyForAccount(policyInstallationBean);
-    }
 
     @Test
     public void testUpdatePolicyForAccount() {

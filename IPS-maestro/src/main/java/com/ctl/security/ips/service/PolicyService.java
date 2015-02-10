@@ -2,8 +2,9 @@ package com.ctl.security.ips.service;
 
 
 import com.ctl.security.data.client.service.CmdbService;
+import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
@@ -31,17 +32,21 @@ public class PolicyService {
     }
 
 
-    public Policy createPolicyForAccount(PolicyInstallationBean policyInstallationBean) throws DsmPolicyClientException {
+    public Policy createPolicyForAccount(String accountId, Policy policy) throws DsmPolicyClientException {
 
-        if (VALID_ACCOUNT.equalsIgnoreCase(policyInstallationBean.getInstallationBean().getAcountId())) {
-            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyInstallationBean.getPolicy());
-//            Policy newlyPersistedPolicy = policyDao.saveCtlSecurityProfile(newlyCreatedPolicy);
+        if (VALID_ACCOUNT.equalsIgnoreCase(accountId)) {
+            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
 
-            cmdbService.installProduct(policyInstallationBean.getInstallationBean());
+            String username = policy.getUsername();
+            String serverDomainName = policy.getServerDomainName();
+            Product product = null;
+            InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
 
+
+            cmdbService.installProduct(installationBean);
             return newlyCreatedPolicy;
         }
-        throw new NotAuthorizedException("Policy cannot be created under account: " + policyInstallationBean.getInstallationBean().getAcountId());
+        throw new NotAuthorizedException("Policy cannot be created under accountId: " + accountId);
     }
 
 
@@ -53,7 +58,7 @@ public class PolicyService {
             hopeful.add(policy);
             return hopeful;
         }
-        throw new PolicyNotFoundException("Policy not found for account: " + account);
+        throw new PolicyNotFoundException("Policy not found for accountId: " + account);
     }
 
     public com.ctl.security.ips.common.domain.Policy getPolicyForAccount(String account, String id) {
@@ -61,7 +66,7 @@ public class PolicyService {
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
             return buildPolicy();
         }
-        throw new PolicyNotFoundException("Policy " + id + " not found for account: " + account);
+        throw new PolicyNotFoundException("Policy " + id + " not found for accountId: " + account);
     }
 
 
@@ -70,18 +75,18 @@ public class PolicyService {
         if (VALID_ACCOUNT.equalsIgnoreCase(account) && TEST_ID.equalsIgnoreCase(id)) {
             return;
         } else if (!VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            throw new NotAuthorizedException("Policy cannot be updated under account: " + account);
+            throw new NotAuthorizedException("Policy cannot be updated under accountId: " + account);
         }
-        throw new PolicyNotFoundException("Policy " + id + " cannot be found for account: " + account);
+        throw new PolicyNotFoundException("Policy " + id + " cannot be found for accountId: " + account);
     }
 
     public void deletePolicyForAccount(String account, String id) {
         if (VALID_ACCOUNT.equals(account) && TEST_ID.equals(id)) {
             return;
         }else if (!VALID_ACCOUNT.equalsIgnoreCase(account)){
-            throw new NotAuthorizedException("Policy cannot be deleted under account: " + account);
+            throw new NotAuthorizedException("Policy cannot be deleted under accountId: " + account);
         }
-        throw new PolicyNotFoundException("Policy " + id + " cannot be found for account: " + account);
+        throw new PolicyNotFoundException("Policy " + id + " cannot be found for accountId: " + account);
     }
 
     private com.ctl.security.ips.common.domain.Policy buildPolicy() {

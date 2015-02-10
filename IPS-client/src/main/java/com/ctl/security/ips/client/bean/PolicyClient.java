@@ -1,6 +1,7 @@
 package com.ctl.security.ips.client.bean;
 
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,17 @@ public class PolicyClient {
     @Autowired
     private RestTemplate restTemplate;
 
+    public Policy createPolicyForAccount(String account, Policy policy, String token) {
+        Policy response = null;
+        try {
+            response = restTemplate.exchange(hostUrl + POLICIES + account,
+                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), Policy.class).getBody();
+        } catch (RestClientException rce) {
+            fail(rce);
+        }
+        return response;
+    }
+
     public List<Policy> getPoliciesForAccount(String account, String token) {
         List<Policy> response = null;
         try {
@@ -48,17 +60,6 @@ public class PolicyClient {
         try {
             response = restTemplate.exchange(hostUrl + POLICIES + account + "/" + id,
                     HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy.class).getBody();
-        } catch (RestClientException rce) {
-            fail(rce);
-        }
-        return response;
-    }
-
-    public Policy createPolicyForAccount(String account, Policy policy, String token) {
-        Policy response = null;
-        try {
-            response = restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), Policy.class).getBody();
         } catch (RestClientException rce) {
             fail(rce);
         }

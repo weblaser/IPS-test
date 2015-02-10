@@ -36,6 +36,24 @@ public class PolicyResourceImplTest {
     private PolicyService policyService;
 
     @Test
+    public void testCreatePolicyForAccount() throws DsmPolicyClientException {
+        //arrange
+        Policy policyToBeCreated = new Policy();
+        Policy expectedPolicy = new Policy();
+        expectedPolicy.setVendorPolicyId(TEST_ID);
+        String accountId = TEST_ACCOUNT;
+        when(policyService.createPolicyForAccount(accountId, policyToBeCreated)).thenReturn(expectedPolicy);
+
+        //act
+        Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated);
+
+        //assert
+        assertEquals(expectedPolicy, actualPolicy);
+        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
+        verify(policyService).createPolicyForAccount(accountId, policyToBeCreated);
+    }
+
+    @Test
     public void testGetPoliciesForAccount() {
         //arrange
         List<Policy> hopeful = new ArrayList<Policy>();
@@ -67,29 +85,6 @@ public class PolicyResourceImplTest {
         verify(policyService).getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
     }
 
-    @Test
-    public void testCreatePolicyForAccount() throws DsmPolicyClientException {
-        //arrange
-        Policy expectedPolicy = new Policy();
-        expectedPolicy.setVendorPolicyId(TEST_ID);
-
-        PolicyInstallationBean policyInstallationBean = new PolicyInstallationBean();
-        String username = null;
-        String accountId = TEST_ACCOUNT;
-        String serverDomainName = null;
-        Product product = null;
-        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
-        policyInstallationBean.setInstallationBean(installationBean);
-
-        when(policyService.createPolicyForAccount(eq(policyInstallationBean))).thenReturn(expectedPolicy);
-
-        //act
-        Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, new Policy());
-
-        //assert
-        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
-        verify(policyService).createPolicyForAccount(eq(policyInstallationBean));
-    }
 
     @Test
     public void testUpdatePolicyForAccount() {

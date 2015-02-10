@@ -1,6 +1,9 @@
 package com.ctl.security.ips.client.bean;
 
+import com.ctl.security.data.common.domain.mongo.Product;
+import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.PolicyInstallationBean;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
@@ -48,6 +51,32 @@ public class PolicyClientTest {
     @InjectMocks
     private PolicyClient classUnderTest = new PolicyClient();
 
+    @Test
+    public void testCreatePolicyForAccount() {
+        //arrange
+        Policy expectedPolicy = buildPolicy();
+        Policy policyToCreate = new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Policy.class))).thenReturn(entity);
+        when(entity.getBody()).thenReturn(expectedPolicy);
+
+        //act
+        Policy actualPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToCreate, SAMPLE_TOKEN);
+
+        //assert
+        assertEquals(expectedPolicy, actualPolicy);
+        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
+    }
+
+    @Test(expected = NotAuthorizedException.class)
+    public void testCreatePolicyForAccountNotAuthorizedException() {
+        //arrange
+        Policy policy = new Policy();
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST),
+                any(HttpEntity.class), eq(Policy.class))).thenThrow(new RestClientException("403 Forbidden."));
+
+        //act
+        classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, policy, SAMPLE_TOKEN);
+    }
     @Test
     public void testGetPoliciesForAccount() {
         //arrange
@@ -102,32 +131,6 @@ public class PolicyClientTest {
         classUnderTest.getPolicyForAccount(INVALID_ACCOUNT, TEST_ID, SAMPLE_TOKEN);
     }
 
-    @Test
-    public void testCreatePolicyForAccount() {
-        //arrange
-        Policy expectedPolicy = buildPolicy();
-        Policy policyToCreate = new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Policy.class))).thenReturn(entity);
-        when(entity.getBody()).thenReturn(expectedPolicy);
-
-        //act
-        Policy actualPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToCreate, SAMPLE_TOKEN);
-
-        //assert
-        assertEquals(expectedPolicy, actualPolicy);
-        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
-    }
-
-    @Test(expected = NotAuthorizedException.class)
-    public void testCreatePolicyForAccountNotAuthorizedException() {
-        //arrange
-        Policy policy = new Policy();
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST),
-                any(HttpEntity.class), eq(Policy.class))).thenThrow(new RestClientException("403 Forbidden."));
-
-        //act
-        classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, policy, SAMPLE_TOKEN);
-    }
 
     @Test
     public void testUpdatePolicyForAccount() {
