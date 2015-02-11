@@ -5,6 +5,7 @@ import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.UserClient;
+import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.User;
@@ -149,9 +150,9 @@ public class PolicySteps {
     }
 
     private void verifyInstalledProduct() {
-        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
-        assertNotNull(configurationItem);
-        assertNotNull(configurationItem.getId());
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
+        assertNotNull(configurationItemResource);
+        assertNotNull(configurationItemResource.getId());
 
         UserResource user = userClient.getUser(policy.getUsername(), accountId);
         assertNotNull(user.getContent());
