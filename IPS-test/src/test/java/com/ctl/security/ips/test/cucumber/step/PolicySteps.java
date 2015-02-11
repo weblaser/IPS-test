@@ -5,6 +5,7 @@ import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.UserClient;
+import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.User;
 import com.ctl.security.ips.client.bean.PolicyClient;
@@ -152,10 +153,10 @@ public class PolicySteps {
         assertNotNull(configurationItem);
         assertNotNull(configurationItem.getId());
 
-        User user = userClient.getUser(policy.getUsername(), accountId);
-        assertNotNull(user);
-        assertNotNull(user.getId());
-        assertNotNull(user.getProductUserActivities());
+        UserResource user = userClient.getUser(policy.getUsername(), accountId);
+        assertNotNull(user.getContent());
+        assertNotNull(user.getContent().getId());
+        assertNotNull(user.getContent().getProductUserActivities());
     }
 
     @Then("^I receive a response that does not contain an error message$")
