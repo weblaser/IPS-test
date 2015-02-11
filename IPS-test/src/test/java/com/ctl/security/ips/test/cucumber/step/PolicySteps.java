@@ -7,8 +7,6 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.user.UserResource;
-import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
-import com.ctl.security.data.common.domain.mongo.User;
 import com.ctl.security.ips.client.bean.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
@@ -146,13 +144,13 @@ public class PolicySteps {
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
-        verifyInstalledProduct();
+        verifyCmdbCreation();
     }
 
-    private void verifyInstalledProduct() {
+    private void verifyCmdbCreation() {
         ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
         assertNotNull(configurationItemResource);
-        assertNotNull(configurationItemResource.getId());
+        assertNotNull(configurationItemResource.getContent().getId());
 
         UserResource user = userClient.getUser(policy.getUsername(), accountId);
         assertNotNull(user.getContent());
