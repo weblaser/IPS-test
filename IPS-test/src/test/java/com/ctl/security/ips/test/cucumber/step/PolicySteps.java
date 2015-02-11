@@ -137,7 +137,10 @@ public class PolicySteps {
             Policy policy1 = new Policy();
             String name = "name" + System.currentTimeMillis();
             String serverDomainName = "server.domain.name." + System.currentTimeMillis();
-            policy1.setName(name).setServerDomainName(serverDomainName);
+            String userName = "userName" + System.currentTimeMillis();
+            policy1.setName(name).
+                    setServerDomainName(serverDomainName).
+                    setUsername(userName);
 
             policy = policyClient.createPolicyForAccount(accountId, policy1, bearerToken);
         } catch (Exception e) {
