@@ -4,9 +4,13 @@ import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
+import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResource;
+import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
+import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.client.bean.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
@@ -61,6 +65,9 @@ public class PolicySteps {
 
     @Autowired
     private ConfigurationItemClient configurationItemClient;
+
+    @Autowired
+    private ProductUserActivityClient productUserActivityClient;
 
     @Autowired
     private UserClient userClient;
@@ -148,14 +155,25 @@ public class PolicySteps {
     }
 
     private void verifyCmdbCreation() {
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
-        assertNotNull(configurationItemResource);
-        assertNotNull(configurationItemResource.getContent().getId());
 
         UserResource user = userClient.getUser(policy.getUsername(), accountId);
         assertNotNull(user.getContent());
         assertNotNull(user.getContent().getId());
         assertNotNull(user.getContent().getProductUserActivities());
+
+        ProductUserActivityResources productUserActivityResources = userClient.getProductUserActivities(user);
+        assertNotNull(productUserActivityResources);
+        assertNotNull(productUserActivityResources.getContent());
+        List<ProductUserActivity> productUserActivities = productUserActivityResources.unwrap();
+        assertTrue(productUserActivities.size() > 0);
+
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
+        assertNotNull(configurationItemResource);
+        assertNotNull(configurationItemResource.getContent().getId());
+
+        userClient.deleteUser(user.getContent().getId());
+        productUserActivities.stream().forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
+        configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
 
     @Then("^I receive a response that does not contain an error message$")
