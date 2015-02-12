@@ -5,9 +5,8 @@ import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.UserClient;
-import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
-import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
-import com.ctl.security.data.common.domain.mongo.User;
+import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
+import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.ips.client.bean.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
@@ -31,7 +30,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
 public class PolicySteps {
 
-    private static final String UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
     private static final String VALID_POLICY_ID = "test-vendorPolicyId";
     private static final String VALID = "valid";
     private static final String VALID_AA = "TCCD";
@@ -45,7 +43,6 @@ public class PolicySteps {
     private Exception exception;
     private List<Policy> policyList;
     private Policy policy;
-    private String policyId;
 
     private String accountId;
     private String bearerToken;
@@ -94,8 +91,7 @@ public class PolicySteps {
             accountId = VALID_AA;
             ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
             bearerToken = clcAuthenticationResponse.getBearerToken();
-        }
-        else {
+        } else {
             accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
         }
@@ -106,18 +102,15 @@ public class PolicySteps {
         String id;
         if (VALID.equalsIgnoreCase(validity)) {
             id = VALID_POLICY_ID;
-        }
-        else {
+        } else {
             id = INVALID_POLICY_ID;
         }
         try {
             if ("GET".equals(method)) {
                 policy = policyClient.getPolicyForAccount(accountId, id, bearerToken);
-            }
-            else if ("PUT".equals(method)) {
+            } else if ("PUT".equals(method)) {
                 policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
-            }
-            else {
+            } else {
                 policyClient.deletePolicyForAccount(accountId, id, bearerToken);
             }
         } catch (Exception e) {
@@ -151,19 +144,18 @@ public class PolicySteps {
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
-        verifyInstalledProduct();
+        verifyCmdbCreation();
     }
 
-    private void verifyInstalledProduct() {
-        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
-        assertNotNull(configurationItem);
-//        assertNotNull(configurationItem.getId());
+    private void verifyCmdbCreation() {
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
+        assertNotNull(configurationItemResource);
+        assertNotNull(configurationItemResource.getContent().getId());
 
-        User user = userClient.getUser(policy.getUsername(), accountId);
-        assertNotNull(user);
-//        assertNotNull(user.getId());
-//        assertNotNull(user.getProductUserActivities());
-//        assertTrue(user.getProductUserActivities().size() > 0);
+        UserResource user = userClient.getUser(policy.getUsername(), accountId);
+        assertNotNull(user.getContent());
+        assertNotNull(user.getContent().getId());
+        assertNotNull(user.getContent().getProductUserActivities());
     }
 
     @Then("^I receive a response that does not contain an error message$")
@@ -184,7 +176,6 @@ public class PolicySteps {
             fail();
         }
     }
-
 
 
 }
