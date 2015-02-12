@@ -14,17 +14,15 @@ public class JmsConfig {
 
 
     @Bean
-    public JmsTemplate jmsTemplate() {
-
-        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory());
-        return null;
-    }
-
-    private ActiveMQConnectionFactory connectionFactory(){
+    public JmsTemplate jmsTemplatePolicy() {
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
-        activeMQConnectionFactory.setBrokerURL("http://localhost:8161");
-        return activeMQConnectionFactory;
+        activeMQConnectionFactory.setBrokerURL("tcp://localhost:61616");
+        JmsTemplate jmsTemplate = new JmsTemplate(activeMQConnectionFactory);
+//        Destination destination = new ActiveMQQueue("policy-queue");
+//        jmsTemplate.setDefaultDestination(destination);
+        return jmsTemplate;
     }
+
 
 
 }
