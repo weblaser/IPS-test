@@ -4,6 +4,7 @@ import org.apache.activemq.spring.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
@@ -16,31 +17,32 @@ import javax.jms.ConnectionFactory;
 
 @Configuration
 @EnableJms
+@PropertySource("classpath:properties/ips.jms.properties")
 public class JmsConfig {
 
 
-    @Value("${${spring.profiles.active:local}.ips.amq.address}")
-    private String brokerUrl;
-
-    @Bean
-    public JmsTemplate jmsTemplate() {
-        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory());
-        return jmsTemplate;
-    }
-
-
-    @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-        DefaultJmsListenerContainerFactory factory =
-                new DefaultJmsListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory());
-        return factory;
-    }
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
-        activeMQConnectionFactory.setBrokerURL(brokerUrl);
-        return activeMQConnectionFactory;
-    }
+//    @Value("${${spring.profiles.active:local}.ips.amq.address}")
+//    private String brokerUrl;
+//
+//    @Bean
+//    public JmsTemplate jmsTemplate() {
+//        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory());
+//        return jmsTemplate;
+//    }
+//
+//
+//    @Bean
+//    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+//        DefaultJmsListenerContainerFactory factory =
+//                new DefaultJmsListenerContainerFactory();
+//        factory.setConnectionFactory(connectionFactory());
+//        return factory;
+//    }
+//
+//    @Bean
+//    public ConnectionFactory connectionFactory() {
+//        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+//        activeMQConnectionFactory.setBrokerURL(brokerUrl);
+//        return activeMQConnectionFactory;
+//    }
 }

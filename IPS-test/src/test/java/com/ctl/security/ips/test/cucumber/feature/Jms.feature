@@ -1,4 +1,4 @@
-@ALL_TESTS @Regression @ENVIRONMENT @WIP
+@ALL_TESTS @Regression @ENVIRONMENT
 Feature: Security - Jms - The ips security project is able to produce and consume messages on the ActiveMQ queue.
 
 
