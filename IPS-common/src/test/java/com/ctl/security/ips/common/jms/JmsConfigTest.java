@@ -24,24 +24,24 @@ public class JmsConfigTest {
         ReflectionTestUtils.setField(classUnderTest, "brokerUrl", "vm://localhost?broker.persistent=false");
     }
 
-//    @Test
-//    public void jmsTemplate_createsJmsTemplate() throws Exception {
-//        JmsTemplate jmsTemplate = classUnderTest.jmsTemplate();
-//
-//        assertNotNull(jmsTemplate);
-//    }
-//
-//    @Test
-//    public void jmsListenerContainerFactory_createsJmsListenerContainerFactory() throws Exception {
-//        DefaultJmsListenerContainerFactory defaultJmsListenerContainerFactory = classUnderTest.jmsListenerContainerFactory();
-//
-//        assertNotNull(defaultJmsListenerContainerFactory);
-//    }
-//
-//    @Test
-//    public void connectionFactory_createsConnectionFactory() throws Exception {
-//        ConnectionFactory connectionFactory = classUnderTest.connectionFactory();
-//
-//        assertNotNull(connectionFactory);
-//    }
+    @Test
+    public void jmsTemplate_createsJmsTemplate() throws Exception {
+        JmsTemplate jmsTemplate = classUnderTest.jmsTemplate();
+
+        assertNotNull(jmsTemplate);
+    }
+
+    @Test
+    public void jmsListenerContainerFactory_createsJmsListenerContainerFactory() throws Exception {
+        DefaultJmsListenerContainerFactory defaultJmsListenerContainerFactory = classUnderTest.jmsListenerContainerFactory();
+
+        assertNotNull(defaultJmsListenerContainerFactory);
+    }
+
+    @Test
+    public void connectionFactory_createsConnectionFactory() throws Exception {
+        ConnectionFactory connectionFactory = classUnderTest.connectionFactory();
+
+        assertNotNull(connectionFactory);
+    }
 }

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 public class DsmClientComponent {
 
     public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy) throws DsmPolicyClientException {
+        assertNotNull(newlyCreatedCtlPolicy);
         Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileById(new Integer(newlyCreatedCtlPolicy.getVendorPolicyId()).intValue());
         assertNotNull(retrievedPolicy);
         assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());

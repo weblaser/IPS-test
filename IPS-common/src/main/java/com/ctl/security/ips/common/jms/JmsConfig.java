@@ -21,28 +21,28 @@ import javax.jms.ConnectionFactory;
 public class JmsConfig {
 
 
-//    @Value("${${spring.profiles.active:local}.ips.amq.address}")
-//    private String brokerUrl;
-//
-//    @Bean
-//    public JmsTemplate jmsTemplate() {
-//        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory());
-//        return jmsTemplate;
-//    }
-//
-//
-//    @Bean
-//    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-//        DefaultJmsListenerContainerFactory factory =
-//                new DefaultJmsListenerContainerFactory();
-//        factory.setConnectionFactory(connectionFactory());
-//        return factory;
-//    }
-//
-//    @Bean
-//    public ConnectionFactory connectionFactory() {
-//        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
-//        activeMQConnectionFactory.setBrokerURL(brokerUrl);
-//        return activeMQConnectionFactory;
-//    }
+    @Value("${${spring.profiles.active:local}.ips.amq.address}")
+    private String brokerUrl;
+
+    @Bean
+    public JmsTemplate jmsTemplate() {
+        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory());
+        return jmsTemplate;
+    }
+
+
+    @Bean
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+        DefaultJmsListenerContainerFactory factory =
+                new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
+        activeMQConnectionFactory.setBrokerURL(brokerUrl);
+        return activeMQConnectionFactory;
+    }
 }
