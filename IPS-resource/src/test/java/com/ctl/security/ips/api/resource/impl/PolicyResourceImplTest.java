@@ -44,7 +44,9 @@ public class PolicyResourceImplTest {
         Policy expectedPolicy = new Policy();
         expectedPolicy.setVendorPolicyId(TEST_ID);
         String accountId = TEST_ACCOUNT;
-        when(policyService.createPolicyForAccount(accountId, policyToBeCreated)).thenReturn(expectedPolicy);
+
+        PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
+        when(policyService.createPolicyForAccount(policyBean)).thenReturn(expectedPolicy);
 
         //act
         Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated);
@@ -52,9 +54,8 @@ public class PolicyResourceImplTest {
         //assert
         assertEquals(expectedPolicy, actualPolicy);
         assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
-        verify(policyService).createPolicyForAccount(accountId, policyToBeCreated);
-        PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
-        verify(policyMessageSender).createPolicyForAccount(policyBean);
+        verify(policyService).createPolicyForAccount(policyBean);
+//        verify(policyMessageSender).createPolicyForAccount(eq(policyBean));
     }
 
     @Test

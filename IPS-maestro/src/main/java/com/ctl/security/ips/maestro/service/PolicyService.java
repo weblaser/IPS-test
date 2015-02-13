@@ -10,9 +10,12 @@ import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.common.jms.PolicyOperation;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,24 +34,25 @@ public class PolicyService {
     @Autowired
     private CmdbService cmdbService;
 
-    public Policy createPolicyForAccount(String accountId, Policy policy) throws DsmPolicyClientException {
+    @JmsListener(destination = PolicyOperation.CREATE_POLICY_FOR_ACCOUNT)
+    public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
 
-        if (VALID_ACCOUNT.equalsIgnoreCase(accountId)) {
-            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
+        if (VALID_ACCOUNT.equalsIgnoreCase(policyBean.getAccountId())) {
+            Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean.getPolicy());
 
-            String username = policy.getUsername();
-            String serverDomainName = policy.getServerDomainName();
+            String username = policyBean.getPolicy().getUsername();
+            String serverDomainName = policyBean.getPolicy().getServerDomainName();
             Product product = new Product().
                     setName(TREND_MICRO_IPS).
                     setStatus(ProductStatus.ACTIVE).
                     setType(ProductType.IPS);
-            InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+            InstallationBean installationBean = new InstallationBean(username, policyBean.getAccountId(), serverDomainName, product);
 
 
             cmdbService.installProduct(installationBean);
             return newlyCreatedPolicy;
         }
-        throw new NotAuthorizedException("Policy cannot be created under accountId: " + accountId);
+        throw new NotAuthorizedException("Policy cannot be created under accountId: " + policyBean.getAccountId());
     }
 
 

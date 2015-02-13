@@ -23,9 +23,10 @@ public class PolicyResourceImpl implements PolicyResource {
     @Override
     public Policy createPolicyForAccount(String accountId, Policy policy) {
         try {
+            PolicyBean policyBeanTest = new PolicyBean("", policy);
+            policyMessageSender.createPolicyForAccount(policyBeanTest);
             PolicyBean policyBean = new PolicyBean(accountId, policy);
-            policyMessageSender.createPolicyForAccount(policyBean);
-            return policyService.createPolicyForAccount(accountId, policy);
+            return policyService.createPolicyForAccount(policyBean);
         } catch (DsmPolicyClientException e) {
             e.printStackTrace();
         }

@@ -26,7 +26,7 @@ public class PolicyMessageSenderTest {
         
         classUnderTest.createPolicyForAccount(policyBean);
 
-        verify(jmsTemplate).convertAndSend(PolicyOperation.createPolicyForAccount.name(), policyBean);
+        verify(jmsTemplate).convertAndSend(PolicyOperation.CREATE_POLICY_FOR_ACCOUNT, policyBean);
     }
 
 }

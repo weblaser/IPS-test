@@ -9,6 +9,7 @@ import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import manager.*;
@@ -59,7 +60,8 @@ public class PolicyServiceTest {
                 setType(ProductType.IPS);
         InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
 
-        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(accountId, policyToBeCreated);
+        PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
 
 
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
@@ -79,7 +81,8 @@ public class PolicyServiceTest {
         InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
         Policy policy = new Policy();
 
-        classUnderTest.createPolicyForAccount(accountId, policy);
+        PolicyBean policyBean = new PolicyBean(accountId, policy);
+        classUnderTest.createPolicyForAccount(policyBean);
     }
 
     @Test

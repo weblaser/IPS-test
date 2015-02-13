@@ -17,6 +17,6 @@ public class PolicyMessageSender {
     private JmsTemplate jmsTemplate;
 
     public void createPolicyForAccount(final PolicyBean policyBean) {
-        jmsTemplate.convertAndSend(PolicyOperation.createPolicyForAccount.name(), policyBean);
+        jmsTemplate.convertAndSend(PolicyOperation.CREATE_POLICY_FOR_ACCOUNT, policyBean);
     }
 }
