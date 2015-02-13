@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * Created by Kevin.Weber on 10/27/2014.
  */
@@ -12,7 +14,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class Policy {
+public class Policy implements Serializable {
 
     private String vendorPolicyId;
     private String name;

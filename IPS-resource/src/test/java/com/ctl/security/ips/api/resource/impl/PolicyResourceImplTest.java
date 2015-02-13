@@ -1,8 +1,10 @@
 package com.ctl.security.ips.api.resource.impl;
 
+import com.ctl.security.ips.api.jms.PolicyMessageSender;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.maestro.service.PolicyService;
 import org.junit.Test;
@@ -32,6 +34,9 @@ public class PolicyResourceImplTest {
     @Mock
     private PolicyService policyService;
 
+    @Mock
+    private PolicyMessageSender policyMessageSender;
+
     @Test
     public void testCreatePolicyForAccount() throws DsmPolicyClientException {
         //arrange
@@ -48,6 +53,8 @@ public class PolicyResourceImplTest {
         assertEquals(expectedPolicy, actualPolicy);
         assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
         verify(policyService).createPolicyForAccount(accountId, policyToBeCreated);
+        PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
+        verify(policyMessageSender).createPolicyForAccount(policyBean);
     }
 
     @Test

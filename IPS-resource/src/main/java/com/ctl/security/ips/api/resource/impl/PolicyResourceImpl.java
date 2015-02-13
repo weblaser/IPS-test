@@ -1,7 +1,9 @@
 package com.ctl.security.ips.api.resource.impl;
 
+import com.ctl.security.ips.api.jms.PolicyMessageSender;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.maestro.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,15 @@ public class PolicyResourceImpl implements PolicyResource {
     @Autowired
     private PolicyService policyService;
 
+    @Autowired
+    private PolicyMessageSender policyMessageSender;
 
     @Override
-    public Policy createPolicyForAccount(String account, Policy policy) {
+    public Policy createPolicyForAccount(String accountId, Policy policy) {
         try {
-            return policyService.createPolicyForAccount(account, policy);
+            PolicyBean policyBean = new PolicyBean(accountId, policy);
+            policyMessageSender.createPolicyForAccount(policyBean);
+            return policyService.createPolicyForAccount(accountId, policy);
         } catch (DsmPolicyClientException e) {
             e.printStackTrace();
         }
