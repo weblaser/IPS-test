@@ -52,7 +52,7 @@ public class PolicyService {
     }
 
 
-    public List<com.ctl.security.ips.common.domain.Policy> getPoliciesForAccount(String account) {
+    public List<Policy> getPoliciesForAccount(String account) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
             List<com.ctl.security.ips.common.domain.Policy> hopeful = new ArrayList<com.ctl.security.ips.common.domain.Policy>();
@@ -63,7 +63,7 @@ public class PolicyService {
         throw new PolicyNotFoundException("Policy not found for accountId: " + account);
     }
 
-    public com.ctl.security.ips.common.domain.Policy getPolicyForAccount(String account, String id) {
+    public Policy getPolicyForAccount(String account, String id) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
             return buildPolicy();
@@ -91,7 +91,7 @@ public class PolicyService {
         throw new PolicyNotFoundException("Policy " + id + " cannot be found for accountId: " + account);
     }
 
-    private com.ctl.security.ips.common.domain.Policy buildPolicy() {
+    private Policy buildPolicy() {
         com.ctl.security.ips.common.domain.Policy policy = new com.ctl.security.ips.common.domain.Policy();
         policy.setVendorPolicyId(TEST_ID);
         policy.setStatus(PolicyStatus.ACTIVE);
