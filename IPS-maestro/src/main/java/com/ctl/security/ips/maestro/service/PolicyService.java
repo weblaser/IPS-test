@@ -58,7 +58,7 @@ public class PolicyService {
     public List<Policy> getPoliciesForAccount(String account) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            List<Policy> hopeful = new ArrayList<com.ctl.security.ips.common.domain.Policy>();
+            List<Policy> hopeful = new ArrayList<>();
             Policy policy = buildPolicy();
             hopeful.add(policy);
             return hopeful;
@@ -75,7 +75,7 @@ public class PolicyService {
     }
 
 
-    public void updatePolicyForAccount(String account, String id, com.ctl.security.ips.common.domain.Policy policy) {
+    public void updatePolicyForAccount(String account, String id, Policy policy) {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(account) && TEST_ID.equalsIgnoreCase(id)) {
             return;
