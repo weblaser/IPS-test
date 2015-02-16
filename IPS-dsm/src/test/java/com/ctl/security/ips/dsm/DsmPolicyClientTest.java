@@ -101,6 +101,21 @@ public class DsmPolicyClientTest {
     }
 
     @Test
+    public void retrieveSecurityProfileByName_retrievesSecurityProfileByName() throws DsmPolicyClientException, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
+        String name = "name";
+        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
+        when(manager.securityProfileRetrieveByName(name, sessionId)).thenReturn(expectedSecurityProfileTransport);
+        Policy expectedPolicy = new Policy();
+        when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedPolicy);
+
+        Policy actualPolicy = classUnderTest.retrieveSecurityProfileByName(name);
+
+        assertNotNull(actualPolicy);
+        assertEquals(expectedPolicy.getVendorPolicyId(), actualPolicy.getVendorPolicyId());
+        verify(dsmLogInClient).endSession(sessionId);
+    }
+
+    @Test
     public void securityProfileDelete_deletesSecurityProfile() throws DsmPolicyClientException, ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception {
         int id = 0;
         List<Integer> ids = Arrays.asList(id);

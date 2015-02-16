@@ -31,8 +31,8 @@ public interface PolicyResource {
     @ApiOperation(value = "Create Policy for Given Account")
     @ApiResponses(value = {@ApiResponse(code = OK, message = "Policy Created"),
             @ApiResponse(code = FORBIDDEN, message = UNAUTHORIZED)})
-    Policy createPolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
-                                  @ApiParam(value = POLICY, required = true) Policy policy);
+    void createPolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
+                                @ApiParam(value = POLICY, required = true) Policy policy);
 
     @GET
     @Path("/{acct}")

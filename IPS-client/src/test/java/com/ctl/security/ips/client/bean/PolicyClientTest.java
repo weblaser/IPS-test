@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -59,11 +60,10 @@ public class PolicyClientTest {
         when(entity.getBody()).thenReturn(expectedPolicy);
 
         //act
-        Policy actualPolicy = classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToCreate, SAMPLE_TOKEN);
+        classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToCreate, SAMPLE_TOKEN);
 
         //assert
-        assertEquals(expectedPolicy, actualPolicy);
-        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
+        verify(restTemplate).exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class));
     }
 
     @Test(expected = NotAuthorizedException.class)
@@ -71,7 +71,7 @@ public class PolicyClientTest {
         //arrange
         Policy policy = new Policy();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST),
-                any(HttpEntity.class), eq(Policy.class))).thenThrow(new RestClientException("403 Forbidden."));
+                any(HttpEntity.class), eq(String.class))).thenThrow(new RestClientException("403 Forbidden."));
 
         //act
         classUnderTest.createPolicyForAccount(INVALID_ACCOUNT, policy, SAMPLE_TOKEN);

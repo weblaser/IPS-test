@@ -34,7 +34,6 @@ public class PolicyService {
     @Autowired
     private CmdbService cmdbService;
 
-    @JmsListener(destination = PolicyOperation.CREATE_POLICY_FOR_ACCOUNT)
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
 
         if (VALID_ACCOUNT.equalsIgnoreCase(policyBean.getAccountId())) {

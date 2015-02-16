@@ -32,15 +32,13 @@ public class PolicyClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public Policy createPolicyForAccount(String account, Policy policy, String token) {
-        Policy response = null;
+    public void createPolicyForAccount(String account, Policy policy, String token) {
         try {
-            response = restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), Policy.class).getBody();
+            restTemplate.exchange(hostUrl + POLICIES + account,
+                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
-        return response;
     }
 
     public List<Policy> getPoliciesForAccount(String account, String token) {

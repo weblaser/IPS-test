@@ -134,15 +134,15 @@ public class PolicySteps {
     @When("^I POST a policy$")
     public void I_POST_a_policy() {
         try {
-            Policy policy1 = new Policy();
+            policy = new Policy();
             String name = "name" + System.currentTimeMillis();
             String serverDomainName = "server.domain.name." + System.currentTimeMillis();
             String userName = "userName" + System.currentTimeMillis();
-            policy1.setName(name).
+            policy.setName(name).
                     setServerDomainName(serverDomainName).
                     setUsername(userName);
 
-            policy = policyClient.createPolicyForAccount(accountId, policy1, bearerToken);
+            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
         } catch (Exception e) {
             exception = e;
         }

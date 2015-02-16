@@ -21,19 +21,11 @@ public class DsmClientComponent {
 
     public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy) throws DsmPolicyClientException {
         assertNotNull(newlyCreatedCtlPolicy);
-        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileById(new Integer(newlyCreatedCtlPolicy.getVendorPolicyId()).intValue());
+        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(newlyCreatedCtlPolicy.getName());
         assertNotNull(retrievedPolicy);
-        assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
+        assertNotNull(retrievedPolicy.getName());
 
-        dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId())));
-
-        Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId()));
-        assertTrue(deletedPolicy.getVendorPolicyId() == null);
-    }
-
-    public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, String newlyCreatedCtlPolicyId) throws DsmPolicyClientException {
-        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileById(new Integer(newlyCreatedCtlPolicyId).intValue());
-        assertNotNull(retrievedPolicy);
+        //The mock needs to be improved to allow for retrieving a specific policy by name.
 //        assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
 
         dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId())));
@@ -41,4 +33,6 @@ public class DsmClientComponent {
         Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId()));
         assertTrue(deletedPolicy.getVendorPolicyId() == null);
     }
+
+
 }

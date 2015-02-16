@@ -75,9 +75,20 @@ public class MockDsmBeans extends BaseDsmBeans {
     private void setupPolicyRetrieve(final Map<String, String> policyKeys, final Map<String, SecurityProfileTransport> expectedPolicies, SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
         Integer validDsmPolicyId = Integer.valueOf(BaseDsmBeans.VALID_DSM_POLICY_ID);
         expectedSecurityProfileTransport.setID(validDsmPolicyId);
+        String validDsmPolicyName = "validDsmPolicyName";
+        expectedSecurityProfileTransport.setName(validDsmPolicyName);
         expectedPolicies.put(EXPECTED_POLICY, expectedSecurityProfileTransport);
 
         when(manager.securityProfileRetrieve(anyInt(),anyString())).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));
+                policyKeys.put(CURRENT_EXPECTED_POLICY, EXPECTED_POLICY);
+                return securityProfileTransport;
+            }
+        });
+
+        when(manager.securityProfileRetrieveByName(anyString(),anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));

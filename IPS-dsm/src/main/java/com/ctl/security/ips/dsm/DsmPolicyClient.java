@@ -66,6 +66,17 @@ public class DsmPolicyClient {
         }
     }
 
+    public Policy retrieveSecurityProfileByName(String name) throws DsmPolicyClientException {
+        try {
+            String sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            SecurityProfileTransport securityProfileTransport = manager.securityProfileRetrieveByName(name, sessionId);
+            dsmLogInClient.endSession(sessionId);
+            return securityProfileTransportMarshaller.convert(securityProfileTransport);
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception | ManagerAuthenticationException_Exception | ManagerTimeoutException_Exception e) {
+            throw new DsmPolicyClientException(e);
+        }
+    }
+
     public void securityProfileDelete(List<Integer> ids) throws DsmPolicyClientException {
         try {
             String sessionId = dsmLogInClient.connectToDSMClient(username, password);
@@ -75,4 +86,5 @@ public class DsmPolicyClient {
             throw new DsmPolicyClientException(e);
         }
     }
+
 }
