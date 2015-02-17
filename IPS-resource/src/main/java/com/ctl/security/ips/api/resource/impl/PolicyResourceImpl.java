@@ -42,8 +42,8 @@ public class PolicyResourceImpl implements PolicyResource {
     }
 
     @Override
-    public void deletePolicyForAccount(String account, String policyId) {
-        policyService.deletePolicyForAccount(account, policyId);
+    public void deletePolicyForAccount(String account, String policyId) throws DsmPolicyClientException {
+        policyService.deletePolicyForAccount(new PolicyBean(account, new Policy().setVendorPolicyId(policyId)));
     }
 
 }

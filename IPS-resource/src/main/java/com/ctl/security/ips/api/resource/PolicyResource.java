@@ -1,6 +1,7 @@
 package com.ctl.security.ips.api.resource;
 
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.wordnik.swagger.annotations.*;
 
 import javax.ws.rs.*;
@@ -67,5 +68,5 @@ public interface PolicyResource {
             @ApiResponse(code = BAD_REQUEST, message = POLICY_NOT_FOUND),
             @ApiResponse(code = FORBIDDEN, message = UNAUTHORIZED)})
     void deletePolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
-                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId);
+                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId) throws DsmPolicyClientException;
 }
