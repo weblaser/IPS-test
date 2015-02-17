@@ -30,6 +30,7 @@ public class PojoTest {
 
         final List<String> POJO_PACKAGES = new ArrayList<String>();
         POJO_PACKAGES.add("com.ctl.security.ips.common.domain");
+        POJO_PACKAGES.add("com.ctl.security.ips.common.jms");
         for (String POJO_PACKAGE : POJO_PACKAGES) {
             pojoClasses.addAll(PojoClassFactory.getPojoClasses(POJO_PACKAGE));
         }
