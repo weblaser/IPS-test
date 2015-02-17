@@ -51,20 +51,6 @@ Feature:  Security - policy
     Then I receive a response that does not contain an error message
 
 
-  Scenario: Get invalid response when updating a policy for an account
-
-    Given I have an invalid account
-    When I PUT a valid policy
-    Then I receive a response with error message 400 Bad Request.
-
-
-  Scenario: Get valid response when updating a policy for an account
-
-    Given I have a valid account
-    When I PUT an invalid policy
-    Then I receive a response with error message 400 Bad Request.
-
-
   Scenario: Get valid response when deleting a policy for an account
 
     Given I have an valid account
@@ -77,10 +63,3 @@ Feature:  Security - policy
     Given I have an invalid account
     When I DELETE a valid policy
     Then I receive a response with error message 403 Forbidden.
-
-
-  Scenario: Get valid response when deleting a policy for an account
-
-    Given I have a valid account
-    When I DELETE an invalid policy
-    Then I receive a response with error message 400 Bad Request.

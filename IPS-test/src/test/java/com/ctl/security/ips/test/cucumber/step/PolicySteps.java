@@ -34,11 +34,11 @@ import static org.junit.Assert.*;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
 public class PolicySteps {
 
-    private static final String VALID_POLICY_ID = "test-vendorPolicyId";
+    private static final String VALID_POLICY_ID = "12345";
     private static final String VALID = "valid";
     private static final String VALID_AA = "TCCD";
     private static final String INVALID_AA = "TCCX";
-    private static final String INVALID_POLICY_ID = "test-vendorPolicyId-2";
+    private static final String INVALID_POLICY_ID = "45678";
 
     private static final String VALID_USERNAME = "kweber.tccd";
     private static final String VALID_PASSWORD = "1qaz@WSX";
@@ -149,23 +149,14 @@ public class PolicySteps {
     }
 
     @Then("^I receive a response that contains a uuid for the created policy$")
-    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
+    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
         verifyCmdbCreation();
     }
 
-    private void verifyCmdbCreation() throws InterruptedException {
+    private void verifyCmdbCreation() {
 
-        UserResource user = null;
-
-        int i = 0;
-        int maxTries = 30;
-        while(i < maxTries && (user == null || user.getId() == null)){
-            user = userClient.getUser(policy.getUsername(), accountId);
-            Thread.sleep(1000);
-            i++;
-        }
-
+        UserResource user = userClient.getUser(policy.getUsername(), accountId);
         assertNotNull(user.getContent());
         assertNotNull(user.getContent().getId());
         assertNotNull(user.getContent().getProductUserActivities());

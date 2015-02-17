@@ -43,7 +43,7 @@ public class PolicyResourceImpl implements PolicyResource {
 
     @Override
     public void deletePolicyForAccount(String account, String policyId) {
-        policyService.deletePolicyForAccount(account, policyId);
+        policyService.deletePolicyForAccount(new P);
     }
 
 }
