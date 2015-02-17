@@ -85,40 +85,7 @@ public class PolicyServiceTest {
         classUnderTest.createPolicyForAccount(policyBean);
     }
 
-    @Test
-    public void testGetPoliciesForAccount() {
-        //act
-        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
 
-        //assert
-        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
-        for (com.ctl.security.ips.common.domain.Policy actual : policies) {
-            assertEquals(expected, actual);
-        }
-    }
-
-    @Test(expected = PolicyNotFoundException.class)
-    public void testGetPoliciesForAccountPolicyNotFoundException() {
-        //act
-        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(INVALID_ACCOUNT);
-    }
-
-
-    @Test
-    public void testGetPolicyForAccount() {
-        //act
-        com.ctl.security.ips.common.domain.Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
-
-        //assert
-        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
-        assertEquals(expected, actual);
-    }
-
-    @Test(expected = PolicyNotFoundException.class)
-    public void testGetPolicyForAccountPolicyNotFoundException() {
-        //act
-        classUnderTest.getPolicyForAccount(INVALID_ACCOUNT, TEST_ID);
-    }
 
 
     @Test

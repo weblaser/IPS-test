@@ -4,7 +4,6 @@ import com.ctl.security.ips.api.jms.PolicyMessageSender;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.maestro.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,12 +27,12 @@ public class PolicyResourceImpl implements PolicyResource {
 
     @Override
     public List<Policy> getPoliciesForAccount(String accountId) {
-        return policyService.getPoliciesForAccount(accountId);
+        return policyService.policyServiceRead.getPoliciesForAccount(accountId);
     }
 
     @Override
     public Policy getPolicyForAccount(String account, String policyId) {
-        return policyService.getPolicyForAccount(account, policyId);
+        return policyService.policyServiceRead.getPolicyForAccount(account, policyId);
     }
 
     @Override

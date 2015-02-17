@@ -61,7 +61,7 @@ public class PolicyResourceImplTest {
         List<Policy> hopeful = new ArrayList<Policy>();
         Policy expected = buildPolicy();
         hopeful.add(expected);
-        when(policyService.getPoliciesForAccount(TEST_ACCOUNT)).thenReturn(hopeful);
+        when(policyService.policyServiceRead.getPoliciesForAccount(TEST_ACCOUNT)).thenReturn(hopeful);
 
         //act
         List<Policy> policies = classUnderTest.getPoliciesForAccount(TEST_ACCOUNT);
@@ -70,21 +70,21 @@ public class PolicyResourceImplTest {
         for (Policy actual : policies) {
             assertEquals(expected, actual);
         }
-        verify(policyService).getPoliciesForAccount(TEST_ACCOUNT);
+        verify(policyService).policyServiceRead.getPoliciesForAccount(TEST_ACCOUNT);
     }
 
     @Test
     public void testGetPolicyForAccount() {
         //arrange
         Policy expected = buildPolicy();
-        when(policyService.getPolicyForAccount(TEST_ACCOUNT, TEST_ID)).thenReturn(expected);
+        when(policyService.policyServiceRead.getPolicyForAccount(TEST_ACCOUNT, TEST_ID)).thenReturn(expected);
 
         //act
         Policy actual = classUnderTest.getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
 
         //assert
         assertEquals(expected, actual);
-        verify(policyService).getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
+        verify(policyService).policyServiceRead.getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
     }
 
 
