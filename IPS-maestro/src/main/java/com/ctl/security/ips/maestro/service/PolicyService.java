@@ -68,9 +68,6 @@ public class PolicyService {
     }
 
     private Policy buildPolicy() {
-        Policy policy = new Policy();
-        policy.setVendorPolicyId(TEST_ID);
-        policy.setStatus(PolicyStatus.ACTIVE);
-        return policy;
+        return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
 }
