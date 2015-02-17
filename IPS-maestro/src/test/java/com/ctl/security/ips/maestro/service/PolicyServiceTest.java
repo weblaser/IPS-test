@@ -70,73 +70,32 @@ public class PolicyServiceTest {
         verify(cmdbService).installProduct(eq(installationBean));
     }
 
-
-    @Test(expected = NotAuthorizedException.class)
-    public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
-        //act
-        String username = null;
-        String accountId = INVALID_ACCOUNT;
-        String serverDomainName = null;
-        Product product = null;
-        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
-        Policy policy = new Policy();
-
-        PolicyBean policyBean = new PolicyBean(accountId, policy);
-        classUnderTest.createPolicyForAccount(policyBean);
-    }
-
     @Test
     public void testGetPoliciesForAccount() {
         //act
-        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
+        List<Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
 
         //assert
-        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
-        for (com.ctl.security.ips.common.domain.Policy actual : policies) {
+        Policy expected = buildPolicy();
+        for (Policy actual : policies) {
             assertEquals(expected, actual);
         }
     }
 
-    @Test(expected = PolicyNotFoundException.class)
-    public void testGetPoliciesForAccountPolicyNotFoundException() {
-        //act
-        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(INVALID_ACCOUNT);
-    }
-
-
     @Test
     public void testGetPolicyForAccount() {
         //act
-        com.ctl.security.ips.common.domain.Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
+        Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
 
         //assert
-        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
+        Policy expected = buildPolicy();
         assertEquals(expected, actual);
     }
-
-    @Test(expected = PolicyNotFoundException.class)
-    public void testGetPolicyForAccountPolicyNotFoundException() {
-        //act
-        classUnderTest.getPolicyForAccount(INVALID_ACCOUNT, TEST_ID);
-    }
-
 
     @Test
     public void testUpdatePolicyForAccount() {
         //act
         classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new com.ctl.security.ips.common.domain.Policy());
-    }
-
-    @Test(expected = NotAuthorizedException.class)
-    public void testUpdatePolicyForAccountNotAuthorizedException() {
-        //act
-        classUnderTest.updatePolicyForAccount(INVALID_ACCOUNT, TEST_ID, new com.ctl.security.ips.common.domain.Policy());
-    }
-
-    @Test(expected = PolicyNotFoundException.class)
-    public void testUpdatePolicyForAccountPolicyNotFoundException() {
-        //act
-        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID_2, new com.ctl.security.ips.common.domain.Policy());
     }
 
     @Test
@@ -145,19 +104,7 @@ public class PolicyServiceTest {
         classUnderTest.deletePolicyForAccount(VALID_ACCOUNT, TEST_ID);
     }
 
-    @Test(expected = NotAuthorizedException.class)
-    public void testDeletePolicyForAccountNotAuthorizedException() {
-        //act
-        classUnderTest.deletePolicyForAccount(INVALID_ACCOUNT, TEST_ID);
-    }
-
-    @Test(expected = PolicyNotFoundException.class)
-    public void testDeletePolicyForAccountPolicyNotFoundException() {
-        //act
-        classUnderTest.deletePolicyForAccount(VALID_ACCOUNT, TEST_ID_2);
-    }
-
-    private com.ctl.security.ips.common.domain.Policy buildPolicy() {
-        return new com.ctl.security.ips.common.domain.Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+    private Policy buildPolicy() {
+        return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
 }
