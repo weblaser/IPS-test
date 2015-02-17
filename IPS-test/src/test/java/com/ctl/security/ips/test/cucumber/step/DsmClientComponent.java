@@ -19,9 +19,20 @@ import static org.junit.Assert.assertTrue;
 @Component
 public class DsmClientComponent {
 
-    public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy) throws DsmPolicyClientException {
+    public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy) throws DsmPolicyClientException, InterruptedException {
         assertNotNull(newlyCreatedCtlPolicy);
-        Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(newlyCreatedCtlPolicy.getName());
+
+        Policy retrievedPolicy = null;
+
+        int i = 0;
+        int maxTries = 30;
+        while(i < maxTries && (retrievedPolicy == null || retrievedPolicy.getName() == null)){
+            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(newlyCreatedCtlPolicy.getName());
+            Thread.sleep(1000);
+            i++;
+        }
+
+
         assertNotNull(retrievedPolicy);
         assertNotNull(retrievedPolicy.getName());
 
