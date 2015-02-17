@@ -63,10 +63,3 @@ Feature:  Security - policy
     Given I have an invalid account
     When I DELETE a valid policy
     Then I receive a response with error message 403 Forbidden.
-
-
-  Scenario: Get valid response when deleting a policy for an account
-
-    Given I have a valid account
-    When I DELETE an invalid policy
-    Then I receive a response with error message 400 Bad Request.
