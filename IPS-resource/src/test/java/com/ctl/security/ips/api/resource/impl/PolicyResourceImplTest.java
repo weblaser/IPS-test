@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class PolicyResourceImplTest {
 
     private static final String TEST_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-vendorPolicyId";
+    private static final String TEST_ID = "12345";
 
     @InjectMocks
     PolicyResource classUnderTest = new PolicyResourceImpl();
@@ -98,12 +98,12 @@ public class PolicyResourceImplTest {
     }
 
     @Test
-    public void testDeletePolicyForAccount(){
+    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
         //act
         classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID);
 
         //assert
-        verify(policyService).deletePolicyForAccount(eq(TEST_ACCOUNT), eq(TEST_ID));
+        verify(policyService).deletePolicyForAccount(new PolicyBean(TEST_ACCOUNT, new Policy().setVendorPolicyId(TEST_ID)));
     }
 
     private Policy buildPolicy() {
