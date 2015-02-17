@@ -49,14 +49,10 @@ public class PolicyResourceImplTest {
         when(policyService.createPolicyForAccount(policyBean)).thenReturn(expectedPolicy);
 
         //act
-//        Policy actualPolicy = classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated);
         classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated);
 
         //assert
-//        assertEquals(expectedPolicy, actualPolicy);
-//        assertEquals(TEST_ID, actualPolicy.getVendorPolicyId());
-        verify(policyService).createPolicyForAccount(policyBean);
-//        verify(policyMessageSender).createPolicyForAccount(eq(policyBean));
+        verify(policyMessageSender).createPolicyForAccount(eq(policyBean));
     }
 
     @Test
@@ -107,7 +103,7 @@ public class PolicyResourceImplTest {
         classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID);
 
         //assert
-        verify(policyService).deletePolicyForAccount(new PolicyBean( TEST_ACCOUNT,new Policy().setVendorPolicyId(TEST_ID)));
+        verify(policyService).deletePolicyForAccount(new PolicyBean(TEST_ACCOUNT, new Policy().setVendorPolicyId(TEST_ID)));
     }
 
     private Policy buildPolicy() {
