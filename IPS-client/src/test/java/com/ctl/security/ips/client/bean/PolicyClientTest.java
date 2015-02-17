@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 public class PolicyClientTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "12345";
+    private static final String TEST_ID = "test-vendorPolicyId";
     private static final String INVALID_ACCOUNT = "TCCX";
     private static final String SAMPLE_TOKEN = "Bearer sampletoken";
 
