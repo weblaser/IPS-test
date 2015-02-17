@@ -34,7 +34,7 @@ public class DsmClientComponent {
 
 
         assertNotNull(retrievedPolicy);
-        assertNotNull(retrievedPolicy.getName());
+        assertNotNull("expected: " + newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
 
         //The mock needs to be improved to allow for retrieving a specific policy by name.
 //        assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
