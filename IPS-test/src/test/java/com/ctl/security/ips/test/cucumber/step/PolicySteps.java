@@ -149,23 +149,14 @@ public class PolicySteps {
     }
 
     @Then("^I receive a response that contains a uuid for the created policy$")
-    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
+    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
         verifyCmdbCreation();
     }
 
-    private void verifyCmdbCreation() throws InterruptedException {
+    private void verifyCmdbCreation() {
 
-        UserResource user = null;
-
-        int i = 0;
-        int maxTries = 30;
-        while(i < maxTries && (user == null || user.getId() == null)){
-            user = userClient.getUser(policy.getUsername(), accountId);
-            Thread.sleep(1000);
-            i++;
-        }
-
+        UserResource user = userClient.getUser(policy.getUsername(), accountId);
         assertNotNull(user.getContent());
         assertNotNull(user.getContent().getId());
         assertNotNull(user.getContent().getProductUserActivities());
