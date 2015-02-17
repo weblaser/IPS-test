@@ -3,7 +3,6 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
-import com.ctl.security.data.common.domain.mongo.ProductStatus;
 import com.ctl.security.data.common.domain.mongo.ProductType;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
@@ -15,12 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PolicyService {
 
-    private static final String TEST_ID = "test-vendorPolicyId";
+    private static final String TEST_ID = "12345";
     public static final String TREND_MICRO_IPS = "Trend Micro IPS";
 
     @Autowired
@@ -31,14 +31,7 @@ public class PolicyService {
 
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
             Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean.getPolicy());
-
-            String username = policyBean.getPolicy().getUsername();
-            String serverDomainName = policyBean.getPolicy().getServerDomainName();
-            Product product = new Product().
-                    setName(TREND_MICRO_IPS).
-                    setStatus(ProductStatus.ACTIVE).
-                    setType(ProductType.IPS);
-            InstallationBean installationBean = new InstallationBean(username, policyBean.getAccountId(), serverDomainName, product);
+            InstallationBean installationBean = buildInstallationBean(policyBean);
             cmdbService.installProduct(installationBean);
             return newlyCreatedPolicy;
     }
@@ -60,8 +53,18 @@ public class PolicyService {
 
     }
 
-    public void deletePolicyForAccount(String account, String id) {
+    public void deletePolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
+        dsmPolicyClient.securityProfileDelete(Arrays.asList(Integer.parseInt(policyBean.getPolicy().getVendorPolicyId())));
+        cmdbService.uninstallProduct(buildInstallationBean(policyBean));
+    }
 
+    private InstallationBean buildInstallationBean(PolicyBean policyBean) {
+        return new InstallationBean(policyBean.getPolicy().getUsername(),
+                policyBean.getAccountId(),
+                policyBean.getPolicy().getServerDomainName(),
+                new Product()
+                        .setName(TREND_MICRO_IPS)
+                        .setType(ProductType.IPS));
     }
 
     private Policy buildPolicy() {

@@ -23,6 +23,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -31,9 +32,11 @@ import static org.mockito.Mockito.when;
 public class PolicyServiceTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-vendorPolicyId";
+    private static final String TEST_ID = "12345";
     private static final String INVALID_ACCOUNT = "TCCX";
-    private static final String TEST_ID_2 = "test-vendorPolicyId-2";
+    private static final String TEST_ID_2 = "4567";
+    private static final String USERNAME = "username";
+    private static final String SERVER_DOMAIN_NAME = "testServer";
 
     @InjectMocks
     private PolicyService classUnderTest;
@@ -49,16 +52,10 @@ public class PolicyServiceTest {
         Policy policyToBeCreated = new Policy();
         Policy expectedNewlyCreatedPolicy = new Policy();
         when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
-//        Policy expectedNewlyPersistedPolicy = new Policy();
-//        when(policyDao.saveCtlSecurityProfile(expectedNewlyCreatedPolicy)).thenReturn(expectedNewlyPersistedPolicy);
         String username = null;
         String accountId = VALID_ACCOUNT;
         String serverDomainName = null;
-        Product product = new Product().
-                setName(PolicyService.TREND_MICRO_IPS).
-                setStatus(ProductStatus.ACTIVE).
-                setType(ProductType.IPS);
-        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+        Product product = buildProduct();
 
         PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
@@ -67,7 +64,7 @@ public class PolicyServiceTest {
         verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
-        verify(cmdbService).installProduct(eq(installationBean));
+        verify(cmdbService).installProduct(new InstallationBean(username, accountId, serverDomainName, product));
     }
 
     @Test
@@ -95,16 +92,29 @@ public class PolicyServiceTest {
     @Test
     public void testUpdatePolicyForAccount() {
         //act
-        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new com.ctl.security.ips.common.domain.Policy());
+        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new Policy());
     }
 
     @Test
-    public void testDeletePolicyForAccount() {
+    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
+        //arrange
+
         //act
-        classUnderTest.deletePolicyForAccount(VALID_ACCOUNT, TEST_ID);
+        PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, buildPolicy().setUsername(USERNAME).setServerDomainName(SERVER_DOMAIN_NAME));
+        classUnderTest.deletePolicyForAccount(policyBean);
+
+        //assert
+        verify(dsmPolicyClient).securityProfileDelete(any(List.class));
+        verify(cmdbService).uninstallProduct(new InstallationBean(USERNAME, VALID_ACCOUNT, SERVER_DOMAIN_NAME, buildProduct()));
     }
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+    }
+
+    private Product buildProduct() {
+        return new Product().
+                setName(PolicyService.TREND_MICRO_IPS).
+                setType(ProductType.IPS);
     }
 }
