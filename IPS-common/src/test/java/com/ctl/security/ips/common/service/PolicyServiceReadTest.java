@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class PolicyServiceReadTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
-    private static final String TEST_ID = "test-vendorPolicyId";
+    private static final String TEST_ID = "12345";
 
     @InjectMocks
     private PolicyServiceRead classUnderTest;
