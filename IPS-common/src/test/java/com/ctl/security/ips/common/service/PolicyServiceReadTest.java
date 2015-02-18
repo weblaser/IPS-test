@@ -17,7 +17,6 @@ public class PolicyServiceReadTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
     private static final String TEST_ID = "test-vendorPolicyId";
-    private static final String INVALID_ACCOUNT = "TCCX";
 
     @InjectMocks
     private PolicyServiceRead classUnderTest;
@@ -28,34 +27,22 @@ public class PolicyServiceReadTest {
         List<Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
 
         //assert
-        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
-        for (com.ctl.security.ips.common.domain.Policy actual : policies) {
+        Policy expected = buildPolicy();
+        for (Policy actual : policies) {
             assertEquals(expected, actual);
         }
     }
 
-    @Test(expected = PolicyNotFoundException.class)
-    public void testGetPoliciesForAccountPolicyNotFoundException() {
-        //act
-        List<com.ctl.security.ips.common.domain.Policy> policies = classUnderTest.getPoliciesForAccount(INVALID_ACCOUNT);
-    }
-
-
     @Test
     public void testGetPolicyForAccount() {
         //act
-        com.ctl.security.ips.common.domain.Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
+        Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
 
         //assert
-        com.ctl.security.ips.common.domain.Policy expected = buildPolicy();
+        Policy expected = buildPolicy();
         assertEquals(expected, actual);
     }
 
-    @Test(expected = PolicyNotFoundException.class)
-    public void testGetPolicyForAccountPolicyNotFoundException() {
-        //act
-        classUnderTest.getPolicyForAccount(INVALID_ACCOUNT, TEST_ID);
-    }
 
     private com.ctl.security.ips.common.domain.Policy buildPolicy() {
         return new com.ctl.security.ips.common.domain.Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);

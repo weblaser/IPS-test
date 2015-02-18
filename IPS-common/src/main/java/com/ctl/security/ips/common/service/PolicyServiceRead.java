@@ -15,33 +15,21 @@ import java.util.List;
 @Component
 public class PolicyServiceRead {
 
-    public static final String VALID_ACCOUNT = "TCCD";
-    public static final String TEST_ID = "test-vendorPolicyId";
+    private static final String TEST_ID = "12345";
 
 
     public List<Policy> getPoliciesForAccount(String account) {
-
-        if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            List<Policy> hopeful = new ArrayList<>();
-            Policy policy = buildPolicy();
-            hopeful.add(policy);
-            return hopeful;
-        }
-        throw new PolicyNotFoundException("Policy not found for accountId: " + account);
+        List<Policy> hopeful = new ArrayList<>();
+        Policy policy = buildPolicy();
+        hopeful.add(policy);
+        return hopeful;
     }
 
     public Policy getPolicyForAccount(String account, String id) {
-
-        if (VALID_ACCOUNT.equalsIgnoreCase(account)) {
-            return buildPolicy();
-        }
-        throw new PolicyNotFoundException("Policy " + id + " not found for accountId: " + account);
+        return buildPolicy();
     }
 
-    public Policy buildPolicy() {
-        Policy policy = new Policy();
-        policy.setVendorPolicyId(TEST_ID);
-        policy.setStatus(PolicyStatus.ACTIVE);
-        return policy;
+    private Policy buildPolicy() {
+        return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
 }

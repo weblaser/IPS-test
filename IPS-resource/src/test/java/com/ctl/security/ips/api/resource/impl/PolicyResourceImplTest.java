@@ -5,6 +5,7 @@ import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
+import com.ctl.security.ips.common.service.PolicyServiceRead;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.maestro.service.PolicyService;
 import org.junit.Test;
@@ -30,6 +31,9 @@ public class PolicyResourceImplTest {
 
     @InjectMocks
     PolicyResource classUnderTest = new PolicyResourceImpl();
+
+    @Mock
+    private PolicyServiceRead policyServiceRead;
 
     @Mock
     private PolicyService policyService;
@@ -61,7 +65,7 @@ public class PolicyResourceImplTest {
         List<Policy> hopeful = new ArrayList<Policy>();
         Policy expected = buildPolicy();
         hopeful.add(expected);
-        when(policyService.policyServiceRead.getPoliciesForAccount(TEST_ACCOUNT)).thenReturn(hopeful);
+        when(policyServiceRead.getPoliciesForAccount(TEST_ACCOUNT)).thenReturn(hopeful);
 
         //act
         List<Policy> policies = classUnderTest.getPoliciesForAccount(TEST_ACCOUNT);
@@ -70,21 +74,21 @@ public class PolicyResourceImplTest {
         for (Policy actual : policies) {
             assertEquals(expected, actual);
         }
-        verify(policyService).policyServiceRead.getPoliciesForAccount(TEST_ACCOUNT);
+        verify(policyServiceRead).getPoliciesForAccount(TEST_ACCOUNT);
     }
 
     @Test
     public void testGetPolicyForAccount() {
         //arrange
         Policy expected = buildPolicy();
-        when(policyService.policyServiceRead.getPolicyForAccount(TEST_ACCOUNT, TEST_ID)).thenReturn(expected);
+        when(policyServiceRead.getPolicyForAccount(TEST_ACCOUNT, TEST_ID)).thenReturn(expected);
 
         //act
         Policy actual = classUnderTest.getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
 
         //assert
         assertEquals(expected, actual);
-        verify(policyService).policyServiceRead.getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
+        verify(policyServiceRead).getPolicyForAccount(TEST_ACCOUNT, TEST_ID);
     }
 
 

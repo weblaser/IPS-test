@@ -24,7 +24,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,8 +32,6 @@ public class PolicyServiceTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
     private static final String TEST_ID = "12345";
-    private static final String INVALID_ACCOUNT = "TCCX";
-    private static final String TEST_ID_2 = "4567";
     private static final String USERNAME = "username";
     private static final String SERVER_DOMAIN_NAME = "testServer";
 
@@ -66,45 +63,6 @@ public class PolicyServiceTest {
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
         verify(cmdbService).installProduct(new InstallationBean(username, accountId, serverDomainName, product));
     }
-
-    @Test
-    public void testGetPoliciesForAccount() {
-        //act
-        List<Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
-
-    @Test(expected = NotAuthorizedException.class)
-    public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
-        //act
-        String username = null;
-        String accountId = INVALID_ACCOUNT;
-        String serverDomainName = null;
-        Product product = null;
-        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
-        Policy policy = new Policy();
-
-        PolicyBean policyBean = new PolicyBean(accountId, policy);
-        classUnderTest.createPolicyForAccount(policyBean);
-    }
-
-
-        //assert
-        Policy expected = buildPolicy();
-        for (Policy actual : policies) {
-            assertEquals(expected, actual);
-        }
-    }
-
-    @Test
-    public void testGetPolicyForAccount() {
-        //act
-        Policy actual = classUnderTest.getPolicyForAccount(VALID_ACCOUNT, TEST_ID);
-
-        //assert
-        Policy expected = buildPolicy();
-        assertEquals(expected, actual);
-    }
-
-
 
     @Test
     public void testUpdatePolicyForAccount() {
