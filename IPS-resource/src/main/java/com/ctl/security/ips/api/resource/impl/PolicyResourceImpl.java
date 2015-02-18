@@ -4,9 +4,8 @@ import com.ctl.security.ips.api.jms.PolicyMessageSender;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
-import com.ctl.security.ips.common.service.PolicyServiceRead;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
-import com.ctl.security.ips.maestro.service.PolicyService;
+import com.ctl.security.ips.service.PolicyServiceRead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +16,6 @@ public class PolicyResourceImpl implements PolicyResource {
 
     @Autowired
     private PolicyServiceRead policyServiceRead;
-
-    @Autowired
-    private PolicyService policyService;
 
     @Autowired
     private PolicyMessageSender policyMessageSender;
@@ -42,13 +38,13 @@ public class PolicyResourceImpl implements PolicyResource {
 
     @Override
     public void updatePolicyForAccount(String account, String policyId, Policy policy) {
-        policyService.updatePolicyForAccount(account, policyId, policy);
+        policyServiceRead.updatePolicyForAccount(account, policyId, policy);
     }
 
-        //TODO this method needs to take a policy object as a body in order to get all the data we need
+    //TODO this method needs to take a policy object as a body in order to get all the data we need
     @Override
     public void deletePolicyForAccount(String account, String policyId) throws DsmPolicyClientException {
-        policyService.deletePolicyForAccount(new PolicyBean(account, new Policy().setVendorPolicyId(policyId)));
+        policyServiceRead.deletePolicyForAccount(new PolicyBean(account, new Policy().setVendorPolicyId(policyId)));
     }
 
 }

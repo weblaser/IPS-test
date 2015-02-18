@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>IPS-crud</artifactId>
-    <name>IPS-crud</name>
+    <artifactId>ips-service</artifactId>
+    <name>ips-service</name>
 
     <parent>
         <groupId>com.ctl.security.ips</groupId>
@@ -16,6 +16,16 @@
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-common</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ctl.security.ips</groupId>
+            <artifactId>IPS-dsm</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ctl.security.data</groupId>
+            <artifactId>security-data-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

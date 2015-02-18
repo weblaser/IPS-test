@@ -5,9 +5,8 @@ import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
-import com.ctl.security.ips.common.service.PolicyServiceRead;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
-import com.ctl.security.ips.maestro.service.PolicyService;
+import com.ctl.security.ips.service.PolicyServiceRead;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -36,9 +35,6 @@ public class PolicyResourceImplTest {
     private PolicyServiceRead policyServiceRead;
 
     @Mock
-    private PolicyService policyService;
-
-    @Mock
     private PolicyMessageSender policyMessageSender;
 
     @Test
@@ -50,7 +46,6 @@ public class PolicyResourceImplTest {
         String accountId = TEST_ACCOUNT;
 
         PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
-        when(policyService.createPolicyForAccount(policyBean)).thenReturn(expectedPolicy);
 
         //act
         classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated);
@@ -98,7 +93,7 @@ public class PolicyResourceImplTest {
         classUnderTest.updatePolicyForAccount(TEST_ACCOUNT, TEST_ID, new Policy());
 
         //assert
-        verify(policyService).updatePolicyForAccount(eq(TEST_ACCOUNT), eq(TEST_ID), any(Policy.class));
+        verify(policyServiceRead).updatePolicyForAccount(eq(TEST_ACCOUNT), eq(TEST_ID), any(Policy.class));
     }
 
     @Test
@@ -107,7 +102,7 @@ public class PolicyResourceImplTest {
         classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID);
 
         //assert
-        verify(policyService).deletePolicyForAccount(any(PolicyBean.class));
+        verify(policyServiceRead).deletePolicyForAccount(any(PolicyBean.class));
     }
 
     private Policy buildPolicy() {

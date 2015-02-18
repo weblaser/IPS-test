@@ -1,5 +1,6 @@
 package com.ctl.security.ips.api.jms;
 
+import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.jms.PolicyOperation;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,4 +20,6 @@ public class PolicyMessageSender {
     public void createPolicyForAccount(final PolicyBean policyBean) {
         jmsTemplate.convertAndSend(PolicyOperation.CREATE_POLICY_FOR_ACCOUNT, policyBean);
     }
+
+
 }

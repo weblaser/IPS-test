@@ -1,4 +1,4 @@
-package com.ctl.security.ips.crud.config;
+package com.ctl.security.ips.service.config;
 
 
 import org.junit.Test;

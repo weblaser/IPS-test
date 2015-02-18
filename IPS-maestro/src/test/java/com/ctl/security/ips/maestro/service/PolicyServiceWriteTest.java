@@ -2,16 +2,14 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
-import com.ctl.security.data.common.domain.mongo.ProductStatus;
 import com.ctl.security.data.common.domain.mongo.ProductType;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
-import com.ctl.security.ips.common.exception.NotAuthorizedException;
-import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.service.PolicyServiceRead;
 import manager.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,21 +26,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PolicyServiceTest {
+public class PolicyServiceWriteTest {
 
     private static final String VALID_ACCOUNT = "TCCD";
     private static final String TEST_ID = "12345";
-    private static final String USERNAME = "username";
-    private static final String SERVER_DOMAIN_NAME = "testServer";
+
 
     @InjectMocks
-    private PolicyService classUnderTest;
+    private PolicyServiceWrite classUnderTest;
 
     @Mock
     private DsmPolicyClient dsmPolicyClient;
 
     @Mock
     private CmdbService cmdbService;
+
+    @Mock
+    private PolicyServiceRead policyServiceRead;
 
     @Test
     public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
@@ -64,24 +64,6 @@ public class PolicyServiceTest {
         verify(cmdbService).installProduct(new InstallationBean(username, accountId, serverDomainName, product));
     }
 
-    @Test
-    public void testUpdatePolicyForAccount() {
-        //act
-        classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new Policy());
-    }
-
-    @Test
-    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
-        //arrange
-
-        //act
-        PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, buildPolicy().setUsername(USERNAME).setServerDomainName(SERVER_DOMAIN_NAME));
-        classUnderTest.deletePolicyForAccount(policyBean);
-
-        //assert
-        verify(dsmPolicyClient).securityProfileDelete(any(List.class));
-        verify(cmdbService).uninstallProduct(new InstallationBean(USERNAME, VALID_ACCOUNT, SERVER_DOMAIN_NAME, buildProduct()));
-    }
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
@@ -89,7 +71,7 @@ public class PolicyServiceTest {
 
     private Product buildProduct() {
         return new Product().
-                setName(PolicyService.TREND_MICRO_IPS).
+                setName(PolicyServiceRead.TREND_MICRO_IPS).
                 setType(ProductType.IPS);
     }
 }
