@@ -72,6 +72,21 @@ public class PolicyServiceTest {
         //act
         List<Policy> policies = classUnderTest.getPoliciesForAccount(VALID_ACCOUNT);
 
+    @Test(expected = NotAuthorizedException.class)
+    public void testCreatePolicyForAccountNotAuthorizedException() throws DsmPolicyClientException {
+        //act
+        String username = null;
+        String accountId = INVALID_ACCOUNT;
+        String serverDomainName = null;
+        Product product = null;
+        InstallationBean installationBean = new InstallationBean(username, accountId, serverDomainName, product);
+        Policy policy = new Policy();
+
+        PolicyBean policyBean = new PolicyBean(accountId, policy);
+        classUnderTest.createPolicyForAccount(policyBean);
+    }
+
+
         //assert
         Policy expected = buildPolicy();
         for (Policy actual : policies) {
@@ -88,6 +103,8 @@ public class PolicyServiceTest {
         Policy expected = buildPolicy();
         assertEquals(expected, actual);
     }
+
+
 
     @Test
     public void testUpdatePolicyForAccount() {
