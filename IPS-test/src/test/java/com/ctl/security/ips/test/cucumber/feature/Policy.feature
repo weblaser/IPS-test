@@ -1,7 +1,7 @@
 @ALL_TESTS @Regression
 Feature:  Security - policy
 
-@WIP
+
   Scenario: Get valid response when creating a policy for an account
 
     Given I have a valid account
@@ -50,13 +50,14 @@ Feature:  Security - policy
     When I PUT a valid policy
     Then I receive a response that does not contain an error message
 
+  @WIP
   Scenario: Get valid response when deleting a policy for an account
 
     Given I have an valid account
     When I DELETE a valid policy
     Then I receive a response that does not contain an error message
 
-
+  @WIP
   Scenario: Get invalid response when deleting a policy for an account
 
     Given I have an invalid account

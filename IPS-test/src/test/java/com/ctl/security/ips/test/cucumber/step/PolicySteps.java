@@ -7,7 +7,6 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
-import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
@@ -93,7 +92,6 @@ public class PolicySteps {
 
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
-
         if (VALID.equalsIgnoreCase(validity)) {
             accountId = VALID_AA;
             ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
@@ -154,6 +152,22 @@ public class PolicySteps {
         verifyCmdbCreation();
     }
 
+    @Then("^I receive a response that does not contain an error message$")
+    public void I_receive_a_response_that_does_not_contain_an_error_message() {
+
+    }
+
+    @Then("^I receive a response with error message (.*)$")
+    public void I_receive_a_response_with_error_message(String message) throws Throwable {
+        if (exception instanceof PolicyNotFoundException) {
+            assertNotNull(message, exception.getMessage());
+        } else if (exception instanceof NotAuthorizedException) {
+            assertNotNull(message, exception.getMessage());
+        } else {
+            fail();
+        }
+    }
+
     private void verifyCmdbCreation() throws InterruptedException {
 
         UserResource user = null;
@@ -186,23 +200,8 @@ public class PolicySteps {
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
 
-    @Then("^I receive a response that does not contain an error message$")
-    public void I_receive_a_response_that_does_not_contain_an_error_message() {
-    }
-
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
-    }
-
-    @Then("^I receive a response with error message (.*)$")
-    public void I_receive_a_response_with_error_message(String message) throws Throwable {
-        if (exception instanceof PolicyNotFoundException) {
-            assertNotNull(message, exception.getMessage());
-        } else if (exception instanceof NotAuthorizedException) {
-            assertNotNull(message, exception.getMessage());
-        } else {
-            fail();
-        }
     }
 
 

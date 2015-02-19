@@ -43,8 +43,10 @@ public class PolicyResourceImpl implements PolicyResource {
 
     //TODO this method needs to take a policy object as a body in order to get all the data we need
     @Override
-    public void deletePolicyForAccount(String account, String policyId) throws DsmPolicyClientException {
-        policyServiceRead.deletePolicyForAccount(new PolicyBean(account, new Policy().setVendorPolicyId(policyId)));
+    public void deletePolicyForAccount(String accountId,String policyId, Policy policy) throws DsmPolicyClientException {
+//        PolicyBean policyBean = new PolicyBean(accountId, policy);
+//        policyMessageSender.deletePolicyForAccount(policyBean);
+        policyServiceRead.deletePolicyForAccount(new PolicyBean(accountId, policy));
     }
 
 }

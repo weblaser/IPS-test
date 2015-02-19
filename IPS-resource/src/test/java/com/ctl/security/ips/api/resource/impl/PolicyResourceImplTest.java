@@ -99,7 +99,7 @@ public class PolicyResourceImplTest {
     @Test
     public void testDeletePolicyForAccount() throws DsmPolicyClientException {
         //act
-        classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID);
+        classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID, new Policy());
 
         //assert
         verify(policyServiceRead).deletePolicyForAccount(any(PolicyBean.class));
