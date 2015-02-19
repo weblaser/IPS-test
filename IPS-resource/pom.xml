@@ -13,7 +13,7 @@
     </parent>
 
     <build>
-        <finalName>ips</finalName>
+        <finalName>ips-resource</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -21,7 +21,7 @@
                 <version>2.5</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>ips</warName>
+                    <warName>ips-resource</warName>
                 </configuration>
             </plugin>
         </plugins>
@@ -39,11 +39,7 @@
             <artifactId>ips-service</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.ctl.security.ips</groupId>
-            <artifactId>IPS-maestro</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>com.ctl.security.acegi</groupId>
             <artifactId>security-acegi</artifactId>
