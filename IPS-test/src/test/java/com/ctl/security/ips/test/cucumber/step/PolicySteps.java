@@ -159,13 +159,14 @@ public class PolicySteps {
         UserResource user = null;
 
         int i = 0;
-        int maxTries = 30;
+        int maxTries = 10;
         while(i < maxTries && (user == null || user.getId() == null)){
             user = userClient.getUser(policy.getUsername(), accountId);
             Thread.sleep(1000);
             i++;
         }
 
+        assertNotNull(user.getId());
         assertNotNull(user.getContent());
         assertNotNull(user.getContent().getId());
         assertNotNull(user.getContent().getProductUserActivities());

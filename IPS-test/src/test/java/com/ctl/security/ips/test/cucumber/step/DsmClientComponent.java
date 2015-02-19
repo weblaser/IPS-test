@@ -25,7 +25,7 @@ public class DsmClientComponent {
         Policy retrievedPolicy = null;
 
         int i = 0;
-        int maxTries = 30;
+        int maxTries = 10;
         while(i < maxTries && (retrievedPolicy == null || retrievedPolicy.getName() == null)){
             retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(newlyCreatedCtlPolicy.getName());
             Thread.sleep(1000);
