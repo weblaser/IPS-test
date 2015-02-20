@@ -83,6 +83,23 @@ public class PolicySteps {
         }
     }
 
+    @When("^I POST a policy$")
+    public void I_POST_a_policy() {
+        try {
+            policy = new Policy();
+            String name = "name" + System.currentTimeMillis();
+            String serverDomainName = "server.domain.name." + System.currentTimeMillis();
+            String userName = "userName" + System.currentTimeMillis();
+            policy.setName(name).
+                    setServerDomainName(serverDomainName).
+                    setUsername(userName);
+
+            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
+        } catch (Exception e) {
+            exception = e;
+        }
+    }
+
     @Given("^I (GET|PUT|DELETE) an? (valid|invalid) policy$")
     public void I_METHOD_validity_policy(String method, String validity) {
         String id;
@@ -103,28 +120,32 @@ public class PolicySteps {
             exception = e;
         }
     }
+//
+//    @Given("^an active policy exists$")
+//    public void an_active_policy_exists() {
+//        String id = VALID_POLICY_ID;
+//        accountId = VALID_AA;
+//        ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
+//        bearerToken = clcAuthenticationResponse.getBearerToken();
+//        policy = policyClient.getPolicyForAccount(accountId, id, bearerToken);
+//    }
+//
+//    @When("^the policy is deleted$")
+//    public void the_policy_is_deleted() throws Throwable {
+//        // Express the Regexp above with the code you wish you had
+//        throw new PendingException();
+//    }
+//
+//    @Then("^the policy is no longer found$")
+//    public void the_policy_is_no_longer_found() throws Throwable {
+//        // Express the Regexp above with the code you wish you had
+//        throw new PendingException();
+//    }
 
     @When("^I GET the policies$")
     public void i_GET_the_policies() {
         try {
             policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
-        } catch (Exception e) {
-            exception = e;
-        }
-    }
-
-    @When("^I POST a policy$")
-    public void I_POST_a_policy() {
-        try {
-            policy = new Policy();
-            String name = "name" + System.currentTimeMillis();
-            String serverDomainName = "server.domain.name." + System.currentTimeMillis();
-            String userName = "userName" + System.currentTimeMillis();
-            policy.setName(name).
-                    setServerDomainName(serverDomainName).
-                    setUsername(userName);
-
-            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -154,7 +175,6 @@ public class PolicySteps {
 
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
-        assertNull(exception);
     }
 
     @Then("^I receive a response with error message (.*)$")
@@ -200,10 +220,12 @@ public class PolicySteps {
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
 
+
     private Policy buildPolicy() {
-        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
+        return new Policy().
+                setVendorPolicyId(VALID_POLICY_ID).
+                setStatus(PolicyStatus.ACTIVE);
+
     }
-
-
 }
 
