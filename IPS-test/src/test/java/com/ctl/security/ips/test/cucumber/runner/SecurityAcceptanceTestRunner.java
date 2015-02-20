@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(monochrome = true,
         tags = {"@RUN_NO_TESTS"}, // You must explicitly state which tests to run
+        format = {"html:target/cucumber", "junit:target/junit.xml", "json:target/cucumber-report.json"},
         features = {"src/test/java/com/ctl/security/ips/test/cucumber/feature"},
         glue = {"com/ctl/security/ips/test/cucumber/step"}
 )
