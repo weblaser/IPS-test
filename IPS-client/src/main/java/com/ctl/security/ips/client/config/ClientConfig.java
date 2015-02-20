@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by Kevin.Weber on 10/29/2014.
+ *
  */
 @Configuration
 @ComponentScan(basePackages = "com.ctl.security.ips.client")

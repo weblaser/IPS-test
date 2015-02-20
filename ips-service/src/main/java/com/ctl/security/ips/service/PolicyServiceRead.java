@@ -1,12 +1,8 @@
 package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.service.CmdbService;
-import com.ctl.security.data.common.domain.mongo.Product;
-import com.ctl.security.data.common.domain.mongo.ProductType;
-import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
-import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
@@ -19,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by kevin.wilde on 2/17/2015.
+ *
  */
 
 @Component

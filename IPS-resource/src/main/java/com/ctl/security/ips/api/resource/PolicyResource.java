@@ -68,5 +68,7 @@ public interface PolicyResource {
             @ApiResponse(code = BAD_REQUEST, message = POLICY_NOT_FOUND),
             @ApiResponse(code = FORBIDDEN, message = UNAUTHORIZED)})
     void deletePolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
-                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId) throws DsmPolicyClientException;
+                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId,
+                                @ApiParam(value = POLICY, required = true) Policy policy) throws DsmPolicyClientException;
+
 }

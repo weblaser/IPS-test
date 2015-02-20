@@ -8,10 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by kevin.wilde on 2/13/2015.
- */
-
 @Component
 public class PolicyListener {
 
