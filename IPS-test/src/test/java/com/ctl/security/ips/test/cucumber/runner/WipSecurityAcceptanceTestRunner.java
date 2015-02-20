@@ -11,6 +11,5 @@ import org.junit.runner.RunWith;
         features = {"src/test/java/com/ctl/security/ips/test/cucumber/feature"},
         glue = {"com/ctl/security/ips/test/cucumber/step"}
 )
-public class WipSecurityAcceptanceTestRunner {
 
-}
+public class WipSecurityAcceptanceTestRunner {}

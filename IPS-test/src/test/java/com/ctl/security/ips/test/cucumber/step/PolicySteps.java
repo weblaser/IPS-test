@@ -71,25 +71,6 @@ public class PolicySteps {
     @Autowired
     private UserClient userClient;
 
-    @When("^I GET the policies$")
-    public void i_GET_the_policies() {
-        try {
-            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
-        } catch (Exception e) {
-            exception = e;
-        }
-    }
-
-    @Then("^I receive a response that contains the expected list of policies$")
-    public void i_receive_a_response_that_contains_the_expected_list_of_policies() {
-        Policy expected = buildPolicy();
-        assertNotNull(policyList);
-        assertTrue(!policyList.isEmpty());
-        for (Policy actual : policyList) {
-            assertEquals(expected, actual);
-        }
-    }
-
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
@@ -123,10 +104,13 @@ public class PolicySteps {
         }
     }
 
-    @Then("^I receive a response that contains the expected policy$")
-    public void I_receive_a_response_that_contains_the_expected_policy() {
-        Policy expected = buildPolicy();
-        assertEquals(expected, policy);
+    @When("^I GET the policies$")
+    public void i_GET_the_policies() {
+        try {
+            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
+        } catch (Exception e) {
+            exception = e;
+        }
     }
 
     @When("^I POST a policy$")
@@ -146,6 +130,22 @@ public class PolicySteps {
         }
     }
 
+    @Then("^I receive a response that contains the expected list of policies$")
+    public void i_receive_a_response_that_contains_the_expected_list_of_policies() {
+        Policy expected = buildPolicy();
+        assertNotNull(policyList);
+        assertTrue(!policyList.isEmpty());
+        for (Policy actual : policyList) {
+            assertEquals(expected, actual);
+        }
+    }
+
+    @Then("^I receive a response that contains the expected policy$")
+    public void I_receive_a_response_that_contains_the_expected_policy() {
+        Policy expected = buildPolicy();
+        assertEquals(expected, policy);
+    }
+
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
@@ -154,7 +154,7 @@ public class PolicySteps {
 
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
-
+        assertNull(exception);
     }
 
     @Then("^I receive a response with error message (.*)$")
