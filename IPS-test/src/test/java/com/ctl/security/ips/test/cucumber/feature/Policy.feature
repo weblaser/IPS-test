@@ -39,7 +39,7 @@ Feature:  Security - policy
     Then I receive a response with error message 403 Forbidden.
 
 ######PUT######
-  @WIP
+
   Scenario: Get valid response when updating a policy for an account
     Given I have an valid account
     When I PUT a valid policy
