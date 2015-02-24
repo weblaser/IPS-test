@@ -29,4 +29,12 @@ public class PolicyMessageSenderTest {
         verify(jmsTemplate).convertAndSend(PolicyOperation.CREATE_POLICY_FOR_ACCOUNT, policyBean);
     }
 
+    @Test
+    public void testDeletePolicyForAccount_sendsMessage() throws Exception {
+        PolicyBean policyBean = null;
+
+        classUnderTest.deletePolicyForAccount(policyBean);
+
+        verify(jmsTemplate).convertAndSend(PolicyOperation.DELETE_POLICY_FOR_ACCOUNT, policyBean);
+    }
 }

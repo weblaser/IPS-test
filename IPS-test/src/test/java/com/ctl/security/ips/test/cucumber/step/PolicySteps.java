@@ -93,7 +93,6 @@ public class PolicySteps {
 
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
-
         if (VALID.equalsIgnoreCase(validity)) {
             accountId = VALID_AA;
             ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
@@ -101,6 +100,23 @@ public class PolicySteps {
         } else {
             accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
+        }
+    }
+
+    @When("^I POST a policy$")
+    public void I_POST_a_policy() {
+        try {
+            policy = new Policy();
+            String name = "name" + System.currentTimeMillis();
+            serverDomainName = "server.domain.name." + System.currentTimeMillis();
+            String userName = "userName" + System.currentTimeMillis();
+            policy.setName(name).
+                    setServerDomainName(serverDomainName).
+                    setUsername(userName);
+
+            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
+        } catch (Exception e) {
+            exception = e;
         }
     }
 
@@ -142,27 +158,11 @@ public class PolicySteps {
         return retrievedPolicy;
     }
 
+
     @Then("^I receive a response that contains the expected policy$")
     public void I_receive_a_response_that_contains_the_expected_policy() {
         Policy expected = buildPolicy();
         assertEquals(expected, policy);
-    }
-
-    @When("^I POST a policy$")
-    public void I_POST_a_policy() {
-        try {
-            policy = new Policy();
-            String name = "name" + System.currentTimeMillis();
-            serverDomainName = "server.domain.name." + System.currentTimeMillis();
-            String userName = "userName" + System.currentTimeMillis();
-            policy.setName(name).
-                    setServerDomainName(serverDomainName).
-                    setUsername(userName);
-
-            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
-        } catch (Exception e) {
-            exception = e;
-        }
     }
 
     @Then("^I receive a response that contains a uuid for the created policy$")

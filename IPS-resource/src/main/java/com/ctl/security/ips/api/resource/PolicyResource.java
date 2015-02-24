@@ -10,7 +10,6 @@ import java.util.List;
 
 @Path("/policies")
 @Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
 @Api(value = "/policies", description = "Policy Resource")
 public interface PolicyResource {
 

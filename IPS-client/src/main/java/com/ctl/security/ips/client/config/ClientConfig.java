@@ -12,6 +12,7 @@ import java.net.URI;
 
 /**
  * Created by Kevin.Weber on 10/29/2014.
+ *
  */
 @Configuration
 @ComponentScan(basePackages = "com.ctl.security.ips.client")
