@@ -49,6 +49,7 @@ public class PolicySteps {
 
     private String accountId;
     private String bearerToken;
+    private String serverDomainName;
 
     @Autowired
     private AuthenticationClient authenticationClient;
@@ -71,6 +72,25 @@ public class PolicySteps {
     @Autowired
     private UserClient userClient;
 
+    @When("^I GET the policies$")
+    public void i_GET_the_policies() {
+        try {
+            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
+        } catch (Exception e) {
+            exception = e;
+        }
+    }
+
+    @Then("^I receive a response that contains the expected list of policies$")
+    public void i_receive_a_response_that_contains_the_expected_list_of_policies() {
+        Policy expected = buildPolicy();
+        assertNotNull(policyList);
+        assertTrue(!policyList.isEmpty());
+        for (Policy actual : policyList) {
+            assertEquals(expected, actual);
+        }
+    }
+
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
@@ -88,7 +108,7 @@ public class PolicySteps {
         try {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
-            String serverDomainName = "server.domain.name." + System.currentTimeMillis();
+            serverDomainName = "server.domain.name." + System.currentTimeMillis();
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
                     setServerDomainName(serverDomainName).
@@ -114,52 +134,30 @@ public class PolicySteps {
             } else if ("PUT".equals(method)) {
                 policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             } else {
-                policyClient.deletePolicyForAccount(accountId, id, bearerToken);
+
+                String policyName = policy.getName();
+                Policy retrievedPolicy = getPolicyWithWait(policyName);
+                id = retrievedPolicy.getVendorPolicyId();
+
+                policyClient.deletePolicyForAccount(accountId, id, VALID_USERNAME, serverDomainName, bearerToken);
             }
         } catch (Exception e) {
             exception = e;
         }
     }
-//
-//    @Given("^an active policy exists$")
-//    public void an_active_policy_exists() {
-//        String id = VALID_POLICY_ID;
-//        accountId = VALID_AA;
-//        ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
-//        bearerToken = clcAuthenticationResponse.getBearerToken();
-//        policy = policyClient.getPolicyForAccount(accountId, id, bearerToken);
-//    }
-//
-//    @When("^the policy is deleted$")
-//    public void the_policy_is_deleted() throws Throwable {
-//        // Express the Regexp above with the code you wish you had
-//        throw new PendingException();
-//    }
-//
-//    @Then("^the policy is no longer found$")
-//    public void the_policy_is_no_longer_found() throws Throwable {
-//        // Express the Regexp above with the code you wish you had
-//        throw new PendingException();
-//    }
 
-    @When("^I GET the policies$")
-    public void i_GET_the_policies() {
-        try {
-            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
-        } catch (Exception e) {
-            exception = e;
+    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+        Policy retrievedPolicy = null;
+        int i = 0;
+        int maxTries = 10;
+        while(i < maxTries && retrievedPolicy == null){
+            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
+            Thread.sleep(1000);
+            i++;
         }
+        return retrievedPolicy;
     }
 
-    @Then("^I receive a response that contains the expected list of policies$")
-    public void i_receive_a_response_that_contains_the_expected_list_of_policies() {
-        Policy expected = buildPolicy();
-        assertNotNull(policyList);
-        assertTrue(!policyList.isEmpty());
-        for (Policy actual : policyList) {
-            assertEquals(expected, actual);
-        }
-    }
 
     @Then("^I receive a response that contains the expected policy$")
     public void I_receive_a_response_that_contains_the_expected_policy() {
@@ -173,8 +171,35 @@ public class PolicySteps {
         verifyCmdbCreation();
     }
 
+
+
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
+    }
+
+    @Then("^I see that the policy has been deleted$")
+    public void i_see_that_the_policy_has_been_deleted() throws Throwable {
+
+        assertNull(exception);
+
+        //TODO: We need the GET operation to work before we can test it in this way.
+//        boolean isDeleted = false;
+//
+//        int i = 0;
+//        int maxTries = 10;
+//        while(i < maxTries && !isDeleted){
+//            Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policy.getName());
+//            if(retrievedPolicy == null || retrievedPolicy.getName() == null){
+//                isDeleted = true;
+//            }
+//            Thread.sleep(1000);
+//            i++;
+//        }
+//        assertTrue(isDeleted);
+    }
+
+    private Policy buildPolicy() {
+        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
     }
 
     @Then("^I receive a response with error message (.*)$")
@@ -184,6 +209,9 @@ public class PolicySteps {
         } else if (exception instanceof NotAuthorizedException) {
             assertNotNull(message, exception.getMessage());
         } else {
+            if(exception != null){
+                exception.printStackTrace();
+            }
             fail();
         }
     }
@@ -218,14 +246,6 @@ public class PolicySteps {
         userClient.deleteUser(user.getContent().getId());
         productUserActivities.stream().forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
-    }
-
-
-    private Policy buildPolicy() {
-        return new Policy().
-                setVendorPolicyId(VALID_POLICY_ID).
-                setStatus(PolicyStatus.ACTIVE);
-
     }
 }
 

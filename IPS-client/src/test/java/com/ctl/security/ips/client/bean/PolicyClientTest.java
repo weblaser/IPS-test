@@ -1,7 +1,5 @@
 package com.ctl.security.ips.client.bean;
 
-import com.ctl.security.data.common.domain.mongo.Product;
-import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
@@ -12,8 +10,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +35,7 @@ public class PolicyClientTest {
     private static final String TEST_ID = "12345";
     private static final String INVALID_ACCOUNT = "TCCX";
     private static final String SAMPLE_TOKEN = "Bearer sampletoken";
+
 
     @Mock
     private RestTemplate restTemplate;
@@ -167,30 +168,45 @@ public class PolicyClientTest {
     @Test
     public void testDeletePolicyForAccount() {
         //arrange
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.DELETE), any(HttpEntity.class), eq(String.class))).thenReturn(stringEntity);
+        String hostUrl = "hostUrl/";
+        ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
+        Policy policy = buildPolicy();
+        HttpEntity policyHttpEntity = new HttpEntity<>(createHeaders(SAMPLE_TOKEN));
 
         //act
-        classUnderTest.deletePolicyForAccount(VALID_ACCOUNT, TEST_ID, SAMPLE_TOKEN);
+        String username = null;
+        String serverDomainName = null;
+        classUnderTest.deletePolicyForAccount(VALID_ACCOUNT, TEST_ID, username, serverDomainName, SAMPLE_TOKEN);
+
+
+        verify(restTemplate).exchange(eq(hostUrl + PolicyClient.POLICIES + VALID_ACCOUNT + "/" + TEST_ID + "/" + serverDomainName + "?" +
+                PolicyClient.USERNAME + "=" + username), eq(HttpMethod.DELETE), eq(policyHttpEntity), eq(String.class));
     }
 
     @Test(expected = NotAuthorizedException.class)
     public void testDeletePolicyForAccountNotAuthorizedException() {
         //arrange
+        Policy policy = buildPolicy();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.DELETE),
                 any(HttpEntity.class), eq(String.class))).thenThrow(new RestClientException("403 Forbidden."));
 
         //act
-        classUnderTest.deletePolicyForAccount(INVALID_ACCOUNT, TEST_ID, SAMPLE_TOKEN);
+        String username = null;
+        String serverDomainName = null;
+        classUnderTest.deletePolicyForAccount(INVALID_ACCOUNT, TEST_ID, username, serverDomainName, SAMPLE_TOKEN);
     }
 
     @Test(expected = PolicyNotFoundException.class)
     public void testDeletePolicyForAccountPolicyNotFoundException() {
         //arrange
+        Policy policy = buildPolicy();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.DELETE),
                 any(HttpEntity.class), eq(String.class))).thenThrow(new RestClientException("400 Bad Request."));
 
         //act
-        classUnderTest.deletePolicyForAccount(INVALID_ACCOUNT, TEST_ID, SAMPLE_TOKEN);
+        String username = null;
+        String serverDomainName = null;
+        classUnderTest.deletePolicyForAccount(INVALID_ACCOUNT, TEST_ID, username, serverDomainName, SAMPLE_TOKEN);
     }
 
     private List<Policy> buildPolicyList() {
@@ -202,5 +218,12 @@ public class PolicyClientTest {
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+    }
+
+
+    private HttpHeaders createHeaders(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(PolicyClient.AUTHORIZATION, PolicyClient.BEARER + token);
+        return headers;
     }
 }
