@@ -50,15 +50,18 @@ Feature:  Security - policy
     When I PUT a valid policy
     Then I receive a response that does not contain an error message
 
+
   Scenario: Get valid response when deleting a policy for an account
 
     Given I have an valid account
+    And I POST a policy
     When I DELETE a valid policy
-    Then I receive a response that does not contain an error message
+    Then I see that the policy has been deleted
 
 
   Scenario: Get invalid response when deleting a policy for an account
 
     Given I have an invalid account
+    And I POST a policy
     When I DELETE a valid policy
     Then I receive a response with error message 403 Forbidden.

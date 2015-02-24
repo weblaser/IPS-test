@@ -22,9 +22,10 @@ import java.util.List;
 @Service
 public class PolicyClient {
 
-    private static final String POLICIES = "policies/";
-    private static final String AUTHORIZATION = "Authorization";
-    private static final String BEARER = "Bearer ";
+    public static final String POLICIES = "policies/";
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String BEARER = "Bearer ";
+    public static final String USERNAME = "username";
 
     @Value("${${spring.profiles.active:local}.ips.host}")
     private String hostUrl;
@@ -72,9 +73,10 @@ public class PolicyClient {
         }
     }
 
-    public void deletePolicyForAccount(String account, String id, String token) {
+    public void deletePolicyForAccount(String account, String id, String username, String serverDomainName, String token) {
+        String address = hostUrl + POLICIES + account + "/" + id + "/" + serverDomainName + "?" + USERNAME + "=" + username;
         try {
-            restTemplate.exchange(hostUrl + POLICIES + account + "/" + id,
+            restTemplate.exchange(address,
                     HttpMethod.DELETE, new HttpEntity<>(createHeaders(token)), String.class);
         } catch (RestClientException rce) {
             fail(rce);

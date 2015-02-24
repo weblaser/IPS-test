@@ -10,6 +10,7 @@ import java.util.List;
 
 @Path("/policies")
 @Produces({MediaType.APPLICATION_JSON})
+@Consumes({MediaType.APPLICATION_JSON})
 @Api(value = "/policies", description = "Policy Resource")
 public interface PolicyResource {
 
@@ -20,6 +21,10 @@ public interface PolicyResource {
     String POLICYID = "policyId";
     String UNAUTHORIZED = "Unauthorized";
     String POLICY_NOT_FOUND = "Policy Not Found";
+    String USERNAME_LABEL = "Username";
+    String USERNAME = "username";
+    String SERVER_DOMAIN_NAME_LABEL = "Server Domain Name";
+    public static final String SERVER_DOMAIN_NAME = "serverDomainName";
 
     int NO_CONTENT = 204;
     int OK = 200;
@@ -62,11 +67,13 @@ public interface PolicyResource {
                                 @ApiParam(value = POLICY, required = true) Policy policy);
 
     @DELETE
-    @Path("/{acct}/{policyId}")
+    @Path("/{acct}/{policyId}/{serverDomainName}")
     @ApiOperation(value = "Delete Policy for Given Account")
     @ApiResponses(value = {@ApiResponse(code = NO_CONTENT, message = "Policy Deleted"),
             @ApiResponse(code = BAD_REQUEST, message = POLICY_NOT_FOUND),
             @ApiResponse(code = FORBIDDEN, message = UNAUTHORIZED)})
     void deletePolicyForAccount(@ApiParam(value = ACCOUNT, required = true) @PathParam(ACCT) String account,
-                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId) throws DsmPolicyClientException;
+                                @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICYID) String policyId,
+                                @ApiParam(value = SERVER_DOMAIN_NAME_LABEL, required = true) @PathParam(SERVER_DOMAIN_NAME) String serverDomainName,
+                                @ApiParam(value = USERNAME_LABEL, required = true) @QueryParam(USERNAME) String username) throws DsmPolicyClientException;
 }

@@ -7,7 +7,6 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
-import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
@@ -50,6 +49,7 @@ public class PolicySteps {
 
     private String accountId;
     private String bearerToken;
+    private String serverDomainName;
 
     @Autowired
     private AuthenticationClient authenticationClient;
@@ -118,11 +118,28 @@ public class PolicySteps {
             } else if ("PUT".equals(method)) {
                 policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             } else {
-                policyClient.deletePolicyForAccount(accountId, id, bearerToken);
+
+                String policyName = policy.getName();
+                Policy retrievedPolicy = getPolicyWithWait(policyName);
+                id = retrievedPolicy.getVendorPolicyId();
+
+                policyClient.deletePolicyForAccount(accountId, id, VALID_USERNAME, serverDomainName, bearerToken);
             }
         } catch (Exception e) {
             exception = e;
         }
+    }
+
+    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+        Policy retrievedPolicy = null;
+        int i = 0;
+        int maxTries = 10;
+        while(i < maxTries && retrievedPolicy == null){
+            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
+            Thread.sleep(1000);
+            i++;
+        }
+        return retrievedPolicy;
     }
 
     @Then("^I receive a response that contains the expected policy$")
@@ -136,7 +153,7 @@ public class PolicySteps {
         try {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
-            String serverDomainName = "server.domain.name." + System.currentTimeMillis();
+            serverDomainName = "server.domain.name." + System.currentTimeMillis();
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
                     setServerDomainName(serverDomainName).
@@ -152,6 +169,51 @@ public class PolicySteps {
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
         verifyCmdbCreation();
+    }
+
+
+
+    @Then("^I receive a response that does not contain an error message$")
+    public void I_receive_a_response_that_does_not_contain_an_error_message() {
+    }
+
+    @Then("^I see that the policy has been deleted$")
+    public void i_see_that_the_policy_has_been_deleted() throws Throwable {
+
+        assertNull(exception);
+
+        //TODO: We need the GET operation to work before we can test it in this way.
+//        boolean isDeleted = false;
+//
+//        int i = 0;
+//        int maxTries = 10;
+//        while(i < maxTries && !isDeleted){
+//            Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policy.getName());
+//            if(retrievedPolicy == null || retrievedPolicy.getName() == null){
+//                isDeleted = true;
+//            }
+//            Thread.sleep(1000);
+//            i++;
+//        }
+//        assertTrue(isDeleted);
+    }
+
+    private Policy buildPolicy() {
+        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
+    }
+
+    @Then("^I receive a response with error message (.*)$")
+    public void I_receive_a_response_with_error_message(String message) throws Throwable {
+        if (exception instanceof PolicyNotFoundException) {
+            assertNotNull(message, exception.getMessage());
+        } else if (exception instanceof NotAuthorizedException) {
+            assertNotNull(message, exception.getMessage());
+        } else {
+            if(exception != null){
+                exception.printStackTrace();
+            }
+            fail();
+        }
     }
 
     private void verifyCmdbCreation() throws InterruptedException {
@@ -185,26 +247,5 @@ public class PolicySteps {
         productUserActivities.stream().forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
-
-    @Then("^I receive a response that does not contain an error message$")
-    public void I_receive_a_response_that_does_not_contain_an_error_message() {
-    }
-
-    private Policy buildPolicy() {
-        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
-    }
-
-    @Then("^I receive a response with error message (.*)$")
-    public void I_receive_a_response_with_error_message(String message) throws Throwable {
-        if (exception instanceof PolicyNotFoundException) {
-            assertNotNull(message, exception.getMessage());
-        } else if (exception instanceof NotAuthorizedException) {
-            assertNotNull(message, exception.getMessage());
-        } else {
-            fail();
-        }
-    }
-
-
 }
 
