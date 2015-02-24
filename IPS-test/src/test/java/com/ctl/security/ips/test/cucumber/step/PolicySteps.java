@@ -81,16 +81,6 @@ public class PolicySteps {
         }
     }
 
-    @Then("^I receive a response that contains the expected list of policies$")
-    public void i_receive_a_response_that_contains_the_expected_list_of_policies() {
-        Policy expected = buildPolicy();
-        assertNotNull(policyList);
-        assertTrue(!policyList.isEmpty());
-        for (Policy actual : policyList) {
-            assertEquals(expected, actual);
-        }
-    }
-
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
@@ -140,24 +130,22 @@ public class PolicySteps {
                 id = retrievedPolicy.getVendorPolicyId();
 
                 policyClient.deletePolicyForAccount(accountId, id, VALID_USERNAME, serverDomainName, bearerToken);
+
             }
         } catch (Exception e) {
             exception = e;
         }
     }
 
-    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
-        Policy retrievedPolicy = null;
-        int i = 0;
-        int maxTries = 10;
-        while(i < maxTries && retrievedPolicy == null){
-            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
-            Thread.sleep(1000);
-            i++;
+    @Then("^I receive a response that contains the expected list of policies$")
+    public void i_receive_a_response_that_contains_the_expected_list_of_policies() {
+        Policy expected = buildPolicy();
+        assertNotNull(policyList);
+        assertTrue(!policyList.isEmpty());
+        for (Policy actual : policyList) {
+            assertEquals(expected, actual);
         }
-        return retrievedPolicy;
     }
-
 
     @Then("^I receive a response that contains the expected policy$")
     public void I_receive_a_response_that_contains_the_expected_policy() {
@@ -182,6 +170,10 @@ public class PolicySteps {
 
         assertNull(exception);
 
+//        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(serverDomainName, accountId);
+//        Set<Product> products = configurationItemResource.getContent().getProducts();
+//        assert products.toString().contains("status=INACTIVE");
+
         //TODO: We need the GET operation to work before we can test it in this way.
 //        boolean isDeleted = false;
 //
@@ -198,10 +190,6 @@ public class PolicySteps {
 //        assertTrue(isDeleted);
     }
 
-    private Policy buildPolicy() {
-        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
-    }
-
     @Then("^I receive a response with error message (.*)$")
     public void I_receive_a_response_with_error_message(String message) throws Throwable {
         if (exception instanceof PolicyNotFoundException) {
@@ -214,6 +202,22 @@ public class PolicySteps {
             }
             fail();
         }
+    }
+
+    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+        Policy retrievedPolicy = null;
+        int i = 0;
+        int maxTries = 10;
+        while(i < maxTries && retrievedPolicy == null){
+            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
+            Thread.sleep(1000);
+            i++;
+        }
+        return retrievedPolicy;
+    }
+
+    private Policy buildPolicy() {
+        return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
     }
 
     private void verifyCmdbCreation() throws InterruptedException {
