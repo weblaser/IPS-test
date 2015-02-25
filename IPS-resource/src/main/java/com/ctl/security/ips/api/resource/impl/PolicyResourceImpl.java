@@ -41,6 +41,7 @@ public class PolicyResourceImpl implements PolicyResource {
         policyServiceRead.updatePolicyForAccount(account, policyId, policy);
     }
 
+    //TODO this method needs to take a policy object as a body in order to get all the data we need
     @Override
     public void deletePolicyForAccount(String accountId, String policyId, String serverDomainName, String username) throws DsmPolicyClientException {
         Policy policy = new Policy();
