@@ -9,6 +9,7 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
+import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.client.bean.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy;
@@ -27,6 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -50,6 +52,7 @@ public class PolicySteps {
     private String accountId;
     private String bearerToken;
     private String serverDomainName;
+    private String username;
 
     @Autowired
     private AuthenticationClient authenticationClient;
@@ -71,15 +74,6 @@ public class PolicySteps {
 
     @Autowired
     private UserClient userClient;
-
-    @When("^I GET the policies$")
-    public void i_GET_the_policies() {
-        try {
-            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
-        } catch (Exception e) {
-            exception = e;
-        }
-    }
 
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
@@ -128,10 +122,20 @@ public class PolicySteps {
                 String policyName = policy.getName();
                 Policy retrievedPolicy = getPolicyWithWait(policyName);
                 id = retrievedPolicy.getVendorPolicyId();
+                username = policy.getUsername();
 
-                policyClient.deletePolicyForAccount(accountId, id, VALID_USERNAME, serverDomainName, bearerToken);
+                policyClient.deletePolicyForAccount(accountId, id, username, serverDomainName, bearerToken);
 
             }
+        } catch (Exception e) {
+            exception = e;
+        }
+    }
+
+    @When("^I GET the policies$")
+    public void i_GET_the_policies() {
+        try {
+            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -170,9 +174,9 @@ public class PolicySteps {
 
         assertNull(exception);
 
-//        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(serverDomainName, accountId);
-//        Set<Product> products = configurationItemResource.getContent().getProducts();
-//        assert products.toString().contains("status=INACTIVE");
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(serverDomainName, accountId);
+        Set<Product> products = configurationItemResource.getContent().getProducts();
+        assert products.toString().contains("status=INACTIVE");
 
         //TODO: We need the GET operation to work before we can test it in this way.
 //        boolean isDeleted = false;

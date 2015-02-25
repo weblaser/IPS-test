@@ -46,6 +46,8 @@ public class PolicyResourceImpl implements PolicyResource {
     public void deletePolicyForAccount(String accountId, String policyId, String serverDomainName, String username) throws DsmPolicyClientException {
         Policy policy = new Policy();
         policy.setVendorPolicyId(policyId);
+        policy.setServerDomainName(serverDomainName);
+        policy.setUsername(username);
         policyServiceRead.deletePolicyForAccount(new PolicyBean(accountId, policy));
     }
 
