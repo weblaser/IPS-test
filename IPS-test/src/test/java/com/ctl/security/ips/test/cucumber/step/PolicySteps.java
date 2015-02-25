@@ -48,7 +48,7 @@ public class PolicySteps {
     private static final String VALID_USERNAME = "kweber.tccd";
     private static final String VALID_PASSWORD = "1qaz@WSX";
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
-    public static final int MAX_WAIT_TIME = 300;
+    public static final int MAX_WAIT_TIME = 30;
 
     private Exception exception;
     private List<Policy> policyList;
