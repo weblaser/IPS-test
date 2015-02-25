@@ -127,6 +127,9 @@ public class PolicySteps {
 //                String policyName = policy.getName();
 //                Policy retrievedPolicy = getPolicyWithWait(policyName);
 //                id = retrievedPolicy.getVendorPolicyId();
+
+                verifyCmdbCreation(false);
+
                 username = policy.getUsername();
 
                 policyClient.deletePolicyForAccount(accountId, id, username, serverDomainName, bearerToken);
@@ -166,7 +169,7 @@ public class PolicySteps {
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
-        verifyCmdbCreation();
+        verifyCmdbCreation(true);
     }
 
 
@@ -214,29 +217,29 @@ public class PolicySteps {
         }
     }
 
-    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
-        Policy retrievedPolicy = null;
-        int i = 0;
-        int maxTries = MAX_WAIT_TIME;
-        while(i < maxTries && retrievedPolicy == null){
-            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
-            Thread.sleep(1000);
-            i++;
-            logger.log(Level.INFO, "getPolicyWithWait: Waiting to retrieve policy with name: " + policyName  );
-        }
-
-        String message = "Failure in getting policy with name: " + policyName;
-        assertNotNull(message, retrievedPolicy);
-        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
-
-        return retrievedPolicy;
-    }
+//    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+//        Policy retrievedPolicy = null;
+//        int i = 0;
+//        int maxTries = MAX_WAIT_TIME;
+//        while(i < maxTries && retrievedPolicy == null){
+//            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
+//            Thread.sleep(1000);
+//            i++;
+//            logger.log(Level.INFO, "getPolicyWithWait: Waiting to retrieve policy with name: " + policyName  );
+//        }
+//
+//        String message = "Failure in getting policy with name: " + policyName;
+//        assertNotNull(message, retrievedPolicy);
+//        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
+//
+//        return retrievedPolicy;
+//    }
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
     }
 
-    private void verifyCmdbCreation() throws InterruptedException {
+    private void verifyCmdbCreation(boolean cleanup) throws InterruptedException {
 
         UserResource user = null;
 
@@ -264,6 +267,10 @@ public class PolicySteps {
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent().getId());
 
+        cleanUpCmdb(user, productUserActivities, configurationItemResource);
+    }
+
+    private void cleanUpCmdb(UserResource user, List<ProductUserActivity> productUserActivities, ConfigurationItemResource configurationItemResource) {
         userClient.deleteUser(user.getContent().getId());
         productUserActivities.stream().forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());

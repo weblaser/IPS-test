@@ -48,7 +48,6 @@ Feature:  Security - policy
 
     Given I have an valid account
     And I POST a policy
-    And I receive a response that contains a uuid for the created policy
     When I DELETE a valid policy
     Then I see that the policy has been deleted
 
@@ -57,6 +56,5 @@ Feature:  Security - policy
 
     Given I have an invalid account
     And I POST a policy
-    And I receive a response that contains a uuid for the created policy
     When I DELETE a valid policy
     Then I receive a response with error message 403 Forbidden.
