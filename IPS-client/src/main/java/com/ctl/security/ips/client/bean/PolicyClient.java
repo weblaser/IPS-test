@@ -3,6 +3,8 @@ package com.ctl.security.ips.client.bean;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -16,12 +18,15 @@ import javax.ws.rs.core.Response.Status;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Created by Kevin.Weber on 10/29/2014.
  *
  */
 @Service
 public class PolicyClient {
+
+    private static final Logger logger = Logger.getLogger(PolicyClient.class);
 
     public static final String POLICIES = "policies/";
     public static final String AUTHORIZATION = "Authorization";
@@ -36,8 +41,11 @@ public class PolicyClient {
 
     public void createPolicyForAccount(String account, Policy policy, String token) {
         try {
-            restTemplate.exchange(hostUrl + POLICIES + account,
-                    HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), String.class);
+            String address = hostUrl + POLICIES + account;
+            logger.log(Level.INFO, "createPolicyForAccount: " + address);
+
+                    restTemplate.exchange(address,
+                            HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
@@ -46,7 +54,10 @@ public class PolicyClient {
     public List<Policy> getPoliciesForAccount(String account, String token) {
         List<Policy> response = null;
         try {
-            response = Arrays.asList(restTemplate.exchange(hostUrl + POLICIES + account,
+            String address = hostUrl + POLICIES + account;
+            logger.log(Level.INFO, "getPoliciesForAccount: " + address);
+
+            response = Arrays.asList(restTemplate.exchange(address,
                     HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy[].class).getBody());
         } catch (RestClientException rce) {
             fail(rce);
@@ -57,7 +68,10 @@ public class PolicyClient {
     public Policy getPolicyForAccount(String account, String id, String token) {
         Policy response = null;
         try {
-            response = restTemplate.exchange(hostUrl + POLICIES + account + "/" + id,
+            String address = hostUrl + POLICIES + account + "/" + id;
+            logger.log(Level.INFO, "getPolicyForAccount: " + address);
+
+            response = restTemplate.exchange(address,
                     HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy.class).getBody();
         } catch (RestClientException rce) {
             fail(rce);
@@ -67,7 +81,10 @@ public class PolicyClient {
 
     public void updatePolicyForAccount(String account, String id, Policy policy, String token) {
         try {
-            restTemplate.exchange(hostUrl + POLICIES + account,
+            String address = hostUrl + POLICIES + account;
+            logger.log(Level.INFO, "updatePolicyForAccount: " + address);
+
+            restTemplate.exchange(address,
                     HttpMethod.PUT, new HttpEntity<>(policy, createHeaders(token)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
@@ -76,6 +93,8 @@ public class PolicyClient {
 
     public void deletePolicyForAccount(String account, String id, String username, String serverDomainName, String token) {
         String address = hostUrl + POLICIES + account + "/" + id + "/" + serverDomainName + "?" + USERNAME + "=" + username;
+        logger.log(Level.INFO, "deletePolicyForAccount: " + address);
+
         try {
             restTemplate.exchange(address,
                     HttpMethod.DELETE, new HttpEntity<>(createHeaders(token)), String.class);
