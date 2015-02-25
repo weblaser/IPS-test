@@ -48,7 +48,7 @@ public class PolicySteps {
     private static final String VALID_USERNAME = "kweber.tccd";
     private static final String VALID_PASSWORD = "1qaz@WSX";
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
-    public static final int MAX_WAIT_TIME = 30;
+    public static final int MAX_WAIT_TIME = 300;
 
     private Exception exception;
     private List<Policy> policyList;
@@ -124,9 +124,9 @@ public class PolicySteps {
                 policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             } else {
 
-                String policyName = policy.getName();
-                Policy retrievedPolicy = getPolicyWithWait(policyName);
-                id = retrievedPolicy.getVendorPolicyId();
+//                String policyName = policy.getName();
+//                Policy retrievedPolicy = getPolicyWithWait(policyName);
+//                id = retrievedPolicy.getVendorPolicyId();
                 username = policy.getUsername();
 
                 policyClient.deletePolicyForAccount(accountId, id, username, serverDomainName, bearerToken);
@@ -222,7 +222,13 @@ public class PolicySteps {
             retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
             Thread.sleep(1000);
             i++;
+            logger.log(Level.INFO, "getPolicyWithWait: Waiting to retrieve policy with name: " + policyName  );
         }
+
+        String message = "Failure in getting policy with name: " + policyName;
+        assertNotNull(message, retrievedPolicy);
+        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
+
         return retrievedPolicy;
     }
 
