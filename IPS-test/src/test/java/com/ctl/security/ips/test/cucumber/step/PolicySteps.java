@@ -48,6 +48,7 @@ public class PolicySteps {
     private static final String VALID_USERNAME = "kweber.tccd";
     private static final String VALID_PASSWORD = "1qaz@WSX";
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
+    public static final int MAX_WAIT_TIME = 30;
 
     private Exception exception;
     private List<Policy> policyList;
@@ -216,7 +217,7 @@ public class PolicySteps {
     private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
         Policy retrievedPolicy = null;
         int i = 0;
-        int maxTries = 10;
+        int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && retrievedPolicy == null){
             retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
             Thread.sleep(1000);
@@ -234,7 +235,7 @@ public class PolicySteps {
         UserResource user = null;
 
         int i = 0;
-        int maxTries = 10;
+        int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && (user == null || user.getId() == null)){
             user = userClient.getUser(policy.getUsername(), accountId);
             Thread.sleep(1000);
