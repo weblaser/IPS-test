@@ -52,9 +52,9 @@ Feature:  Security - policy
     Then I see that the policy has been deleted
 
 
-  Scenario: Get invalid response when deleting a policy for an account
+  Scenario: Get invalid response when deleting a policy for an account when ???
 
     Given I have an invalid account
     And I POST a policy
-    When I DELETE a valid policy
+    When I DELETE a invalid policy
     Then I receive a response with error message 403 Forbidden.

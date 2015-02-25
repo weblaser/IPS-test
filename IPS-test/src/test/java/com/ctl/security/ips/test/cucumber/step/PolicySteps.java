@@ -124,12 +124,15 @@ public class PolicySteps {
                 policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             } else {
 
+
 //                String policyName = policy.getName();
 //                Policy retrievedPolicy = getPolicyWithWait(policyName);
 //                id = retrievedPolicy.getVendorPolicyId();
 
-                dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, false);
-                verifyCmdbCreation(false);
+                if (VALID.equalsIgnoreCase(validity)) {
+                    dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, false);
+                    verifyCmdbCreation(false);
+                }
 
                 username = policy.getUsername();
 
