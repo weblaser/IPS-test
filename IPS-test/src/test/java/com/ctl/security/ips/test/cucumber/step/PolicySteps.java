@@ -23,6 +23,8 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import manager.*;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -34,6 +36,8 @@ import static org.junit.Assert.*;
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
 public class PolicySteps {
+
+    private static final Logger logger = Logger.getLogger(PolicySteps.class);
 
     private static final String VALID_POLICY_ID = "12345";
     private static final String VALID = "valid";
@@ -128,6 +132,7 @@ public class PolicySteps {
 
             }
         } catch (Exception e) {
+            logger.log(Level.ERROR, e.getMessage(), e);
             exception = e;
         }
     }
@@ -236,10 +241,11 @@ public class PolicySteps {
             i++;
         }
 
-        assertNotNull(user.getId());
-        assertNotNull(user.getContent());
-        assertNotNull(user.getContent().getId());
-        assertNotNull(user.getContent().getProductUserActivities());
+        String message = "Failure in getting user with username: " + policy.getUsername();
+        assertNotNull(message, user.getId());
+        assertNotNull(message, user.getContent());
+        assertNotNull(message, user.getContent().getId());
+        assertNotNull(message, user.getContent().getProductUserActivities());
 
         ProductUserActivityResources productUserActivityResources = userClient.getProductUserActivities(user);
         assertNotNull(productUserActivityResources);
