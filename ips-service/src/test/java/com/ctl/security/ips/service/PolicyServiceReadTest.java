@@ -67,18 +67,7 @@ public class PolicyServiceReadTest {
         classUnderTest.updatePolicyForAccount(VALID_ACCOUNT, TEST_ID, new Policy());
     }
 
-    @Test
-    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
-        //arrange
 
-        //act
-        PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, buildPolicy().setUsername(USERNAME).setServerDomainName(SERVER_DOMAIN_NAME));
-        classUnderTest.deletePolicyForAccount(policyBean);
-
-        //assert
-        verify(dsmPolicyClient).securityProfileDelete(any(List.class));
-        verify(cmdbService).uninstallProduct(new InstallationBean(USERNAME, VALID_ACCOUNT, SERVER_DOMAIN_NAME, buildProduct()));
-    }
 
 
     private com.ctl.security.ips.common.domain.Policy buildPolicy() {

@@ -110,7 +110,7 @@ public class PolicyResourceImplTest {
         classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID, username, serverDomainName);
 
         //assert
-        verify(policyServiceRead).deletePolicyForAccount(policyBean);
+        verify(policyMessageSender).deletePolicyForAccount(policyBean);
     }
 
     private Policy buildPolicy() {

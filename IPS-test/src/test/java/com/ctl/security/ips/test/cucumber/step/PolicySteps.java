@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -185,11 +186,22 @@ public class PolicySteps {
     @Then("^I see that the policy has been deleted$")
     public void i_see_that_the_policy_has_been_deleted() throws Throwable {
 
-        assertNull(exception);
 
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(serverDomainName, accountId);
-        Set<Product> products = configurationItemResource.getContent().getProducts();
+
+        ConfigurationItemResource configurationItemResource = null;
+        Set<Product> products = new HashSet<>();
+
+        int i = 0;
+        int maxTries = MAX_WAIT_TIME;
+        while(i < maxTries && !products.toString().contains("status=INACTIVE")){
+            configurationItemResource = configurationItemClient.getConfigurationItem(serverDomainName, accountId);
+            products = configurationItemResource.getContent().getProducts();
+            Thread.sleep(1000);
+            i++;
+        }
+
         assert products.toString().contains("status=INACTIVE");
+
 
         //TODO: We need the GET operation to work before we can test it in this way.
 //        boolean isDeleted = false;

@@ -64,6 +64,22 @@ public class PolicyServiceWriteTest {
         verify(cmdbService).installProduct(new InstallationBean(username, accountId, serverDomainName, product));
     }
 
+    @Test
+    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
+        //arrange
+        String username = null;
+        String accountId = VALID_ACCOUNT;
+        String serverDomainName = null;
+
+        //act
+        PolicyBean policyBean = new PolicyBean(accountId, buildPolicy().setUsername(username).setServerDomainName(serverDomainName));
+        classUnderTest.deletePolicyForAccount(policyBean);
+
+        //assert
+        verify(dsmPolicyClient).securityProfileDelete(any(List.class));
+        verify(cmdbService).uninstallProduct(new InstallationBean(username, accountId, serverDomainName, buildProduct()));
+    }
+
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);

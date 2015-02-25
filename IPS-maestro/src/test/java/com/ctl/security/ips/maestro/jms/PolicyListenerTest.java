@@ -28,5 +28,13 @@ public class PolicyListenerTest {
 
         verify(policyServiceWrite).createPolicyForAccount(policyBean);
     }
+    @Test
+    public void deletePolicyForAccount_deletesPolicyForAccount() throws DsmPolicyClientException {
+        PolicyBean policyBean = null;
+
+        classUnderTest.deletePolicyForAccount(policyBean);
+
+        verify(policyServiceWrite).deletePolicyForAccount(policyBean);
+    }
 
 }

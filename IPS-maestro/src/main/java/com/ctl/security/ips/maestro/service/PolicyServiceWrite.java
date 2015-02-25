@@ -32,5 +32,10 @@ public class PolicyServiceWrite extends PolicyService {
 
 
 
+    //TODO: Move this to PolicyServiceWrite when [SECURITY-301 IPS API - DELETE - Implement the IPS DELETE Active MQ] is implemented
+    public void deletePolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
+        dsmPolicyClient.securityProfileDelete(Arrays.asList(Integer.parseInt(policyBean.getPolicy().getVendorPolicyId())));
+        cmdbService.uninstallProduct(buildInstallationBean(policyBean));
+    }
 
 }

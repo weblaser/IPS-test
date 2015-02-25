@@ -1,0 +1,864 @@
+2015-02-25T17:10:06.425-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:06.469-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:06.586-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@61001b64, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4310d43, org.springframework.test.context.transaction.TransactionalTestExecutionListener@54a7079e, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@26e356f0]
+2015-02-25T17:10:07.390-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:10:07 CST 2015]; root of context hierarchy
+2015-02-25T17:10:09.351-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:10:09.461-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$7b0c1934] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:10:10.881-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:10:12.600-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:10:15.980-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:15.988-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:15.990-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3cec79d3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@64b70919, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4e31c3ec, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@3157e4c0]
+2015-02-25T17:10:18.277-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:18.284-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:18.285-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5bcb04cb, org.springframework.test.context.support.DirtiesContextTestExecutionListener@385e36d4, org.springframework.test.context.transaction.TransactionalTestExecutionListener@2fc2a205, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2881ad47]
+2015-02-25T17:10:20.462-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:20.467-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:20.468-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3ece1e79, org.springframework.test.context.support.DirtiesContextTestExecutionListener@ab20d7c, org.springframework.test.context.transaction.TransactionalTestExecutionListener@474fae39, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4f4c789f]
+2015-02-25T17:10:20.515-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:20.517-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:20.518-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@724c5cbe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@70101687, org.springframework.test.context.transaction.TransactionalTestExecutionListener@70e889e9, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@418c020b]
+2015-02-25T17:10:20.534-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:20.535-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:20.536-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@11bd803, org.springframework.test.context.support.DirtiesContextTestExecutionListener@58f07f02, org.springframework.test.context.transaction.TransactionalTestExecutionListener@75798d03, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@40f8f5a8]
+2015-02-25T17:10:20.565-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:20.567-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:20.569-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5445f5ba, org.springframework.test.context.support.DirtiesContextTestExecutionListener@1431267b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@342726f1, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@c808207]
+2015-02-25T17:10:23.638-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:10:32.134-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:32.137-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:32.138-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2c7a8af2, org.springframework.test.context.support.DirtiesContextTestExecutionListener@10c07b8d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@720bf653, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@360bc645]
+2015-02-25T17:10:32.143-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:10:32.466-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:10:32.482-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:32.484-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:32.485-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@48840594, org.springframework.test.context.support.DirtiesContextTestExecutionListener@49c675f0, org.springframework.test.context.transaction.TransactionalTestExecutionListener@14823f76, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6917bb4]
+2015-02-25T17:10:32.783-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:10:33.056-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:33.057-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:33.058-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5c080ef3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@188cbcde, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4ee6291f, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2b03d52f]
+2015-02-25T17:10:33.063-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:10:33.145-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:10:33.164-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:33.173-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:33.177-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@9b21bd3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@a62c7cd, org.springframework.test.context.transaction.TransactionalTestExecutionListener@7661b5a, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@7c36db44]
+2015-02-25T17:10:33.268-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345
+2015-02-25T17:10:33.669-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:33.692-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:33.694-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@65a48602, org.springframework.test.context.support.DirtiesContextTestExecutionListener@75483843, org.springframework.test.context.transaction.TransactionalTestExecutionListener@336206d8, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@5ec4ff02]
+2015-02-25T17:10:33.700-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/12345
+2015-02-25T17:10:33.781-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX/12345" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:10:33.785-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.getPolicyForAccount(PolicyClient.java:77)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:122)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:10:33.808-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:33.811-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:33.812-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@44bd4b0a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@6c008c24, org.springframework.test.context.transaction.TransactionalTestExecutionListener@216e0771, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@21079a12]
+2015-02-25T17:10:33.953-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, updatePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:10:34.089-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, PUT request for "http://localhost:8080/ips/api/policies/TCCD" resulted in 405 (Method Not Allowed); invoking error handler
+2015-02-25T17:10:34.091-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 405 Method Not Allowed
+com.ctl.security.ips.common.exception.NotAuthorizedException: 405 Method Not Allowed
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.updatePolicyForAccount(PolicyClient.java:90)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:124)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:10:34.100-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:34.102-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:34.103-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@51288417, org.springframework.test.context.support.DirtiesContextTestExecutionListener@60cf62ad, org.springframework.test.context.transaction.TransactionalTestExecutionListener@1e0895f5, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@1ac4ccad]
+2015-02-25T17:10:34.188-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:10:38.173-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424905834188?username=userName1424905834188
+2015-02-25T17:10:38.709-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:10:38.711-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:10:38.711-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@1ba359bd, org.springframework.test.context.support.DirtiesContextTestExecutionListener@62e93c3a, org.springframework.test.context.transaction.TransactionalTestExecutionListener@673919a7, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@25d93198]
+2015-02-25T17:10:38.715-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:10:38.816-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:10:38.823-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424905838715?username=userName1424905838715
+2015-02-25T17:10:38.904-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, DELETE request for "http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424905838715?username=userName1424905838715" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:10:38.907-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.deletePolicyForAccount(PolicyClient.java:102)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:10:39.014-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:10:07 CST 2015]; root of context hierarchy
+2015-02-25T17:10:39.016-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647
+2015-02-25T17:12:40.302-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:12:40.404-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:12:40.431-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@67c33749, org.springframework.test.context.support.DirtiesContextTestExecutionListener@fba92d3, org.springframework.test.context.transaction.TransactionalTestExecutionListener@662b4c69, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@fa49800]
+2015-02-25T17:12:40.746-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@18d87d80: startup date [Wed Feb 25 17:12:40 CST 2015]; root of context hierarchy
+2015-02-25T17:12:41.907-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:12:41.969-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$aefa6838] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:12:43.317-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:12:43.803-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:12:45.693-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:12:49.059-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424905965693?username=userName1424905965693
+2015-02-25T17:13:01.361-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@18d87d80: startup date [Wed Feb 25 17:12:40 CST 2015]; root of context hierarchy
+2015-02-25T17:13:01.364-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647
+2015-02-25T17:13:21.191-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:21.206-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:21.256-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@61001b64, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4310d43, org.springframework.test.context.transaction.TransactionalTestExecutionListener@54a7079e, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@26e356f0]
+2015-02-25T17:13:21.633-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:13:21 CST 2015]; root of context hierarchy
+2015-02-25T17:13:22.530-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:13:22.573-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$7b0c1934] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:13:23.654-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:13:24.163-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:13:25.698-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:25.704-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:25.707-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3cec79d3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@64b70919, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4e31c3ec, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@3157e4c0]
+2015-02-25T17:13:25.910-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:25.913-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:25.914-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5bcb04cb, org.springframework.test.context.support.DirtiesContextTestExecutionListener@385e36d4, org.springframework.test.context.transaction.TransactionalTestExecutionListener@2fc2a205, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2881ad47]
+2015-02-25T17:13:28.082-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:28.089-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:28.102-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3ece1e79, org.springframework.test.context.support.DirtiesContextTestExecutionListener@ab20d7c, org.springframework.test.context.transaction.TransactionalTestExecutionListener@474fae39, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4f4c789f]
+2015-02-25T17:13:28.130-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:28.132-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:28.132-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@724c5cbe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@70101687, org.springframework.test.context.transaction.TransactionalTestExecutionListener@70e889e9, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@418c020b]
+2015-02-25T17:13:28.143-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:28.144-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:28.145-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@11bd803, org.springframework.test.context.support.DirtiesContextTestExecutionListener@58f07f02, org.springframework.test.context.transaction.TransactionalTestExecutionListener@75798d03, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@40f8f5a8]
+2015-02-25T17:13:28.158-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:28.160-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:28.161-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5445f5ba, org.springframework.test.context.support.DirtiesContextTestExecutionListener@1431267b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@342726f1, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@c808207]
+2015-02-25T17:13:29.099-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:13:32.893-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:32.895-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:32.897-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2c7a8af2, org.springframework.test.context.support.DirtiesContextTestExecutionListener@10c07b8d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@720bf653, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@360bc645]
+2015-02-25T17:13:32.910-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:13:33.011-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:13:33.040-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:33.043-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:33.045-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@48840594, org.springframework.test.context.support.DirtiesContextTestExecutionListener@49c675f0, org.springframework.test.context.transaction.TransactionalTestExecutionListener@14823f76, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6917bb4]
+2015-02-25T17:13:33.179-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:13:33.483-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:33.485-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:33.486-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2def7a7a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@24e83d19, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5c080ef3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@188cbcde]
+2015-02-25T17:13:33.493-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:13:33.567-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:13:33.574-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:33.577-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:33.578-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@44e93c1f, org.springframework.test.context.support.DirtiesContextTestExecutionListener@42373389, org.springframework.test.context.transaction.TransactionalTestExecutionListener@9b21bd3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@a62c7cd]
+2015-02-25T17:13:33.664-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345
+2015-02-25T17:13:33.794-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:33.796-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:33.798-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@1f0b3cfe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@14ef2482, org.springframework.test.context.transaction.TransactionalTestExecutionListener@65a48602, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@75483843]
+2015-02-25T17:13:33.802-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/12345
+2015-02-25T17:13:33.898-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX/12345" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:13:33.911-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.getPolicyForAccount(PolicyClient.java:77)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:122)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:13:33.930-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:33.934-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:33.944-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@288ca5f0, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4068102e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@44bd4b0a, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6c008c24]
+2015-02-25T17:13:34.126-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, updatePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:13:34.497-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, PUT request for "http://localhost:8080/ips/api/policies/TCCD" resulted in 405 (Method Not Allowed); invoking error handler
+2015-02-25T17:13:34.502-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 405 Method Not Allowed
+com.ctl.security.ips.common.exception.NotAuthorizedException: 405 Method Not Allowed
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.updatePolicyForAccount(PolicyClient.java:90)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:124)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:13:34.520-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:34.523-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:34.524-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@30e9ca13, org.springframework.test.context.support.DirtiesContextTestExecutionListener@46185a1b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@51288417, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@60cf62ad]
+2015-02-25T17:13:34.618-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:13:37.173-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424906014618?username=userName1424906014618
+2015-02-25T17:13:37.575-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:13:37.577-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:13:37.578-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5300cac, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4110765e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@1ba359bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@62e93c3a]
+2015-02-25T17:13:37.584-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:13:37.664-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:13:37.667-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424906017584?username=userName1424906017584
+2015-02-25T17:13:37.745-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, DELETE request for "http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424906017584?username=userName1424906017584" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:13:37.746-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.deletePolicyForAccount(PolicyClient.java:102)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:139)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:13:37.873-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:13:21 CST 2015]; root of context hierarchy
+2015-02-25T17:13:37.875-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647
+2015-02-25T17:19:37.420-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:37.433-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:37.549-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@61001b64, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4310d43, org.springframework.test.context.transaction.TransactionalTestExecutionListener@54a7079e, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@26e356f0]
+2015-02-25T17:19:37.935-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:19:37 CST 2015]; root of context hierarchy
+2015-02-25T17:19:39.503-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:19:39.542-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$7b0c1934] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:19:40.644-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:19:41.141-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:19:42.710-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:42.712-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:42.713-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3cec79d3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@64b70919, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4e31c3ec, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@3157e4c0]
+2015-02-25T17:19:43.810-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:43.812-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:43.813-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5bcb04cb, org.springframework.test.context.support.DirtiesContextTestExecutionListener@385e36d4, org.springframework.test.context.transaction.TransactionalTestExecutionListener@2fc2a205, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2881ad47]
+2015-02-25T17:19:46.106-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:46.110-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:46.111-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3ece1e79, org.springframework.test.context.support.DirtiesContextTestExecutionListener@ab20d7c, org.springframework.test.context.transaction.TransactionalTestExecutionListener@474fae39, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4f4c789f]
+2015-02-25T17:19:46.147-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:46.148-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:46.149-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@724c5cbe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@70101687, org.springframework.test.context.transaction.TransactionalTestExecutionListener@70e889e9, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@418c020b]
+2015-02-25T17:19:46.161-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:46.163-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:46.163-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@11bd803, org.springframework.test.context.support.DirtiesContextTestExecutionListener@58f07f02, org.springframework.test.context.transaction.TransactionalTestExecutionListener@75798d03, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@40f8f5a8]
+2015-02-25T17:19:46.181-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:46.185-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:46.186-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5445f5ba, org.springframework.test.context.support.DirtiesContextTestExecutionListener@1431267b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@342726f1, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@c808207]
+2015-02-25T17:19:47.046-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:19:51.006-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:51.011-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:51.013-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2c7a8af2, org.springframework.test.context.support.DirtiesContextTestExecutionListener@10c07b8d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@720bf653, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@360bc645]
+2015-02-25T17:19:51.028-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:19:51.122-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:19:51.154-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:51.156-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:51.157-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@48840594, org.springframework.test.context.support.DirtiesContextTestExecutionListener@49c675f0, org.springframework.test.context.transaction.TransactionalTestExecutionListener@14823f76, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6917bb4]
+2015-02-25T17:19:51.314-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:19:51.481-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:51.482-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:51.483-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2def7a7a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@24e83d19, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5c080ef3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@188cbcde]
+2015-02-25T17:19:51.487-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:19:51.563-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:19:51.571-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:51.573-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:51.574-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@44e93c1f, org.springframework.test.context.support.DirtiesContextTestExecutionListener@42373389, org.springframework.test.context.transaction.TransactionalTestExecutionListener@9b21bd3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@a62c7cd]
+2015-02-25T17:19:51.652-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345
+2015-02-25T17:19:51.804-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:51.806-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:51.807-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@1f0b3cfe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@14ef2482, org.springframework.test.context.transaction.TransactionalTestExecutionListener@65a48602, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@75483843]
+2015-02-25T17:19:51.810-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/12345
+2015-02-25T17:19:51.906-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX/12345" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:19:51.909-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.getPolicyForAccount(PolicyClient.java:77)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:123)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:19:51.937-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:51.941-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:51.942-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@288ca5f0, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4068102e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@44bd4b0a, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6c008c24]
+2015-02-25T17:19:52.023-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, updatePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:19:52.147-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, PUT request for "http://localhost:8080/ips/api/policies/TCCD" resulted in 405 (Method Not Allowed); invoking error handler
+2015-02-25T17:19:52.150-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 405 Method Not Allowed
+com.ctl.security.ips.common.exception.NotAuthorizedException: 405 Method Not Allowed
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.updatePolicyForAccount(PolicyClient.java:90)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:125)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:19:52.165-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:19:52.168-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:19:52.169-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@30e9ca13, org.springframework.test.context.support.DirtiesContextTestExecutionListener@46185a1b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@51288417, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@60cf62ad]
+2015-02-25T17:19:52.247-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:19:54.927-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424906392247?username=userName1424906392247
+2015-02-25T17:20:25.539-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:20:25.544-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:20:25.546-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5300cac, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4110765e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@1ba359bd, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@62e93c3a]
+2015-02-25T17:20:25.557-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:20:25.781-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:20:25.786-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424906425557?username=userName1424906425557
+2015-02-25T17:20:25.865-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, DELETE request for "http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424906425557?username=userName1424906425557" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:20:25.866-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.deletePolicyForAccount(PolicyClient.java:102)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:140)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:20:25.930-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:19:37 CST 2015]; root of context hierarchy
+2015-02-25T17:20:25.932-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647
+2015-02-25T17:25:04.989-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:25:05.360-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:25:05.483-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@495b0487, org.springframework.test.context.support.DirtiesContextTestExecutionListener@55dfcc6, org.springframework.test.context.transaction.TransactionalTestExecutionListener@222eb8aa, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@93cf163]
+2015-02-25T17:25:05.952-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@2a640157: startup date [Wed Feb 25 17:25:05 CST 2015]; root of context hierarchy
+2015-02-25T17:25:07.213-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:25:07.264-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$8c461c0c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:25:08.430-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:25:09.111-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:25:11.045-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:25:14.310-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424906711045?username=userName1424906711045
+2015-02-25T17:28:58.837-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@2a640157: startup date [Wed Feb 25 17:25:05 CST 2015]; root of context hierarchy
+2015-02-25T17:28:58.839-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647
+2015-02-25T17:29:08.857-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:08.945-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:08.979-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@495b0487, org.springframework.test.context.support.DirtiesContextTestExecutionListener@55dfcc6, org.springframework.test.context.transaction.TransactionalTestExecutionListener@222eb8aa, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@93cf163]
+2015-02-25T17:29:09.402-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@2a640157: startup date [Wed Feb 25 17:29:09 CST 2015]; root of context hierarchy
+2015-02-25T17:29:10.823-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:29:10.890-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$76048c08] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:29:12.104-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:29:12.741-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:29:14.790-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:29:19.503-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424906954790?username=userName1424906954790
+2015-02-25T17:29:22.260-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@2a640157: startup date [Wed Feb 25 17:29:09 CST 2015]; root of context hierarchy
+2015-02-25T17:29:22.262-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647
+2015-02-25T17:29:34.761-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:34.781-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:34.813-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@61001b64, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4310d43, org.springframework.test.context.transaction.TransactionalTestExecutionListener@54a7079e, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@26e356f0]
+2015-02-25T17:29:35.230-0600 llevel=INFO , lthread_id='main', lcat=GenericApplicationContext, Refreshing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:29:35 CST 2015]; root of context hierarchy
+2015-02-25T17:29:37.330-0600 llevel=INFO , lthread_id='main', lcat=AutowiredAnnotationBeanPostProcessor, JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2015-02-25T17:29:37.473-0600 llevel=INFO , lthread_id='main', lcat=PostProcessorRegistrationDelegate$BeanPostProcessorChecker, Bean 'org.springframework.jms.annotation.JmsBootstrapConfiguration' of type [class org.springframework.jms.annotation.JmsBootstrapConfiguration$$EnhancerBySpringCGLIB$$7b0c1934] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2015-02-25T17:29:38.886-0600 llevel=ERROR, lthread_id='main', lcat=MockDsmBeans, loading mock dsm manager!!!!!
+2015-02-25T17:29:39.399-0600 llevel=INFO , lthread_id='main', lcat=DefaultLifecycleProcessor, Starting beans in phase 2147483647
+2015-02-25T17:29:41.159-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:41.161-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:41.162-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3cec79d3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@64b70919, org.springframework.test.context.transaction.TransactionalTestExecutionListener@4e31c3ec, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@3157e4c0]
+2015-02-25T17:29:41.253-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:41.254-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:41.255-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5bcb04cb, org.springframework.test.context.support.DirtiesContextTestExecutionListener@385e36d4, org.springframework.test.context.transaction.TransactionalTestExecutionListener@2fc2a205, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@2881ad47]
+2015-02-25T17:29:43.392-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:43.399-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:43.401-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@3ece1e79, org.springframework.test.context.support.DirtiesContextTestExecutionListener@ab20d7c, org.springframework.test.context.transaction.TransactionalTestExecutionListener@474fae39, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@4f4c789f]
+2015-02-25T17:29:43.434-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:43.436-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:43.437-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@724c5cbe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@70101687, org.springframework.test.context.transaction.TransactionalTestExecutionListener@70e889e9, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@418c020b]
+2015-02-25T17:29:43.451-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:43.453-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:43.454-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@11bd803, org.springframework.test.context.support.DirtiesContextTestExecutionListener@58f07f02, org.springframework.test.context.transaction.TransactionalTestExecutionListener@75798d03, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@40f8f5a8]
+2015-02-25T17:29:43.474-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:43.476-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:43.477-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@5445f5ba, org.springframework.test.context.support.DirtiesContextTestExecutionListener@1431267b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@342726f1, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@c808207]
+2015-02-25T17:29:44.635-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:29:48.408-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:48.410-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:48.411-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2c7a8af2, org.springframework.test.context.support.DirtiesContextTestExecutionListener@10c07b8d, org.springframework.test.context.transaction.TransactionalTestExecutionListener@720bf653, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@360bc645]
+2015-02-25T17:29:48.415-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:29:48.563-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:29:48.581-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:48.582-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:48.583-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@48840594, org.springframework.test.context.support.DirtiesContextTestExecutionListener@49c675f0, org.springframework.test.context.transaction.TransactionalTestExecutionListener@14823f76, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6917bb4]
+2015-02-25T17:29:48.721-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:29:48.933-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:48.936-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:48.937-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@2def7a7a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@24e83d19, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5c080ef3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@188cbcde]
+2015-02-25T17:29:48.944-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPoliciesForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:29:49.097-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:29:49.114-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:49.116-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:49.125-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@44e93c1f, org.springframework.test.context.support.DirtiesContextTestExecutionListener@42373389, org.springframework.test.context.transaction.TransactionalTestExecutionListener@9b21bd3, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@a62c7cd]
+2015-02-25T17:29:49.263-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345
+2015-02-25T17:29:49.467-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:49.470-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:49.471-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@1f0b3cfe, org.springframework.test.context.support.DirtiesContextTestExecutionListener@14ef2482, org.springframework.test.context.transaction.TransactionalTestExecutionListener@65a48602, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@75483843]
+2015-02-25T17:29:49.478-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, getPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/12345
+2015-02-25T17:29:49.619-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, GET request for "http://localhost:8080/ips/api/policies/TCCX/12345" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:29:49.627-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.getPolicyForAccount(PolicyClient.java:77)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:123)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:29:49.640-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:49.644-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:49.644-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@288ca5f0, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4068102e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@44bd4b0a, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@6c008c24]
+2015-02-25T17:29:49.790-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, updatePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:29:49.994-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, PUT request for "http://localhost:8080/ips/api/policies/TCCD" resulted in 405 (Method Not Allowed); invoking error handler
+2015-02-25T17:29:49.995-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 405 Method Not Allowed
+com.ctl.security.ips.common.exception.NotAuthorizedException: 405 Method Not Allowed
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.updatePolicyForAccount(PolicyClient.java:90)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:125)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:29:50.002-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:50.005-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:50.007-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@30e9ca13, org.springframework.test.context.support.DirtiesContextTestExecutionListener@46185a1b, org.springframework.test.context.transaction.TransactionalTestExecutionListener@51288417, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@60cf62ad]
+2015-02-25T17:29:50.144-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCD
+2015-02-25T17:29:52.744-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCD/12345/server.domain.name.1424906990144?username=userName1424906990144
+2015-02-25T17:29:55.108-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener]
+2015-02-25T17:29:55.111-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Could not instantiate TestExecutionListener [org.springframework.test.context.web.ServletTestExecutionListener]. Specify custom listener classes or make the default listener classes (and their required dependencies) available. Offending class: [javax/servlet/ServletContext]
+2015-02-25T17:29:55.113-0600 llevel=INFO , lthread_id='main', lcat=DefaultTestContextBootstrapper, Using TestExecutionListeners: [org.springframework.test.context.support.DependencyInjectionTestExecutionListener@6726cc69, org.springframework.test.context.support.DirtiesContextTestExecutionListener@4b6d92e, org.springframework.test.context.transaction.TransactionalTestExecutionListener@33899f7a, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@7899de11]
+2015-02-25T17:29:55.118-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, createPolicyForAccount: http://localhost:8080/ips/api/policies/TCCX
+2015-02-25T17:29:55.279-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, POST request for "http://localhost:8080/ips/api/policies/TCCX" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:29:55.282-0600 llevel=INFO , lthread_id='main', lcat=PolicyClient, deletePolicyForAccount: http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424906995118?username=userName1424906995118
+2015-02-25T17:29:55.416-0600 llevel=WARN , lthread_id='main', lcat=RestTemplate, DELETE request for "http://localhost:8080/ips/api/policies/TCCX/45678/server.domain.name.1424906995118?username=userName1424906995118" resulted in 403 (Forbidden); invoking error handler
+2015-02-25T17:29:55.418-0600 llevel=ERROR, lthread_id='main', lcat=PolicySteps, 403 Forbidden
+com.ctl.security.ips.common.exception.NotAuthorizedException: 403 Forbidden
+	at com.ctl.security.ips.client.bean.PolicyClient.fail(PolicyClient.java:116)
+	at com.ctl.security.ips.client.bean.PolicyClient.deletePolicyForAccount(PolicyClient.java:102)
+	at com.ctl.security.ips.test.cucumber.step.PolicySteps.I_METHOD_validity_policy(PolicySteps.java:140)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at cucumber.runtime.Utils$1.call(Utils.java:34)
+	at cucumber.runtime.Timeout.timeout(Timeout.java:13)
+	at cucumber.runtime.Utils.invoke(Utils.java:30)
+	at cucumber.runtime.java.JavaStepDefinition.execute(JavaStepDefinition.java:35)
+	at cucumber.runtime.StepDefinitionMatch.runStep(StepDefinitionMatch.java:37)
+	at cucumber.runtime.Runtime.runStep(Runtime.java:298)
+	at cucumber.runtime.model.StepContainer.runStep(StepContainer.java:44)
+	at cucumber.runtime.model.StepContainer.runSteps(StepContainer.java:39)
+	at cucumber.runtime.model.CucumberScenario.run(CucumberScenario.java:48)
+	at cucumber.runtime.junit.ExecutionUnitRunner.run(ExecutionUnitRunner.java:91)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:63)
+	at cucumber.runtime.junit.FeatureRunner.runChild(FeatureRunner.java:18)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.runtime.junit.FeatureRunner.run(FeatureRunner.java:70)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:93)
+	at cucumber.api.junit.Cucumber.runChild(Cucumber.java:37)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:238)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:63)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:236)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:53)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:229)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:309)
+	at cucumber.api.junit.Cucumber.run(Cucumber.java:98)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:160)
+	at com.intellij.junit4.JUnit4IdeaTestRunner.startRunnerWithArgs(JUnit4IdeaTestRunner.java:74)
+	at com.intellij.rt.execution.junit.JUnitStarter.prepareStreamsAndStart(JUnitStarter.java:211)
+	at com.intellij.rt.execution.junit.JUnitStarter.main(JUnitStarter.java:67)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:134)
+2015-02-25T17:29:55.494-0600 llevel=INFO , lthread_id='Thread-2', lcat=GenericApplicationContext, Closing org.springframework.context.support.GenericApplicationContext@6221a451: startup date [Wed Feb 25 17:29:35 CST 2015]; root of context hierarchy
+2015-02-25T17:29:55.497-0600 llevel=INFO , lthread_id='Thread-2', lcat=DefaultLifecycleProcessor, Stopping beans in phase 2147483647

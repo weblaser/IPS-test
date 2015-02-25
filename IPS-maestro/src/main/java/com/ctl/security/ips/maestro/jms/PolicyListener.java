@@ -18,4 +18,9 @@ public class PolicyListener {
     public void createPolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
         policyServiceWrite.createPolicyForAccount(policyBean);
     }
+
+    @JmsListener(destination = PolicyOperation.DELETE_POLICY_FOR_ACCOUNT)
+    public void deletePolicyForAccount(PolicyBean policyBean) throws DsmPolicyClientException {
+        policyServiceWrite.deletePolicyForAccount(policyBean);
+    }
 }
