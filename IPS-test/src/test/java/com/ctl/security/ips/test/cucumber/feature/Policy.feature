@@ -45,7 +45,6 @@ Feature:  Security - policy
 
 
   Scenario: Get valid response when deleting a policy for an account
-
     Given I have an valid account
     And I POST a policy
     When I DELETE a valid policy
@@ -53,7 +52,6 @@ Feature:  Security - policy
 
 
   Scenario: Get invalid response when deleting a policy for an account when ???
-
     Given I have an invalid account
     And I POST a policy
     When I DELETE a invalid policy
