@@ -267,7 +267,9 @@ public class PolicySteps {
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent().getId());
 
-        cleanUpCmdb(user, productUserActivities, configurationItemResource);
+        if(cleanup){
+            cleanUpCmdb(user, productUserActivities, configurationItemResource);
+        }
     }
 
     private void cleanUpCmdb(UserResource user, List<ProductUserActivity> productUserActivities, ConfigurationItemResource configurationItemResource) {
