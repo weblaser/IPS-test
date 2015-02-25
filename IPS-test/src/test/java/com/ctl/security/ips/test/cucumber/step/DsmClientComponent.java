@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 @Component
 public class DsmClientComponent {
 
-    public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy) throws DsmPolicyClientException, InterruptedException {
+    public void verifyDsmPolicyCreation(DsmPolicyClient dsmPolicyClient, Policy newlyCreatedCtlPolicy, boolean cleanup) throws DsmPolicyClientException, InterruptedException {
         assertNotNull(newlyCreatedCtlPolicy);
 
         Policy retrievedPolicy = null;
@@ -39,6 +39,12 @@ public class DsmClientComponent {
         //The mock needs to be improved to allow for retrieving a specific policy by name.
 //        assertEquals(newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
 
+        if(cleanup){
+            cleanupPolicy(dsmPolicyClient, retrievedPolicy);
+        }
+    }
+
+    private void cleanupPolicy(DsmPolicyClient dsmPolicyClient, Policy retrievedPolicy) throws DsmPolicyClientException {
         dsmPolicyClient.securityProfileDelete(Arrays.asList(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId())));
 
         Policy deletedPolicy = dsmPolicyClient.retrieveSecurityProfileById(NumberUtils.createInteger(retrievedPolicy.getVendorPolicyId()));

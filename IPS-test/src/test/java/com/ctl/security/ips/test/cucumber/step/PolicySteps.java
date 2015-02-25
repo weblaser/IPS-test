@@ -128,6 +128,7 @@ public class PolicySteps {
 //                Policy retrievedPolicy = getPolicyWithWait(policyName);
 //                id = retrievedPolicy.getVendorPolicyId();
 
+                dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, false);
                 verifyCmdbCreation(false);
 
                 username = policy.getUsername();
@@ -168,7 +169,7 @@ public class PolicySteps {
 
     @Then("^I receive a response that contains a uuid for the created policy$")
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
-        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy);
+        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, true);
         verifyCmdbCreation(true);
     }
 

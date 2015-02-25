@@ -67,7 +67,7 @@ public class CtlDsmCreatePolicySteps {
 
     @Then("^I am able to retrieve the newly created policy$")
     public void i_am_able_to_retrieve_the_newly_created_policy() throws Throwable {
-        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, newlyCreatedCtlPolicy);
+        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, newlyCreatedCtlPolicy, true);
     }
 
     @Then("^I handle the error correctly$")
