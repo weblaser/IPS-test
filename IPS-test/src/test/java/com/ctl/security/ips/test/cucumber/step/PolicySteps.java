@@ -202,6 +202,8 @@ public class PolicySteps {
 
         assert products.toString().contains("status=INACTIVE");
 
+        verifyCmdbCreation(true);
+
 
         //TODO: We need the GET operation to work before we can test it in this way.
 //        boolean isDeleted = false;
