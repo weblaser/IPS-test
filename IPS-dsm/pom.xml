@@ -49,6 +49,7 @@
             <artifactId>spring-jdbc</artifactId>
             <version>4.0.8.RELEASE</version>
         </dependency>
+
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>

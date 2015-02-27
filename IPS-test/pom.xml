@@ -47,27 +47,22 @@
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>${cucumber.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-core</artifactId>
-            <version>${cucumber.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>${cucumber.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>cucumber-spring</artifactId>
-            <version>${cucumber.version}</version>
         </dependency>
         <dependency>
             <groupId>info.cukes</groupId>
             <artifactId>gherkin</artifactId>
-            <version>2.12.2</version>
         </dependency>
 
         <dependency>
@@ -76,12 +71,6 @@
             <version>1.7.3</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-        </dependency>
         <dependency>
             <groupId>com.ctl.security</groupId>
             <artifactId>dsm-api-client</artifactId>
@@ -96,17 +85,6 @@
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-dsm-mock-config</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.8</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>hamcrest-core</artifactId>
-                    <groupId>org.hamcrest</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
