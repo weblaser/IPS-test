@@ -11,17 +11,17 @@ public class ApiConfigTest {
     @Test
     public void testSwaggerConfig() throws Exception {
         //arrange
-        ApiConfig underTest = new ApiConfig();
+        ResourceConfig underTest = new ResourceConfig();
 
         //act
         BeanConfig actual = underTest.swaggerConfig();
 
         //assert
-        assertEquals(ApiConfig.COM_CTL_SECURITY_IPS_API, actual.getResourcePackage());
-        assertEquals(ApiConfig.IPS, actual.getBasePath());
-        assertEquals(ApiConfig.API_VERSION, actual.getVersion());
-        assertEquals(ApiConfig.IPS_API, actual.getTitle());
-        assertEquals(ApiConfig.CENTURY_LINK_API_FOR_MANAGED_IPS_SERVICES, actual.getDescription());
+        assertEquals(ResourceConfig.COM_CTL_SECURITY_IPS_API, actual.getResourcePackage());
+        assertEquals(ResourceConfig.IPS, actual.getBasePath());
+        assertEquals(ResourceConfig.API_VERSION, actual.getVersion());
+        assertEquals(ResourceConfig.IPS_API, actual.getTitle());
+        assertEquals(ResourceConfig.CENTURY_LINK_API_FOR_MANAGED_IPS_SERVICES, actual.getDescription());
         assertTrue(actual.getScan());
     }
 }

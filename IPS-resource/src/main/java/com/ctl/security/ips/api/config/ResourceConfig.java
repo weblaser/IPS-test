@@ -2,17 +2,20 @@ package com.ctl.security.ips.api.config;
 
 import com.ctl.security.acegi.api.config.SecurityConfig;
 import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
+import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
+import com.ctl.security.ips.common.jms.config.JmsConfig;
+import com.ctl.security.ips.dsm.config.DsmConfig;
+import com.ctl.security.ips.service.config.IpsServiceConfig;
 import com.wordnik.swagger.jaxrs.config.BeanConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@ComponentScan(basePackages = {"com.ctl.security"})
-@Import({SecurityConfig.class, ClcClientCoreAppConfig.class})
-public class ApiConfig {
+@ComponentScan(basePackages = {"com.ctl.security.ips.api"})
+@Import({SecurityConfig.class, ClcClientCoreAppConfig.class, JmsConfig.class, IpsServiceConfig.class, DsmConfig.class, SecurityDataClientAppConfig.class})
+public class ResourceConfig {
 
     public static final String COM_CTL_SECURITY_IPS_API = "com.ctl.security.ips.api";
     public static final String IPS = "/ips/swagger";

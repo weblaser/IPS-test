@@ -1,4 +1,4 @@
-package com.ctl.security.ips.common.jms;
+package com.ctl.security.ips.common.jms.config;
 
 import org.apache.activemq.spring.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;

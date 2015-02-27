@@ -7,7 +7,7 @@ public class CoreConfigTest {
 
     @Test
     public void testConstructor() {
-        new CoreConfig();
+        new IpsServiceConfig();
     }
 
 }

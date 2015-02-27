@@ -1,5 +1,6 @@
 package com.ctl.security.ips.common.jms;
 
+import com.ctl.security.ips.common.jms.config.JmsConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
