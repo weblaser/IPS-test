@@ -47,7 +47,7 @@ public class RestInitializerTest {
         // assert
         verify(servletContext).addListener(ContextLoaderListener.class);
         verify(servletContext).setInitParameter(ContextLoader.CONTEXT_CLASS_PARAM, AnnotationConfigWebApplicationContext.class.getName());
-        verify(servletContext).setInitParameter(ContextLoader.CONFIG_LOCATION_PARAM, ApiConfig.class.getName());
+        verify(servletContext).setInitParameter(ContextLoader.CONFIG_LOCATION_PARAM, ResourceConfig.class.getName());
         verify(servletContext).addServlet("servlet", ServletContainer.class.getName());
         verify(servletRegistration).setInitParameter("javax.ws.rs.Application", JerseyApplication.class.getName());
         verify(servletRegistration).setInitParameter("jersey.config.server.provider.classnames", LoggingFilter.class.getName());

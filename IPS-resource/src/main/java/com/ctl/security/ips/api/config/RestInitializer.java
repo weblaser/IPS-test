@@ -23,7 +23,7 @@ public class RestInitializer implements WebApplicationInitializer {
         // Listeners
         servletContext.addListener(ContextLoaderListener.class);
         servletContext.setInitParameter(ContextLoader.CONTEXT_CLASS_PARAM, AnnotationConfigWebApplicationContext.class.getName());
-        servletContext.setInitParameter(ContextLoader.CONFIG_LOCATION_PARAM, ApiConfig.class.getName());
+        servletContext.setInitParameter(ContextLoader.CONFIG_LOCATION_PARAM, ResourceConfig.class.getName());
 
         // Register Jersey 2.0 servlet
         ServletRegistration.Dynamic servletRegistration = servletContext.addServlet("servlet", ServletContainer.class.getName());
