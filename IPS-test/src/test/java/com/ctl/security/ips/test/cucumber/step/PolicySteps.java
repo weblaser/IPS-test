@@ -57,7 +57,7 @@ public class PolicySteps {
 
     private String accountId;
     private String bearerToken;
-    private String serverDomainName;
+    private String hostName;
     private String username;
 
     @Autowired
@@ -98,10 +98,10 @@ public class PolicySteps {
         try {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
-            serverDomainName = "server.domain.name." + System.currentTimeMillis();
+            hostName = "server.host.name." + System.currentTimeMillis();
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
-                    setServerDomainName(serverDomainName).
+                    setHostName(hostName).
                     setUsername(userName);
 
             policyClient.createPolicyForAccount(accountId, policy, bearerToken);
@@ -137,7 +137,7 @@ public class PolicySteps {
 
                 username = policy.getUsername();
 
-                policyClient.deletePolicyForAccount(accountId, id, username, serverDomainName, bearerToken);
+                policyClient.deletePolicyForAccount(accountId, id, username, hostName, bearerToken);
 
             }
         } catch (Exception e) {
@@ -194,7 +194,7 @@ public class PolicySteps {
         int i = 0;
         int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && !products.toString().contains("status=INACTIVE")){
-            configurationItemResource = configurationItemClient.getConfigurationItem(serverDomainName, accountId);
+            configurationItemResource = configurationItemClient.getConfigurationItem(hostName, accountId);
             products = configurationItemResource.getContent().getProducts();
             Thread.sleep(1000);
             i++;
@@ -281,7 +281,7 @@ public class PolicySteps {
         List<ProductUserActivity> productUserActivities = productUserActivityResources.unwrap();
         assertTrue(productUserActivities.size() > 0);
 
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getServerDomainName(), accountId);
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getHostName(), accountId);
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent().getId());
 

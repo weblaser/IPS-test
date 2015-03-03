@@ -17,7 +17,7 @@ public class Policy implements Serializable {
     private String name;
     private PolicyStatus status;
 
-    private String serverDomainName;
+    private String hostName;
     private String tenantId;
     private String username;
 }

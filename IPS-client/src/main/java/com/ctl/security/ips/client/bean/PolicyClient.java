@@ -39,9 +39,9 @@ public class PolicyClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public void createPolicyForAccount(String account, Policy policy, String token) {
+    public void createPolicyForAccount(String accountId, Policy policy, String token) {
         try {
-            String address = hostUrl + POLICIES + account;
+            String address = hostUrl + POLICIES + accountId;
             logger.log(Level.INFO, "createPolicyForAccount: " + address);
 
                     restTemplate.exchange(address,

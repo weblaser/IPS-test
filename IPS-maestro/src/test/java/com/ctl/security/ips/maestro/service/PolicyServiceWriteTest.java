@@ -72,7 +72,7 @@ public class PolicyServiceWriteTest {
         String serverDomainName = null;
 
         //act
-        PolicyBean policyBean = new PolicyBean(accountId, buildPolicy().setUsername(username).setServerDomainName(serverDomainName));
+        PolicyBean policyBean = new PolicyBean(accountId, buildPolicy().setUsername(username).setHostName(serverDomainName));
         classUnderTest.deletePolicyForAccount(policyBean);
 
         //assert
