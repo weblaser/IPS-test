@@ -47,7 +47,7 @@ public class DsmPolicyClient {
         try {
           SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(policy));
             return securityProfileTransportMarshaller.convert(securityProfileTransport)
-                    .setServerDomainName(policy.getServerDomainName())
+                    .setHostName(policy.getHostName())
                     .setUsername(policy.getUsername());
         } catch (DsmPolicyClientException e) {
             throw new DsmPolicyClientException(e);

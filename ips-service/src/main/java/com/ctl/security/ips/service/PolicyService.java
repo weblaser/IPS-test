@@ -12,7 +12,7 @@ public abstract class PolicyService {
     public InstallationBean buildInstallationBean(PolicyBean policyBean) {
         return new InstallationBean(policyBean.getPolicy().getUsername(),
                 policyBean.getAccountId(),
-                policyBean.getPolicy().getServerDomainName(),
+                policyBean.getPolicy().getHostName(),
                 new Product()
                         .setName(PolicyServiceRead.TREND_MICRO_IPS)
                         .setType(ProductType.IPS));
