@@ -1,8 +1,10 @@
 package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.Account;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
+import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,14 +18,16 @@ public class NotificationServiceWrite {
     @Autowired
     private ConfigurationItemClient configurationItemClient;
 
-    public void updateNotificationDestination(String hostName, String accountId) {
+    public void updateNotificationDestination(NotificationDestinationBean notificationDestinationBean) {
 
-        ConfigurationItem configurationItem = new ConfigurationItem();
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
 
-        Account account =new Account().setCustomerAccountId(accountId);
-        configurationItem.setHostName(hostName).setAccount(account);
+        if(configurationItemResource != null){
+            ConfigurationItem configurationItem = configurationItemResource.getContent();
+            configurationItem.getAccount().setNotificationDestinations(notificationDestinationBean.getNotificationDestinations());
+            configurationItemClient.updateConfigurationItem(configurationItem);
+        }
 
-        configurationItemClient.updateConfigurationItem(configurationItem);
 
     }
 }
