@@ -12,7 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.jms.ConnectionFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JmsConfigTest {

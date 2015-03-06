@@ -1,8 +1,7 @@
-package com.ctl.security.ips.service;
+package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
-import com.ctl.security.data.common.domain.mongo.Account;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import org.springframework.beans.factory.annotation.Autowired;
