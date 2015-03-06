@@ -1,4 +1,4 @@
-package com.ctl.security.ips.client.bean;
+package com.ctl.security.ips.client;
 
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
@@ -29,8 +29,6 @@ public class PolicyClient {
     private static final Logger logger = Logger.getLogger(PolicyClient.class);
 
     public static final String POLICIES = "policies/";
-    public static final String AUTHORIZATION = "Authorization";
-    public static final String BEARER = "Bearer ";
     public static final String USERNAME = "username";
 
     @Value("${${spring.profiles.active:local}.ips.host}")
@@ -39,75 +37,74 @@ public class PolicyClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public void createPolicyForAccount(String accountId, Policy policy, String token) {
+    @Autowired
+    private ClientComponent clientComponent;
+
+    public void createPolicyForAccount(String accountId, Policy policy, String bearerToken) {
         try {
             String address = hostUrl + POLICIES + accountId;
             logger.log(Level.INFO, "createPolicyForAccount: " + address);
 
                     restTemplate.exchange(address,
-                            HttpMethod.POST, new HttpEntity<>(policy, createHeaders(token)), String.class);
+                            HttpMethod.POST, new HttpEntity<>(policy, clientComponent.createHeaders(bearerToken)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
     }
 
-    public List<Policy> getPoliciesForAccount(String account, String token) {
+    public List<Policy> getPoliciesForAccount(String account, String bearerToken) {
         List<Policy> response = null;
         try {
             String address = hostUrl + POLICIES + account;
             logger.log(Level.INFO, "getPoliciesForAccount: " + address);
 
             response = Arrays.asList(restTemplate.exchange(address,
-                    HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy[].class).getBody());
+                    HttpMethod.GET, new HttpEntity<>(clientComponent.createHeaders(bearerToken)), Policy[].class).getBody());
         } catch (RestClientException rce) {
             fail(rce);
         }
         return response;
     }
 
-    public Policy getPolicyForAccount(String account, String id, String token) {
+    public Policy getPolicyForAccount(String account, String id, String bearerToken) {
         Policy response = null;
         try {
             String address = hostUrl + POLICIES + account + "/" + id;
             logger.log(Level.INFO, "getPolicyForAccount: " + address);
 
             response = restTemplate.exchange(address,
-                    HttpMethod.GET, new HttpEntity<>(createHeaders(token)), Policy.class).getBody();
+                    HttpMethod.GET, new HttpEntity<>(clientComponent.createHeaders(bearerToken)), Policy.class).getBody();
         } catch (RestClientException rce) {
             fail(rce);
         }
         return response;
     }
 
-    public void updatePolicyForAccount(String account, String id, Policy policy, String token) {
+    public void updatePolicyForAccount(String account, String id, Policy policy, String bearerToken) {
         try {
             String address = hostUrl + POLICIES + account;
             logger.log(Level.INFO, "updatePolicyForAccount: " + address);
 
             restTemplate.exchange(address,
-                    HttpMethod.PUT, new HttpEntity<>(policy, createHeaders(token)), String.class);
+                    HttpMethod.PUT, new HttpEntity<>(policy, clientComponent.createHeaders(bearerToken)), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
     }
 
-    public void deletePolicyForAccount(String account, String id, String username, String serverDomainName, String token) {
+    public void deletePolicyForAccount(String account, String id, String username, String serverDomainName, String bearerToken) {
         String address = hostUrl + POLICIES + account + "/" + id + "/" + serverDomainName + "?" + USERNAME + "=" + username;
         logger.log(Level.INFO, "deletePolicyForAccount: " + address);
 
         try {
+            HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
             restTemplate.exchange(address,
-                    HttpMethod.DELETE, new HttpEntity<>(createHeaders(token)), String.class);
+                    HttpMethod.DELETE, new HttpEntity<>(httpHeaders), String.class);
         } catch (RestClientException rce) {
             fail(rce);
         }
     }
 
-    private HttpHeaders createHeaders(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(AUTHORIZATION, BEARER + token);
-        return headers;
-    }
 
     private void fail(RestClientException rce) {
         String message = rce.getMessage();

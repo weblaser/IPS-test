@@ -2,6 +2,7 @@ package com.ctl.security.ips.api.jersey;
 
 import com.ctl.security.ips.api.jersey.mapper.NotAuthorizedExceptionMapper;
 import com.ctl.security.ips.api.jersey.mapper.PolicyNotFoundExceptionMapper;
+import com.ctl.security.ips.api.resource.impl.NotificationResourceImpl;
 import com.ctl.security.ips.api.resource.impl.PolicyResourceImpl;
 import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
 import com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider;
@@ -26,6 +27,7 @@ public class JerseyApplicationTest {
         assertTrue(jerseyApplication.getConfiguration().isRegistered(JerseyApiDeclarationProvider.class));
         assertTrue(jerseyApplication.getConfiguration().isRegistered(JerseyResourceListingProvider.class));
         assertTrue(jerseyApplication.getConfiguration().isRegistered(PolicyResourceImpl.class));
+        assertTrue(jerseyApplication.getConfiguration().isRegistered(NotificationResourceImpl.class));
         assertTrue(jerseyApplication.getConfiguration().isRegistered(PolicyNotFoundExceptionMapper.class));
         assertTrue(jerseyApplication.getConfiguration().isRegistered(NotAuthorizedExceptionMapper.class));
 

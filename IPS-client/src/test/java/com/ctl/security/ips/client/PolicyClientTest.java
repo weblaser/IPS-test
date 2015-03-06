@@ -1,9 +1,10 @@
-package com.ctl.security.ips.client.bean;
+package com.ctl.security.ips.client;
 
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,9 @@ public class PolicyClientTest {
     private static final String SAMPLE_TOKEN = "Bearer sampletoken";
 
 
+    @InjectMocks
+    private PolicyClient classUnderTest = new PolicyClient();
+
     @Mock
     private RestTemplate restTemplate;
 
@@ -49,8 +53,17 @@ public class PolicyClientTest {
     @Mock
     private ResponseEntity<String> stringEntity;
 
-    @InjectMocks
-    private PolicyClient classUnderTest = new PolicyClient();
+    @Mock
+    private ClientComponent clientComponent;
+
+    private HttpHeaders httpHeaders = new HttpHeaders();
+
+    @Before
+    public void setup(){
+        String bearerToken = SAMPLE_TOKEN;
+        httpHeaders.add("test", "test");
+        when(clientComponent.createHeaders(bearerToken)).thenReturn(httpHeaders);
+    }
 
     @Test
     public void testCreatePolicyForAccount() {
@@ -171,7 +184,7 @@ public class PolicyClientTest {
         String hostUrl = "hostUrl/";
         ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
         Policy policy = buildPolicy();
-        HttpEntity policyHttpEntity = new HttpEntity<>(createHeaders(SAMPLE_TOKEN));
+        HttpEntity policyHttpEntity = new HttpEntity<>(httpHeaders);
 
         //act
         String username = null;
@@ -221,9 +234,4 @@ public class PolicyClientTest {
     }
 
 
-    private HttpHeaders createHeaders(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(PolicyClient.AUTHORIZATION, PolicyClient.BEARER + token);
-        return headers;
-    }
 }

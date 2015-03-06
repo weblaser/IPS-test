@@ -22,6 +22,9 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RestInitializerTest {
 
+    @InjectMocks
+    private RestInitializer classUnderTest;
+
     @Mock
     private ServletContext servletContext;
 
@@ -30,9 +33,6 @@ public class RestInitializerTest {
 
     @Mock
     private FilterRegistration.Dynamic filterRegistration;
-
-    @InjectMocks
-    private RestInitializer classUnderTest = new RestInitializer();
 
     @Test
     public void testOnStartup() throws ServletException {

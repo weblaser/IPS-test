@@ -2,6 +2,7 @@ package com.ctl.security.ips.api.jersey;
 
 import com.ctl.security.ips.api.jersey.mapper.NotAuthorizedExceptionMapper;
 import com.ctl.security.ips.api.jersey.mapper.PolicyNotFoundExceptionMapper;
+import com.ctl.security.ips.api.resource.impl.NotificationResourceImpl;
 import com.ctl.security.ips.api.resource.impl.PolicyResourceImpl;
 import com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON;
 import com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider;
@@ -27,6 +28,7 @@ public class JerseyApplication extends ResourceConfig {
 
         //Security Resources
         register(PolicyResourceImpl.class);
+        register(NotificationResourceImpl.class);
 
         //Exception Mappers
         register(PolicyNotFoundExceptionMapper.class);

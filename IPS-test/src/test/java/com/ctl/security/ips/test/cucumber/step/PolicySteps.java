@@ -1,8 +1,5 @@
 package com.ctl.security.ips.test.cucumber.step;
 
-import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
-import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
-import com.ctl.security.clc.client.core.bean.AuthenticationClient;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
@@ -11,7 +8,7 @@ import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivi
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
-import com.ctl.security.ips.client.bean.PolicyClient;
+import com.ctl.security.ips.client.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
@@ -42,12 +39,10 @@ public class PolicySteps {
 
     private static final String VALID_POLICY_ID = "12345";
     private static final String VALID = "valid";
-    private static final String VALID_AA = "TCCD";
     private static final String INVALID_AA = "TCCX";
     private static final String INVALID_POLICY_ID = "45678";
 
-    private static final String VALID_USERNAME = "kweber.tccd";
-    private static final String VALID_PASSWORD = "1qaz@WSX";
+
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
     public static final int MAX_WAIT_TIME = 30;
 
@@ -60,8 +55,7 @@ public class PolicySteps {
     private String hostName;
     private String username;
 
-    @Autowired
-    private AuthenticationClient authenticationClient;
+
 
     @Autowired
     private PolicyClient policyClient;
@@ -81,17 +75,20 @@ public class PolicySteps {
     @Autowired
     private UserClient userClient;
 
+    @Autowired
+    private ClcAuthenticationComponent clcAuthenticationComponent;
+
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
-            accountId = VALID_AA;
-            ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
-            bearerToken = clcAuthenticationResponse.getBearerToken();
+            accountId = ClcAuthenticationComponent.VALID_AA;
+            bearerToken = clcAuthenticationComponent.authenticate();
         } else {
             accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
         }
     }
+
 
     @When("^I POST a policy$")
     public void I_POST_a_policy() {
