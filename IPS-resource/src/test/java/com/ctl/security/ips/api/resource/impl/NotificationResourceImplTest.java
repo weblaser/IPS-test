@@ -1,8 +1,8 @@
 package com.ctl.security.ips.api.resource.impl;
 
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
+import com.ctl.security.ips.api.jms.NotificationMessageSender;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
-import com.ctl.security.ips.service.NotificationServiceWrite;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ public class NotificationResourceImplTest {
     private NotificationResourceImpl classUnderTest;
 
     @Mock
-    private NotificationServiceWrite notificationServiceWrite;
+    private NotificationMessageSender notificationMessageSender;
 
     @Test
     public void updateNotificationDestination_updatesNotificationDestination(){
@@ -32,7 +32,7 @@ public class NotificationResourceImplTest {
 
         classUnderTest.updateNotificationDestination(accountId,hostName,notificationDestinations);
 
-        verify(notificationServiceWrite).updateNotificationDestination(new NotificationDestinationBean(hostName, accountId, notificationDestinations));
+        verify(notificationMessageSender).updateNotificationDestination(new NotificationDestinationBean(hostName, accountId, notificationDestinations));
     }
 
 }
