@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class NotificationDestinationBean  implements Serializable {
+public class NotificationDestinationBean implements Serializable {
 
     private String hostName;
     private String accountId;
