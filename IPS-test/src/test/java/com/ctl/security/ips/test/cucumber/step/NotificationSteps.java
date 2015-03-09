@@ -37,6 +37,7 @@ public class NotificationSteps {
 
     private NotificationDestinationBean notificationDestinationBean;
     private String bearerToken;
+    public static final int MAX_ATTEMPTS = 30;
 
     @Given("^the customer wants to update a notification for a server$")
     public void the_customer_wants_to_update_a_notification_for_a_server(){
@@ -71,15 +72,27 @@ public class NotificationSteps {
     }
 
     @Then("^the server notification destination is updated with new destination$")
-    public void the_server_notification_destination_is_updated_with_new_destination(){
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+    public void the_server_notification_destination_is_updated_with_new_destination() throws Throwable{
+        ConfigurationItemResource configurationItemResource=null;
+        List<NotificationDestination> notificationDestinations=null;
+
+        int currentAttempts = 0;
+        int maxAttempts = MAX_ATTEMPTS;
+        while(currentAttempts < maxAttempts && notificationDestinations == null){
+            configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+            notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
+            Thread.sleep(1000);
+            currentAttempts++;
+        }
 
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent());
         assertNotNull(configurationItemResource.getContent().getAccount());
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations());
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0));
+
         assertEquals(notificationDestinationBean.getNotificationDestinations().get(0), configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0));
+
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0).getUrl());
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0).getIntervalCode());
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0).getTypeCode());
