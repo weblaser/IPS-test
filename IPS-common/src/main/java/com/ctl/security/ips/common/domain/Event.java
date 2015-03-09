@@ -1,5 +1,6 @@
 package com.ctl.security.ips.common.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -10,6 +11,7 @@ import lombok.experimental.Accessors;
  */
 
 @ToString
+@AllArgsConstructor
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data

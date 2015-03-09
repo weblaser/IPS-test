@@ -6,6 +6,9 @@ import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -18,6 +21,9 @@ public class EventNotifyService {
     @Autowired
     private ConfigurationItemClient configurationItemClient;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     public void notify(EventBean eventBean)
     {
         List<NotificationDestination> notificationDestinations = configurationItemClient
@@ -26,7 +32,13 @@ public class EventNotifyService {
                 .getAccount()
                 .getNotificationDestinations();
 
-
+//        for (int notificationDestinationIndex=0; notificationDestinationIndex < notificationDestinations.size();notificationDestinationIndex++)
+//        {
+//            restTemplate.exchange(notificationDestinations.get(notificationDestinationIndex).getUrl(),
+//                    HttpMethod.POST, new HttpEntity<>(eventBean.getEvent().getMessage()), String.class);
+//        }
 
     }
+
+
 }
