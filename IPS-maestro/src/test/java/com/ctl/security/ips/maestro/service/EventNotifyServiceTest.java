@@ -11,13 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,10 +46,11 @@ public class EventNotifyServiceTest {
     private RestTemplate restTemplate;
 
     @Test
-    public void notify_notifiesToNotificationDestination() throws Exception {
+    public void notify_notifiesToNotificationDestination(){
         String hostName = null;
         String accountId = null;
-        Event event=new Event("New Message");
+        Event event=new Event();
+        event.setMessage("New Message");
         EventBean eventBean=new EventBean(hostName,accountId,event);
 
         NotificationDestination notificationDestination=new NotificationDestination();
@@ -71,12 +72,11 @@ public class EventNotifyServiceTest {
         verify(configurationItem).getAccount();
         verify(account).getNotificationDestinations();
 
-        for (int notificationDestinationIndex = 0;
-             notificationDestinationIndex < notificationDestinations.size();
-             notificationDestinationIndex++)
+        for (NotificationDestination notification : notificationDestinations)
         {
-            verify(restTemplate).exchange(notificationDestinations.get(notificationDestinationIndex).getUrl(),
-                HttpMethod.POST, new HttpEntity<>(eventBean.getEvent().getMessage()), String.class);
+            verify(restTemplate).exchange(eq(notification.getUrl()),
+                eq(HttpMethod.POST), eq(new HttpEntity<>(eventBean.getEvent().getMessage())), eq(String.class));
+
         }
     }
 }

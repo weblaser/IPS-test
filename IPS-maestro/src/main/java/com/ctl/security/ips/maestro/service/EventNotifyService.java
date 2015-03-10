@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class EventNotifyService {
 
-
     @Autowired
     private ConfigurationItemClient configurationItemClient;
 
@@ -32,13 +31,12 @@ public class EventNotifyService {
                 .getAccount()
                 .getNotificationDestinations();
 
-//        for (int notificationDestinationIndex=0; notificationDestinationIndex < notificationDestinations.size();notificationDestinationIndex++)
-//        {
-//            restTemplate.exchange(notificationDestinations.get(notificationDestinationIndex).getUrl(),
-//                    HttpMethod.POST, new HttpEntity<>(eventBean.getEvent().getMessage()), String.class);
-//        }
-
+        for (int notificationDestinationIndex = 0;
+             notificationDestinationIndex < notificationDestinations.size();
+             notificationDestinationIndex++)
+        {
+            restTemplate.exchange(notificationDestinations.get(notificationDestinationIndex).getUrl(),
+                    HttpMethod.POST, new HttpEntity<>(eventBean.getEvent().getMessage()), String.class);
+        }
     }
-
-
 }

@@ -1,7 +1,8 @@
 @ALL_TESTS
 Feature: Security - Event
 
+  @WIP
   Scenario: Send an event to a set notification destination URL
-    Given the costumer has a notification destination that has a set URL
-    When an event occurs
-    Then the URL given has been updated with the event information
+    Given an event occurs
+    When the event notification is posted to the events endpoint
+    Then the event information is sent to the correct URL
