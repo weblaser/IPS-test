@@ -1,18 +1,19 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.client.RequestPatternBuilder;
-import com.github.tomakehurst.wiremock.junit.Stubbing;
+import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import com.xebialabs.restito.builder.verify.VerifySequenced;
+import com.xebialabs.restito.server.StubServer;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.glassfish.grizzly.http.Method;
+import org.glassfish.grizzly.http.util.HttpStatus;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.assertThat;
-
-//import com.github.tomakehurst.wiremock.testsupport.WireMockResponse;
-
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
 /**
  * Created by sean.robb on 3/10/2015.
@@ -35,20 +36,23 @@ public class EventSteps {
 //    private String bearerToken;
 //    public static final int MAX_ATTEMPTS = 30;
 
-    WireMockServer wireMockServer;
+
 
     @Given("^an event occurs$")
     public void an_event_occurs() throws Throwable{
 
-        wireMockServer=new WireMockServer(9090);
 
-        configureFor("localhost", 9090);
+        int port = 9090;
+        WireMockServer wireMockServer = new WireMockServer(port);
+        WireMock.configureFor("localhost", port);
+
         wireMockServer.start();
-        MappingBuilder mappingBuilder = get(urlEqualTo("/some/thing"))
-                .willReturn(aResponse()
-                        .withBody("Hello world!"));
-        stubFor(mappingBuilder);
 
+        get(urlMatching("someAddress")).willReturn(aResponse().withBody("body"));
+
+        Thread.sleep(10000);
+
+        wireMockServer.stop();
 
 //
 //        bearerToken = clcAuthenticationComponent.authenticate();
@@ -108,10 +112,5 @@ public class EventSteps {
 //        configurationItemResource = configurationItemClient.getConfigurationItem(eventBean.getHostName(), eventBean.getAccountId());
 //        notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
 
-        RequestPatternBuilder requestPatternBuilder = getRequestedFor(urlEqualTo("some/thing"));
-        //verify(postRequestedFor(urlEqualTo("some/thing")));
-      //assertThat(testClient.get("/some/thing").statusCode(), is(200));
-        //assertThat(get("/some/thing/else").statusCode(), is(404));
-        wireMockServer.stop();
     }
 }

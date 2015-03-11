@@ -1,4 +1,4 @@
-package com.ctl.security.ips.maestro.service;
+package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
