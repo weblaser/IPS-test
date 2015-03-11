@@ -1,4 +1,4 @@
-package com.ctl.security.ips.maestro.service;
+package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.Account;
@@ -31,12 +31,10 @@ public class EventNotifyService {
                 .getAccount()
                 .getNotificationDestinations();
 
-        for (int notificationDestinationIndex = 0;
-             notificationDestinationIndex < notificationDestinations.size();
-             notificationDestinationIndex++)
+        for (NotificationDestination notification : notificationDestinations)
         {
-            restTemplate.exchange(notificationDestinations.get(notificationDestinationIndex).getUrl(),
-                    HttpMethod.POST, new HttpEntity<>(eventBean.getEvent().getMessage()), String.class);
+            restTemplate.exchange(notification.getUrl(),HttpMethod.POST,
+                    new HttpEntity<>(eventBean.getEvent().getMessage()), String.class);
         }
     }
 }
