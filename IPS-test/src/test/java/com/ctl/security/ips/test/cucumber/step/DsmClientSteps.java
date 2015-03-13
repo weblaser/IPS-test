@@ -1,7 +1,9 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Tenant;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
+import com.ctl.security.ips.dsm.DsmTenantClient;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -12,17 +14,21 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.web.client.RestTemplate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 
 /**
  * Created by chad.middleton on 1/16/2015.
+ *
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)
-public class CtlDsmCreatePolicySteps {
+public class DsmClientSteps {
 
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
+
+    @Autowired
+    private DsmTenantClient dsmTenantClient;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -33,12 +39,16 @@ public class CtlDsmCreatePolicySteps {
     @Autowired
     private DsmClientComponent dsmClientComponent;
 
+
     private Policy policy;
     private Policy newlyCreatedCtlPolicy;
+
+    private Tenant tenant;
 
 
     private String username = "apiuser";
     private String password = "trejachad32jUgEs";
+    private Tenant newlyCreateTenant;
 
 
     @Given("^I have a policy that I want to create in DSM$")
@@ -70,10 +80,23 @@ public class CtlDsmCreatePolicySteps {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, newlyCreatedCtlPolicy, true);
     }
 
-    @Then("^I handle the error correctly$")
-    public void i_handle_the_error_correctly() throws Throwable {
+
+    @Given("^a customer tenant is ready to be created$")
+    public void a_customer_tenant_is_ready_to_be_created() throws Throwable {
+        String testTenant = "TestTenant" + System.currentTimeMillis();
+        tenant = new Tenant().setTenantName(testTenant).setAdminEmail("test@test.com").setAdminPassword("test").setAdminAccount("TestAdmin");
     }
 
+    @When("^the dsm rest client is used to create the tenant$")
+    public void the_dsm_rest_client_is_used_to_create_the_tenant() throws Throwable {
+        newlyCreateTenant = dsmTenantClient.createDsmTenant(tenant);
+    }
 
+    @Then("^the tenant has been created in DSM$")
+    public void the_tenant_has_been_created_in_DSM() throws Throwable {
+        assertNotNull(newlyCreateTenant);
+        assertNotNull(newlyCreateTenant.getTenantId());
+        assertNotNull(newlyCreateTenant.getAgentInitiatedActivationPassword());
+    }
 
 }

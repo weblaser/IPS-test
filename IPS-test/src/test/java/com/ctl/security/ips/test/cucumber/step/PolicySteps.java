@@ -14,7 +14,7 @@ import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -169,7 +169,7 @@ public class PolicySteps {
     }
 
     @Then("^I receive a response that contains a uuid for the created policy$")
-    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmPolicyClientException, InterruptedException {
+    public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmClientException, InterruptedException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, true);
         verifyCmdbCreation(true);
     }

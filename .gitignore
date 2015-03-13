@@ -6,4 +6,4 @@
 .svn
 **/target/*
 target
-*.log
+*.log*

@@ -3,9 +3,9 @@ package com.ctl.security.ips.dsm.exception;
 /**
  * Created by chad.middleton on 1/23/2015.
  */
-public class DsmPolicyClientException extends Exception {
+public class DsmClientException extends Exception {
 
-    public DsmPolicyClientException(Throwable cause) {
+    public DsmClientException(Throwable cause) {
         super(cause);
     }
 }

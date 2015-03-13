@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNull;
 
 /**
  * Created by kevin.wilde on 1/20/2015.
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SecurityProfileTransportMarshallerTest {

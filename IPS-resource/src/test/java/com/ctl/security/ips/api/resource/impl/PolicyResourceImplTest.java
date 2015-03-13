@@ -5,7 +5,7 @@ import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.service.PolicyServiceRead;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ public class PolicyResourceImplTest {
     private PolicyMessageSender policyMessageSender;
 
     @Test
-    public void testCreatePolicyForAccount() throws DsmPolicyClientException {
+    public void testCreatePolicyForAccount() throws DsmClientException {
         //arrange
         Policy policyToBeCreated = new Policy();
         Policy expectedPolicy = new Policy();
@@ -97,7 +97,7 @@ public class PolicyResourceImplTest {
     }
 
     @Test
-    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
+    public void testDeletePolicyForAccount() throws DsmClientException {
         //act
         String username = null;
         String serverDomainName = null;

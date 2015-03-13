@@ -8,7 +8,7 @@ import com.ctl.security.ips.common.domain.Policy;
 import com.ctl.security.ips.common.domain.PolicyStatus;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.service.PolicyServiceRead;
 import manager.*;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class PolicyServiceWriteTest {
     private PolicyServiceRead policyServiceRead;
 
     @Test
-    public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
+    public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException {
         Policy policyToBeCreated = new Policy();
         Policy expectedNewlyCreatedPolicy = new Policy();
         when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
@@ -65,7 +65,7 @@ public class PolicyServiceWriteTest {
     }
 
     @Test
-    public void testDeletePolicyForAccount() throws DsmPolicyClientException {
+    public void testDeletePolicyForAccount() throws DsmClientException {
         //arrange
         String username = null;
         String accountId = VALID_ACCOUNT;
