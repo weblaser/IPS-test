@@ -77,5 +77,4 @@ public class NotificationClientTest {
         verify(restTemplate).exchange(address,
                 HttpMethod.PUT, new HttpEntity<>(notificationDestinationBean.getNotificationDestinations(), httpHeaders), String.class);
     }
-
 }
