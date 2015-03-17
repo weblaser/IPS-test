@@ -7,8 +7,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @ComponentScan(basePackages = "com.ctl.security.ips.service")
 @PropertySources({
-        @PropertySource("classpath:properties/security.data.client.properties"),
-        @PropertySource("classpath:properties/ips.service.properties")
+        @PropertySource("classpath:properties/security.data.client.properties")
 })
 public class IpsServiceConfig {
 

@@ -87,6 +87,7 @@ public class EventSteps {
         catch (Exception e){
             exception = e;
         }
+        try {Thread.sleep(10000);} catch (Exception e) {}
     }
 
     @Then("^the event information is sent to the correct URL$")

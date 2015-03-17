@@ -1,9 +1,9 @@
-package com.ctl.security.ips.service;
+package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.ips.service.config.IpsServiceConfig;
+import com.ctl.security.ips.maestro.config.MaestroConfig;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +26,7 @@ public class EventNotifyService {
     private ConfigurationItemClient configurationItemClient;
 
     @Autowired
-    @Qualifier(IpsServiceConfig.IPS_SERVICE_REST_TEMPLATE)
+    @Qualifier(MaestroConfig.IPS_MAESTRO_REST_TEMPLATE)
     private RestTemplate restTemplate;
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")

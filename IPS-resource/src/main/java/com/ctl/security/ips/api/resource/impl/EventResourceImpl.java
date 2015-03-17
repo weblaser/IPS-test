@@ -1,9 +1,9 @@
 package com.ctl.security.ips.api.resource.impl;
 
+import com.ctl.security.ips.api.jms.EventMessageSender;
 import com.ctl.security.ips.api.resource.EventResource;
 import com.ctl.security.ips.common.domain.Event;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.ips.service.EventNotifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class EventResourceImpl implements EventResource {
 
     @Autowired
-    private EventNotifyService eventNotifyService;
+    private EventMessageSender eventMessageSender;
 
     @Override
     public void notify(String account,String hostName,Event event) {
         EventBean eventBean = new EventBean(hostName,account,event);
-        eventNotifyService.notify(eventBean);
+        eventMessageSender.notify(eventBean);
     }
 }
