@@ -5,9 +5,6 @@ import org.springframework.context.annotation.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-
 @PropertySources({@PropertySource("classpath:/dsm.client.properties")})
 @Configuration
 @ComponentScan(basePackages = {"com.ctl.security.ips.dsm"})
@@ -20,8 +17,8 @@ public class DsmConfig {
     @Bean(name= DSM_REST_BEAN)
     public RestTemplate restTemplate() {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        Proxy proxy= new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy-us.sky.savvis.net", 8080));
-        requestFactory.setProxy(proxy);
+//        Proxy proxy= new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy-us.sky.savvis.net", 8080));
+//        requestFactory.setProxy(proxy);
         requestFactory.setConnectTimeout(120000);
         requestFactory.setReadTimeout(120000);
         return new RestTemplate(requestFactory);

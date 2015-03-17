@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class Tenant {
+public class TenantElement {
 
     private String agentInitiatedActivationPassword;
     private Boolean allModulesVisible;

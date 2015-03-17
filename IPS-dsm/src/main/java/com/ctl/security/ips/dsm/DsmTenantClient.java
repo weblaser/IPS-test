@@ -5,7 +5,7 @@ import com.ctl.security.ips.dsm.config.DsmConfig;
 import com.ctl.security.ips.dsm.domain.CreateOptions;
 import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
 import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
-import com.ctl.security.ips.dsm.domain.Tenant;
+import com.ctl.security.ips.dsm.domain.TenantElement;
 import manager.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
@@ -52,21 +55,21 @@ public class DsmTenantClient {
         String sessionId = dsmLogInClient.connectToDSMClient(username, password);
         CreateTenantRequest request = createDsmCreateTenantRequest(securityTenant).setSessionId(sessionId);
 
-//        Map<String, CreateTenantRequest> map = new HashMap<>();
-//        map.put("createTenantRequest", request);
-        HttpEntity<CreateTenantRequest> httpEntity = new HttpEntity<>(request, setDsmHeaders());
+        Map<String, CreateTenantRequest> map = new HashMap<>();
+        map.put("createTenantRequest", request);
+        HttpEntity<Map<String, CreateTenantRequest>> httpEntity = new HttpEntity<>(map, setDsmHeaders());
 
 //        CreateTenantResponse createTenantResponse = restTemplate.postForObject(url + "/tenants", map, CreateTenantResponse.class);
 
         CreateTenantResponse createTenantResponse = restTemplate.postForObject(url + "/tenants", httpEntity, CreateTenantResponse.class);
-        Tenant createdTenant = restTemplate.getForObject(url + "/tenants/id/" + createTenantResponse.getTenantID() + "?sID=" + sessionId, Tenant.class);
-        return new SecurityTenant().setAgentInitiatedActivationPassword(createdTenant.getAgentInitiatedActivationPassword()).setTenantId(createdTenant.getTenantID());
+        TenantElement createdTenantElement = restTemplate.getForObject(url + "/tenants/id/" + createTenantResponse.getTenantID() + "?sID=" + sessionId, TenantElement.class);
+        return new SecurityTenant().setAgentInitiatedActivationPassword(createdTenantElement.getAgentInitiatedActivationPassword()).setTenantId(createdTenantElement.getTenantID());
     }
 
     private CreateTenantRequest createDsmCreateTenantRequest(SecurityTenant securityTenant) {
         return new CreateTenantRequest()
                 .setCreateOptions(createDsmCreateTenantOptions(securityTenant))
-                .setTenant(createDsmTenantElement(securityTenant));
+                .setTenantElement(createDsmTenantElement(securityTenant));
     }
 
     private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant){
@@ -75,8 +78,8 @@ public class DsmTenantClient {
                 .setAdminPassword(securityTenant.getAdminPassword())
                 .setAdminEmail(securityTenant.getAdminEmail());
     }
-    private Tenant createDsmTenantElement(SecurityTenant securityTenant){
-        return new Tenant()
+    private TenantElement createDsmTenantElement(SecurityTenant securityTenant){
+        return new TenantElement()
                 .setName(securityTenant.getTenantName());
     }
 
@@ -84,11 +87,11 @@ public class DsmTenantClient {
         String sessionId = dsmLogInClient.connectToDSMClient(username, password);
 
         try {
-            Tenant retrievedTenant = restTemplate.getForObject(url + "/tenants/id/" + tenantId + "?sID=" + sessionId, Tenant.class, setDsmHeaders());
+            TenantElement retrievedTenantElement = restTemplate.getForObject(url + "/tenants/id/" + tenantId + "?sID=" + sessionId, TenantElement.class, setDsmHeaders());
 
             SecurityTenant securityTenant = new SecurityTenant()
-                    .setAgentInitiatedActivationPassword(retrievedTenant.getAgentInitiatedActivationPassword())
-                    .setTenantId(retrievedTenant.getTenantID());
+                    .setAgentInitiatedActivationPassword(retrievedTenantElement.getAgentInitiatedActivationPassword())
+                    .setTenantId(retrievedTenantElement.getTenantID());
 
             return securityTenant;
         }
