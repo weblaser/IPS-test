@@ -5,6 +5,11 @@ import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemRe
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.common.domain.Event;
 import com.ctl.security.ips.common.jms.bean.EventBean;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,12 +17,23 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,43 +56,197 @@ public class EventNotifyServiceTest {
     private Account account;
 
     @Mock
-    private List<NotificationDestination> notificationDestinations;
+    private RestTemplate restTemplate;
 
     @Mock
-    private RestTemplate restTemplate;
+    private Logger logger;
+
+    @Mock
+    private ResponseEntity<String> responseEntity;
+
+    private HttpStatus httpStatus;
+
+    String hostName = null;
+    String accountId = null;
+
+    private Integer maxRetryAttempts=2;
+
+    @Before
+    public void setup(){
+        ReflectionTestUtils.setField(classUnderTest, "maxRetryAttempts", maxRetryAttempts);
+        ReflectionTestUtils.setField(classUnderTest, "retryWaitTime", 10);
+    }
 
     @Test
     public void notify_notifiesToNotificationDestination(){
-        String hostName = null;
-        String accountId = null;
+        final TestAppender appender = new TestAppender();
+        final Logger logger = Logger.getRootLogger();
+
+        EventBean eventBean = createEventBean(hostName, accountId);
+
+        List<NotificationDestination> notificationDestinations = createNotificationDestinations();
+
+        basicMockitoSetup(notificationDestinations);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(responseEntity);
+        when(responseEntity.getStatusCode())
+                .thenReturn(HttpStatus.ACCEPTED);
+
+        logger.addAppender(appender);
+        classUnderTest.notify(eventBean);
+        logger.removeAppender(appender);
+
+        basicMockitoVerification();
+
+        for (NotificationDestination notification : notificationDestinations)
+        {
+            verify(restTemplate).exchange(eq(notification.getUrl()),
+                    eq(HttpMethod.POST),
+                    eq(new HttpEntity<>(eventBean.getEvent().getMessage())),
+                    eq(String.class));
+        }
+        assertEquals(true,responseEntity.getStatusCode().is2xxSuccessful());
+
+
+        final List<LoggingEvent> log = appender.getLog();
+        assertEquals((Integer)0, (Integer) log.size());
+    }
+
+    @Test
+    public void notify_logsFailedNotificationCausedByStatusCode(){
+        final TestAppender appender = new TestAppender();
+        final Logger logger = Logger.getRootLogger();
+
+        EventBean eventBean = createEventBean(hostName, accountId);
+
+        List<NotificationDestination> notificationDestinations = createNotificationDestinations();
+
+        basicMockitoSetup(notificationDestinations);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(responseEntity);
+        when(responseEntity.getStatusCode())
+                .thenReturn(HttpStatus.I_AM_A_TEAPOT);
+
+        logger.addAppender(appender);
+        classUnderTest.notify(eventBean);
+        logger.removeAppender(appender);
+
+        basicMockitoVerification();
+
+        assertEquals(false,responseEntity.getStatusCode().is2xxSuccessful());
+
+        for (NotificationDestination notification : notificationDestinations)
+        {
+            verify(restTemplate, times(maxRetryAttempts)).exchange(eq(notification.getUrl()),
+                    eq(HttpMethod.POST),
+                    eq(new HttpEntity<>(eventBean.getEvent().getMessage())),
+                    eq(String.class));
+        }
+
+        final List<LoggingEvent> log = appender.getLog();
+
+        for(int i=1; i < maxRetryAttempts - 1; i++) {
+            assertEquals(Level.INFO,log.get(i).getLevel());
+        }
+        assertEquals(Level.ERROR,log.get(maxRetryAttempts).getLevel());
+        assertEquals((Integer)(maxRetryAttempts + 1), (Integer) log.size());
+    }
+
+    @Test
+    public void notify_logsExceptionNotificationCausedByException(){
+        final TestAppender appender = new TestAppender();
+        final Logger logger = Logger.getRootLogger();
+
+        EventBean eventBean = createEventBean(hostName, accountId);
+
+        List<NotificationDestination> notificationDestinations = createNotificationDestinations();
+
+        basicMockitoSetup(notificationDestinations);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenThrow(new RestClientException("test"));
+
+        logger.addAppender(appender);
+        classUnderTest.notify(eventBean);
+        logger.removeAppender(appender);
+
+        basicMockitoVerification();
+
+        for (NotificationDestination notification : notificationDestinations)
+        {
+            verify(restTemplate, times(maxRetryAttempts)).exchange(eq(notification.getUrl()),
+                    eq(HttpMethod.POST),
+                    eq(new HttpEntity<>(eventBean.getEvent().getMessage())),
+                    eq(String.class));
+        }
+
+        assertNotNull(responseEntity);
+        assertNull(responseEntity.getStatusCode());
+
+        final List<LoggingEvent> log = appender.getLog();
+
+        for(int i=1; i < maxRetryAttempts - 1; i++) {
+            assertEquals(Level.INFO,log.get(i).getLevel());
+        }
+        assertEquals(Level.ERROR,log.get(maxRetryAttempts).getLevel());
+        assertEquals((Integer)(maxRetryAttempts + 1),(Integer)log.size());
+    }
+
+    private void basicMockitoVerification() {
+        verify(configurationItemClient).getConfigurationItem(hostName, accountId);
+        verify(configurationItemResource).getContent();
+        verify(configurationItem).getAccount();
+        verify(account).getNotificationDestinations();
+    }
+
+    private void basicMockitoSetup(List<NotificationDestination> notificationDestinations) {
+        when(configurationItemClient.getConfigurationItem(hostName, accountId))
+                .thenReturn(configurationItemResource);
+        when(configurationItemResource.getContent())
+                .thenReturn(configurationItem);
+        when(configurationItem.getAccount())
+                .thenReturn(account);
+        when(account.getNotificationDestinations())
+                .thenReturn(notificationDestinations);
+    }
+
+    private EventBean createEventBean(String hostName, String accountId) {
         Event event=new Event();
         event.setMessage("New Message");
-        EventBean eventBean=new EventBean(hostName,accountId,event);
+        return new EventBean(hostName,accountId,event);
+    }
 
+    private List<NotificationDestination> createNotificationDestinations() {
         NotificationDestination notificationDestination=new NotificationDestination();
         notificationDestination.setUrl("http://localhost:8080/test");
         notificationDestination.setTypeCode(NotificationDestinationType.WEBHOOK);
         notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
 
-        notificationDestinations = Arrays.asList(notificationDestination);
+        return Arrays.asList(notificationDestination);
+    }
 
-        when(configurationItemClient.getConfigurationItem(hostName, accountId)).thenReturn(configurationItemResource);
-        when(configurationItemResource.getContent()).thenReturn(configurationItem);
-        when(configurationItem.getAccount()).thenReturn(account);
-        when(account.getNotificationDestinations()).thenReturn(notificationDestinations);
+    class TestAppender extends AppenderSkeleton {
+        private final List<LoggingEvent> log = new ArrayList<LoggingEvent>();
 
-        classUnderTest.notify(eventBean);
+        @Override
+        public boolean requiresLayout() {
+            return false;
+        }
 
-        verify(configurationItemClient).getConfigurationItem(hostName, accountId);
-        verify(configurationItemResource).getContent();
-        verify(configurationItem).getAccount();
-        verify(account).getNotificationDestinations();
+        @Override
+        protected void append(final LoggingEvent loggingEvent) {
+            log.add(loggingEvent);
+        }
 
-        for (NotificationDestination notification : notificationDestinations)
-        {
-            verify(restTemplate).exchange(eq(notification.getUrl()),
-                eq(HttpMethod.POST), eq(new HttpEntity<>(eventBean.getEvent().getMessage())), eq(String.class));
+        @Override
+        public void close() {
+        }
 
+        public List<LoggingEvent> getLog() {
+            return new ArrayList<LoggingEvent>(log);
         }
     }
+
 }

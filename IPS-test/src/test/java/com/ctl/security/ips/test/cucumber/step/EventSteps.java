@@ -1,116 +1,174 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.common.domain.mongo.*;
+import com.ctl.security.ips.client.EventClient;
+import com.ctl.security.ips.client.NotificationClient;
+import com.ctl.security.ips.common.domain.Event;
+import com.ctl.security.ips.common.jms.bean.EventBean;
+import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.UrlMatchingStrategy;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.xebialabs.restito.builder.verify.VerifySequenced;
-import com.xebialabs.restito.server.StubServer;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.glassfish.grizzly.http.Method;
-import org.glassfish.grizzly.http.util.HttpStatus;
+import org.apache.http.HttpStatus;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.Level;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by sean.robb on 3/10/2015.
  */
 public class EventSteps {
 
-//    @Autowired
-//    private NotificationClient notificationClient;
-//
-//    @Autowired
-//    private EventClient eventClient;
-//
-//    @Autowired
-//    private ConfigurationItemClient configurationItemClient;
-//
-//    @Autowired
-//    private ClcAuthenticationComponent clcAuthenticationComponent;
-//
-//    private EventBean eventBean;
-//    private String bearerToken;
-//    public static final int MAX_ATTEMPTS = 30;
+    public static final String SOME_VALID_ADDRESS = "/someAddress";
 
+    public static final String SOME_INVALID_ADDRESS = "/someInvalidAddress";
 
+    @Autowired
+    private NotificationClient notificationClient;
+
+    @Autowired
+    private EventClient eventClient;
+
+    @Autowired
+    private ConfigurationItemClient configurationItemClient;
+
+    @Autowired
+    private ClcAuthenticationComponent clcAuthenticationComponent;
+
+    private EventBean eventBean;
+    private String bearerToken;
+    public static final int MAX_ATTEMPTS = 30;
+    WireMockServer wireMockServer;
+    private Exception exception;
+    int destinationPort = 9090;
+    String destinationHostName="localhost";
+    String accountId = ClcAuthenticationComponent.VALID_AA;
+    String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Given("^an event occurs$")
     public void an_event_occurs() throws Throwable{
+        createEventBean(accountId, hostName);
+        createAndConfigureConfigurationItem(accountId,hostName);
+    }
 
+    @Given("^the notification destination is invalid$")
+    public void the_notification_destination_is_invalid() throws Throwable{
+        createAndSetNotificationDestination(destinationHostName,destinationPort,SOME_INVALID_ADDRESS,accountId,hostName);
+        createAndSetupWireMockServer(SOME_INVALID_ADDRESS, destinationPort, destinationHostName, HttpStatus.SC_BAD_REQUEST);
+        exception=null;
+    }
 
-        int port = 9090;
-        WireMockServer wireMockServer = new WireMockServer(port);
-        WireMock.configureFor("localhost", port);
-
-        wireMockServer.start();
-
-        get(urlMatching("someAddress")).willReturn(aResponse().withBody("body"));
-
-        Thread.sleep(10000);
-
-        wireMockServer.stop();
-
-//
-//        bearerToken = clcAuthenticationComponent.authenticate();
-//
-//        String hostName = "server.host.name." + System.currentTimeMillis();
-//        String accountId = ClcAuthenticationComponent.VALID_AA;
-//        NotificationDestination notificationDestination = new NotificationDestination();
-//        NotificationDestinationBean notificationDestinationBean;
-//        Event event=new Event();
-//        event.setMessage("An Event Has Happened");
-//
-//        notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
-//        notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
-//        notificationDestination.setTypeCode(NotificationDestinationType.WEBHOOK);
-//        notificationDestination.setUrl("my.test.url/testing");
-//
-//        Account account = new Account()
-//                .setCustomerAccountId(accountId);
-//
-//        ConfigurationItem configurationItem = new ConfigurationItem()
-//                .setAccount(account)
-//                .setHostName(hostName);
-//
-//        configurationItemClient.createConfigurationItem(configurationItem);
-//
-//        List<NotificationDestination> notificationDestinations = Arrays.asList(notificationDestination);
-//        notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, notificationDestinations);
-//
-//        notificationClient.updateNotificationDestination(notificationDestinationBean, bearerToken);
-//
-//        eventBean.setAccountId(accountId);
-//        eventBean.setHostName(hostName);
-//        eventBean.setEvent(event);
-//
-//
-//        int currentAttempts = 0;
-//        int maxAttempts = MAX_ATTEMPTS;
-//
-//        //Waits for Notification Destinations to be set (Since Active MQ)
-//        while(currentAttempts < maxAttempts && notificationDestinations == null){
-//            notificationDestinations = configurationItem.getAccount().getNotificationDestinations();
-//            Thread.sleep(1000);
-//            currentAttempts++;
-//        }
+    @Given("^the notification destination is valid$")
+    public void the_notification_destination_is_valid() throws Throwable{
+        createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_VALID_ADDRESS, accountId, hostName);
+        createAndSetupWireMockServer(SOME_VALID_ADDRESS, destinationPort, destinationHostName, HttpStatus.SC_OK);
+        exception=null;
     }
 
     @When("^the event notification is posted to the events endpoint$")
     public void the_event_notification_is_posted_to_the_events_endpoint(){
-       // eventClient.notify(eventBean,bearerToken);
+        try {
+            eventClient.notify(eventBean, bearerToken);
+        }
+        catch (Exception e){
+            exception = e;
+        }
     }
 
     @Then("^the event information is sent to the correct URL$")
     public void the_event_information_is_sent_to_the_correct_URL(){
-//        ConfigurationItemResource configurationItemResource=null;
-//        List<NotificationDestination> notificationDestinations=null;
-//
-//        configurationItemResource = configurationItemClient.getConfigurationItem(eventBean.getHostName(), eventBean.getAccountId());
-//        notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
 
+        verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
+
+        assertNull(exception);
+
+        stopWireMockServer();
     }
+
+    @Then("^the event information is attempted to be sent to the URL multiple times$")
+    public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times(){
+        verify(5,postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
+
+        assertNull(exception);
+
+        stopWireMockServer();
+    }
+
+    private void stopWireMockServer() {
+        //stops the wire mock server
+        wireMockServer.stop();
+    }
+
+    private void createAndSetupWireMockServer(String notificationUrlPath, int destinationPort, String destinationHostName, int httpStatus) {
+        wireMockServer= new WireMockServer(destinationPort);
+        WireMock.configureFor(destinationHostName, destinationPort);
+        wireMockServer.start();
+        stubFor(post(urlPathEqualTo(notificationUrlPath))
+                .willReturn(aResponse()
+                        .withStatus(httpStatus)));
+    }
+
+    private void createAndConfigureConfigurationItem(String accountId, String hostName)throws Throwable {
+        Account account = new Account()
+                .setCustomerAccountId(accountId);
+
+        ConfigurationItem configurationItem = new ConfigurationItem()
+                .setAccount(account)
+                .setHostName(hostName);
+
+        configurationItemClient.createConfigurationItem(configurationItem);
+    }
+
+    private void createAndSetNotificationDestination(String destinationHostName,Integer destinationPort,String urlPath,String accountId, String hostName) throws Throwable{
+        NotificationDestination notificationDestination = new NotificationDestination();
+        notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
+        notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
+        notificationDestination.setTypeCode(NotificationDestinationType.WEBHOOK);
+        notificationDestination.setUrl("http://" + destinationHostName + ":" + destinationPort + urlPath);
+
+        List<NotificationDestination> notificationDestinations = null;
+        NotificationDestinationBean notificationDestinationBean;
+        notificationDestinationBean = new NotificationDestinationBean(hostName,
+                accountId,
+                Arrays.asList(notificationDestination));
+
+        bearerToken = clcAuthenticationComponent.authenticate();
+
+        //Sets the Bean Notification Destination Information
+        notificationClient.updateNotificationDestination(notificationDestinationBean, bearerToken);
+
+        ConfigurationItem configurationItem= configurationItemClient.getConfigurationItem(hostName,accountId).getContent();
+        //Waits for Notification Destinations to be set (Since Active MQ)
+        int currentAttempts = 0;
+        int maxAttempts = MAX_ATTEMPTS;
+        while(currentAttempts < maxAttempts && notificationDestinations == null){
+            notificationDestinations = configurationItem.getAccount().getNotificationDestinations();
+            Thread.sleep(1000);
+            currentAttempts++;
+        }
+    }
+
+    private void createEventBean(String accountId, String hostName) {
+        //Creates an event
+        Event event=new Event();
+        event.setMessage("An Event Has Happened");
+
+        //Sets event bean with correct information
+        eventBean=new EventBean(hostName,accountId,event);
+    }
+
 }

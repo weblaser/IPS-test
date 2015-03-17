@@ -1,5 +1,6 @@
 package com.ctl.security.ips.client;
 
+import com.ctl.security.ips.common.exception.IpsException;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import org.apache.log4j.Level;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,12 +20,12 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class EventClient {
 
-    private static final Logger logger = Logger.getLogger(NotificationClient.class);
+    private static final Logger logger = Logger.getLogger(EventClient.class);
 
     @Autowired
     private ClientComponent clientComponent;
 
-    public static final String EVENT = "event";
+    public static final String EVENT = "events";
 
     @Value("${${spring.profiles.active:local}.ips.host}")
     private String hostUrl;
@@ -37,7 +39,11 @@ public class EventClient {
         logger.log(Level.INFO, "Event Occurred: " + eventBean.getEvent().getMessage());
 
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
-        restTemplate.exchange(address,
-                HttpMethod.PUT, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(address,
+                HttpMethod.POST, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
+
+        if(!responseEntity.getStatusCode().is2xxSuccessful()){
+            throw new IpsException("Failed to Post Event to " + address);
+        }
     }
 }

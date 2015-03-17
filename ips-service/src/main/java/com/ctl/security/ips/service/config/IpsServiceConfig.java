@@ -1,15 +1,15 @@
 package com.ctl.security.ips.service.config;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
 @Configuration
 @ComponentScan(basePackages = "com.ctl.security.ips.service")
-@PropertySource("classpath:properties/security.data.client.properties")
+@PropertySources({
+        @PropertySource("classpath:properties/security.data.client.properties"),
+        @PropertySource("classpath:properties/ips.service.properties")
+})
 public class IpsServiceConfig {
 
     public static final String IPS_SERVICE_REST_TEMPLATE = "ipsServiceRestTemplate";

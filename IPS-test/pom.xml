@@ -27,7 +27,6 @@
             <artifactId>IPS-client</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.ctl.security.clc.client</groupId>
             <artifactId>CLC-client-common</artifactId>
@@ -86,13 +85,6 @@
             <artifactId>IPS-dsm-mock-config</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.xebialabs.restito</groupId>
-            <artifactId>restito</artifactId>
-            <version>0.5</version>
-        </dependency>
-
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
