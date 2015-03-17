@@ -2,7 +2,7 @@ package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.dsm.config.DsmConfig;
-import com.ctl.security.ips.dsm.domain.CreateOptions;
+import com.ctl.security.ips.dsm.domain.CreateOptionss;
 import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
 import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
 import com.ctl.security.ips.dsm.domain.TenantElement;
@@ -72,8 +72,8 @@ public class DsmTenantClient {
                 .setTenantElement(createDsmTenantElement(securityTenant));
     }
 
-    private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant){
-        return new CreateOptions()
+    private CreateOptionss createDsmCreateTenantOptions(SecurityTenant securityTenant){
+        return new CreateOptionss()
                 .setAdminAccount(securityTenant.getAdminAccount())
                 .setAdminPassword(securityTenant.getAdminPassword())
                 .setAdminEmail(securityTenant.getAdminEmail());
