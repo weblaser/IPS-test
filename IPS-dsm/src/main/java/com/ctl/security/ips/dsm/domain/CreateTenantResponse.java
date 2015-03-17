@@ -1,5 +1,6 @@
 package com.ctl.security.ips.dsm.domain;
 
+
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -10,6 +11,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class CreateTenantResponse {
 
-    private Integer tenantID;
+    private int tenantID;
 
 }

@@ -1,10 +1,9 @@
 package com.ctl.security.ips.dsm;
 
-import com.ctl.security.ips.common.domain.Tenant;
+import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
 import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
-import com.ctl.security.ips.dsm.domain.TenantElement;
-import com.ctl.security.ips.dsm.domain.TenantElementMarshaller;
+import com.ctl.security.ips.dsm.domain.Tenant;
 import manager.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +34,6 @@ public class DsmTenantClientTest {
     private RestTemplate restTemplate;
 
     @Mock
-    private TenantElementMarshaller tenantElementMarshaller;
-
-    @Mock
     private DsmLogInClient dsmLogInClient;
 
     @Before
@@ -52,21 +48,21 @@ public class DsmTenantClientTest {
     @Test
     public void testCreateDsmTenant_createdTenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
         //arrange
-        Tenant tenant = new Tenant();
+        SecurityTenant securityTenant = new SecurityTenant();
         Integer tenantId = 1;
         String sessionId = "12345";
         String username = "userName";
         String password = "password";
         String agentInitiatedActivationPassword = "superSecretPassword";
-        Tenant expected = new Tenant().setTenantId(tenantId).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
+        SecurityTenant expected = new SecurityTenant().setTenantId(tenantId).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
         when(dsmLogInClient.connectToDSMClient(username, password)).thenReturn(sessionId);
         when(restTemplate.postForObject(anyString(), any(CreateTenantRequest.class), eq(CreateTenantResponse.class))).thenReturn(new CreateTenantResponse().setTenantID(tenantId));
-        when(restTemplate.getForObject(anyString(), eq(TenantElement.class))).thenReturn(new TenantElement()
+        when(restTemplate.getForObject(anyString(), eq(Tenant.class))).thenReturn(new Tenant()
                 .setTenantID(tenantId)
                 .setAgentInitiatedActivationPassword(agentInitiatedActivationPassword));
 
         //act
-        Tenant result = classUnderTest.createDsmTenant(tenant);
+        SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
 
         //assert
         assertNotNull(result);
@@ -76,7 +72,7 @@ public class DsmTenantClientTest {
 
         verify(dsmLogInClient).connectToDSMClient(username, password);
         verify(restTemplate).postForObject(eq("/fakePath/rest/tenants"), any(CreateTenantRequest.class), eq(CreateTenantResponse.class));
-        verify(restTemplate).getForObject("/fakePath/rest/tenants/id/" + result.getTenantId() + "?sID=" + sessionId,  TenantElement.class);
+        verify(restTemplate).getForObject("/fakePath/rest/tenants/id/" + result.getTenantId() + "?sID=" + sessionId,  Tenant.class);
     }
 
 
