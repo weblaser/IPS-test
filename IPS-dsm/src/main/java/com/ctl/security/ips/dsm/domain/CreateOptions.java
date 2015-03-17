@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
-public class CreateOptionsJson {
+public class CreateOptions {
 
     private String activationCodes;
     private String adminAccount;

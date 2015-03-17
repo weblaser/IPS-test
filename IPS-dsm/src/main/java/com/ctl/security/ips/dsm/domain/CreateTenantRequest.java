@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 public class CreateTenantRequest {
 
     private String sessionId;
-    private CreateOptionsJson createOptions;
+    private CreateOptions createOptions;
     private TenantElement tenantElement;
 
 }
