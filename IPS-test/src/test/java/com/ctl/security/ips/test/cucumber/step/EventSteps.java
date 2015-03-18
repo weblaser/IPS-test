@@ -114,6 +114,8 @@ public class EventSteps {
     private void stopWireMockServer() {
         //stops the wire mock server
         wireMockServer.stop();
+        wireMockServer.resetScenarios();
+        wireMockServer.resetMappings();
     }
 
     private void createAndSetupWireMockServer(String notificationUrlPath, int destinationPort, String destinationHostName, int httpStatus) {

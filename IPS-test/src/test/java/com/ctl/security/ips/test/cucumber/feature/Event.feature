@@ -1,4 +1,4 @@
-@ALL_TESTS
+@ALL_TESTS @WIP
 Feature: Security - Event
 
   Scenario: Send an event to a set notification destination URL
