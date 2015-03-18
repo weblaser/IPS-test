@@ -57,8 +57,13 @@ public class EventSteps {
     public static final int MAX_ATTEMPTS = 30;
     WireMockServer wireMockServer;
     private Exception exception;
-    int destinationPort = 12345;
-    String destinationHostName="0.0.0.0";
+
+    @Value("${${spring.profiles.active:local}.ips.test.port}")
+    int destinationPort;
+
+    @Value("${${spring.profiles.active:local}.ips.test.host}")
+    String destinationHostName;
+
     String accountId = ClcAuthenticationComponent.VALID_AA;
     String hostName = "server.host.name." + System.currentTimeMillis();
 
@@ -114,13 +119,11 @@ public class EventSteps {
     private void stopWireMockServer() {
         //stops the wire mock server
         wireMockServer.stop();
-        wireMockServer.resetScenarios();
-        wireMockServer.resetMappings();
     }
 
     private void createAndSetupWireMockServer(String notificationUrlPath, int destinationPort, String destinationHostName, int httpStatus) {
         wireMockServer= new WireMockServer(destinationPort);
-        WireMock.configureFor(destinationHostName, destinationPort);
+        configureFor(destinationHostName, destinationPort);
         wireMockServer.start();
         stubFor(post(urlPathEqualTo(notificationUrlPath))
                 .willReturn(aResponse()
