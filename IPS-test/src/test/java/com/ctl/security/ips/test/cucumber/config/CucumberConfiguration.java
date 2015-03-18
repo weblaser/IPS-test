@@ -12,6 +12,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Import({SecurityDataClientAppConfig.class})
 @PropertySources({
         @PropertySource("classpath:properties/security.data.client.properties"),
+        @PropertySource("classpath:properties/ips.service.properties"),
         @PropertySource("classpath:properties/ips.test.properties")
 })
 public class CucumberConfiguration {

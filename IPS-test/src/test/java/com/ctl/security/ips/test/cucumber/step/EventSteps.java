@@ -9,6 +9,7 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -95,12 +96,24 @@ public class EventSteps {
         catch (Exception e){
             exception = e;
         }
-        try {Thread.sleep(10000);} catch (Exception e) {}
+//        try {Thread.sleep(10000);} catch (Exception e) {}
     }
 
     @Then("^the event information is sent to the correct URL$")
     public void the_event_information_is_sent_to_the_correct_URL(){
-        verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
+
+        try {
+            List<LoggedRequest> loggedRequests;
+            do{
+                loggedRequests = findAll(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
+            }while(loggedRequests.isEmpty());
+
+            verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
+        }catch (Exception e)
+        {
+
+        }
+
 
         assertNull(exception);
 
@@ -114,6 +127,8 @@ public class EventSteps {
     @Then("^the event information is attempted to be sent to the URL multiple times$")
     public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times(){
         verify(maxRetryAttempts,postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
+
+
 
         assertNull(exception);
 

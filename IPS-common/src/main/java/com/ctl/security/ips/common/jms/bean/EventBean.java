@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * Created by sean.robb on 3/9/2015.
  */
@@ -16,7 +18,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class EventBean {
+public class EventBean implements Serializable {
     private String hostName;
     private String accountId;
     private Event event;
