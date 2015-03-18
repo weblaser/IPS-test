@@ -99,12 +99,15 @@ public class EventSteps {
 
     @Then("^the event information is sent to the correct URL$")
     public void the_event_information_is_sent_to_the_correct_URL(){
-
         verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
 
         assertNull(exception);
 
         stopWireMockServer();
+
+        //cleanup
+        ConfigurationItem configurationItem=configurationItemClient.getConfigurationItem(hostName,accountId).getContent();
+        configurationItemClient.deleteConfigurationItem(configurationItem.getId());
     }
 
     @Then("^the event information is attempted to be sent to the URL multiple times$")
@@ -114,6 +117,10 @@ public class EventSteps {
         assertNull(exception);
 
         stopWireMockServer();
+
+        //cleanup
+        ConfigurationItem configurationItem=configurationItemClient.getConfigurationItem(hostName,accountId).getContent();
+        configurationItemClient.deleteConfigurationItem(configurationItem.getId());
     }
 
     private void stopWireMockServer() {
