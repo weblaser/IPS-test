@@ -33,7 +33,7 @@ import static org.junit.Assert.assertNull;
  */
 public class EventSteps {
 
-    public static final String SOME_VALID_ADDRESS = "/someAddress";
+    public static final String SOME_VALID_ADDRESS = "/someValidAddress";
 
     public static final String SOME_INVALID_ADDRESS = "/someInvalidAddress";
 
@@ -57,8 +57,8 @@ public class EventSteps {
     public static final int MAX_ATTEMPTS = 30;
     WireMockServer wireMockServer;
     private Exception exception;
-    int destinationPort = 9090;
-    String destinationHostName="localhost";
+    int destinationPort = 12345;
+    String destinationHostName="0.0.0.0";
     String accountId = ClcAuthenticationComponent.VALID_AA;
     String hostName = "server.host.name." + System.currentTimeMillis();
 
