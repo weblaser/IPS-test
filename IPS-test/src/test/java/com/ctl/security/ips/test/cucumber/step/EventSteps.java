@@ -8,20 +8,14 @@ import com.ctl.security.ips.common.domain.Event;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.apache.http.HttpStatus;
-import org.apache.log4j.AppenderSkeleton;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.logging.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -69,73 +63,72 @@ public class EventSteps {
     String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Given("^an event occurs$")
-    public void an_event_occurs() throws Throwable{
+    public void an_event_occurs() throws Throwable {
         createEventBean(accountId, hostName);
-        createAndConfigureConfigurationItem(accountId,hostName);
+        createAndConfigureConfigurationItem(accountId, hostName);
     }
 
     @Given("^the notification destination is invalid$")
-    public void the_notification_destination_is_invalid() throws Throwable{
-        createAndSetNotificationDestination(destinationHostName,destinationPort,SOME_INVALID_ADDRESS,accountId,hostName);
+    public void the_notification_destination_is_invalid() throws Throwable {
+        createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_INVALID_ADDRESS, accountId, hostName);
         createAndSetupWireMockServer(SOME_INVALID_ADDRESS, destinationPort, destinationHostName, HttpStatus.SC_BAD_REQUEST);
-        exception=null;
+        exception = null;
     }
 
     @Given("^the notification destination is valid$")
-    public void the_notification_destination_is_valid() throws Throwable{
+    public void the_notification_destination_is_valid() throws Throwable {
         createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_VALID_ADDRESS, accountId, hostName);
         createAndSetupWireMockServer(SOME_VALID_ADDRESS, destinationPort, destinationHostName, HttpStatus.SC_OK);
-        exception=null;
+        exception = null;
     }
 
     @When("^the event notification is posted to the events endpoint$")
-    public void the_event_notification_is_posted_to_the_events_endpoint(){
+    public void the_event_notification_is_posted_to_the_events_endpoint() {
         try {
             eventClient.notify(eventBean, bearerToken);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             exception = e;
         }
-//        try {Thread.sleep(10000);} catch (Exception e) {}
     }
 
     @Then("^the event information is sent to the correct URL$")
-    public void the_event_information_is_sent_to_the_correct_URL(){
+    public void the_event_information_is_sent_to_the_correct_URL() {
+        waitForPostRequests(SOME_VALID_ADDRESS,1);
 
-        try {
-            List<LoggedRequest> loggedRequests;
-            do{
-                loggedRequests = findAll(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
-            }while(loggedRequests.isEmpty());
-
-            verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
-        }catch (Exception e)
-        {
-
-        }
-
+        verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
 
         assertNull(exception);
 
         stopWireMockServer();
 
         //cleanup
-        ConfigurationItem configurationItem=configurationItemClient.getConfigurationItem(hostName,accountId).getContent();
+        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(hostName, accountId).getContent();
         configurationItemClient.deleteConfigurationItem(configurationItem.getId());
     }
 
+    private void waitForPostRequests(String address, int requests) {
+        List<LoggedRequest> loggedRequests;
+        int currentAttempts = 0;
+        do {
+            loggedRequests = findAll(postRequestedFor(urlEqualTo(address)));
+            try {Thread.sleep(1000);} catch (Exception e) {}
+            currentAttempts++;
+        } while (loggedRequests.size() < requests && currentAttempts < 10);
+    }
+
     @Then("^the event information is attempted to be sent to the URL multiple times$")
-    public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times(){
-        verify(maxRetryAttempts,postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
+    public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times() {
 
+        waitForPostRequests(SOME_VALID_ADDRESS,maxRetryAttempts);
 
+        verify(maxRetryAttempts, postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
 
         assertNull(exception);
 
         stopWireMockServer();
 
         //cleanup
-        ConfigurationItem configurationItem=configurationItemClient.getConfigurationItem(hostName,accountId).getContent();
+        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(hostName, accountId).getContent();
         configurationItemClient.deleteConfigurationItem(configurationItem.getId());
     }
 
@@ -145,7 +138,7 @@ public class EventSteps {
     }
 
     private void createAndSetupWireMockServer(String notificationUrlPath, int destinationPort, String destinationHostName, int httpStatus) {
-        wireMockServer= new WireMockServer(destinationPort);
+        wireMockServer = new WireMockServer(destinationPort);
         configureFor(destinationHostName, destinationPort);
         wireMockServer.start();
         stubFor(post(urlPathEqualTo(notificationUrlPath))
@@ -153,7 +146,7 @@ public class EventSteps {
                         .withStatus(httpStatus)));
     }
 
-    private void createAndConfigureConfigurationItem(String accountId, String hostName)throws Throwable {
+    private void createAndConfigureConfigurationItem(String accountId, String hostName) throws Throwable {
         Account account = new Account()
                 .setCustomerAccountId(accountId);
 
@@ -164,7 +157,7 @@ public class EventSteps {
         configurationItemClient.createConfigurationItem(configurationItem);
     }
 
-    private void createAndSetNotificationDestination(String destinationHostName,Integer destinationPort,String urlPath,String accountId, String hostName) throws Throwable{
+    private void createAndSetNotificationDestination(String destinationHostName, Integer destinationPort, String urlPath, String accountId, String hostName) throws Throwable {
         NotificationDestination notificationDestination = new NotificationDestination();
         notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
         notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
@@ -182,11 +175,11 @@ public class EventSteps {
         //Sets the Bean Notification Destination Information
         notificationClient.updateNotificationDestination(notificationDestinationBean, bearerToken);
 
-        ConfigurationItem configurationItem= configurationItemClient.getConfigurationItem(hostName,accountId).getContent();
+        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(hostName, accountId).getContent();
         //Waits for Notification Destinations to be set (Since Active MQ)
         int currentAttempts = 0;
         int maxAttempts = MAX_ATTEMPTS;
-        while(currentAttempts < maxAttempts && notificationDestinations == null){
+        while (currentAttempts < maxAttempts && notificationDestinations == null) {
             notificationDestinations = configurationItem.getAccount().getNotificationDestinations();
             Thread.sleep(1000);
             currentAttempts++;
@@ -195,11 +188,11 @@ public class EventSteps {
 
     private void createEventBean(String accountId, String hostName) {
         //Creates an event
-        Event event=new Event();
+        Event event = new Event();
         event.setMessage("An Event Has Happened");
 
         //Sets event bean with correct information
-        eventBean=new EventBean(hostName,accountId,event);
+        eventBean = new EventBean(hostName, accountId, event);
     }
 
 }
