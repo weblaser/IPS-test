@@ -33,7 +33,7 @@ import static org.junit.Assert.assertNull;
  */
 public class EventSteps {
 
-    public static final String SOME_VALID_ADDRESS = "/someAddress";
+    public static final String SOME_VALID_ADDRESS = "/someValidAddress";
 
     public static final String SOME_INVALID_ADDRESS = "/someInvalidAddress";
 
@@ -49,13 +49,21 @@ public class EventSteps {
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
+    @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
+    private Integer maxRetryAttempts;
+
     private EventBean eventBean;
     private String bearerToken;
     public static final int MAX_ATTEMPTS = 30;
     WireMockServer wireMockServer;
     private Exception exception;
-    int destinationPort = 9090;
-    String destinationHostName="localhost";
+
+    @Value("${${spring.profiles.active:local}.ips.test.port}")
+    int destinationPort;
+
+    @Value("${${spring.profiles.active:local}.ips.test.host}")
+    String destinationHostName;
+
     String accountId = ClcAuthenticationComponent.VALID_AA;
     String hostName = "server.host.name." + System.currentTimeMillis();
 
@@ -102,7 +110,7 @@ public class EventSteps {
 
     @Then("^the event information is attempted to be sent to the URL multiple times$")
     public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times(){
-        verify(5,postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
+        verify(maxRetryAttempts,postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
 
         assertNull(exception);
 
@@ -116,7 +124,7 @@ public class EventSteps {
 
     private void createAndSetupWireMockServer(String notificationUrlPath, int destinationPort, String destinationHostName, int httpStatus) {
         wireMockServer= new WireMockServer(destinationPort);
-        WireMock.configureFor(destinationHostName, destinationPort);
+        configureFor(destinationHostName, destinationPort);
         wireMockServer.start();
         stubFor(post(urlPathEqualTo(notificationUrlPath))
                 .willReturn(aResponse()
