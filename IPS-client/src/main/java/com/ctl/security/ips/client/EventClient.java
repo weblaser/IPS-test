@@ -39,6 +39,7 @@ public class EventClient {
         logger.log(Level.INFO, "Event Occurred: " + eventBean.getEvent().getMessage());
 
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
+
         ResponseEntity<String> responseEntity = restTemplate.exchange(address,
                 HttpMethod.POST, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
 

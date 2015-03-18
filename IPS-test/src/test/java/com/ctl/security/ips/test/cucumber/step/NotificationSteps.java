@@ -37,6 +37,7 @@ public class NotificationSteps {
 
     private NotificationDestinationBean notificationDestinationBean;
     private String bearerToken;
+
     public static final int MAX_ATTEMPTS = 30;
 
     @Given("^the customer wants to update a notification for a server$")
@@ -73,17 +74,10 @@ public class NotificationSteps {
 
     @Then("^the server notification destination is updated with new destination$")
     public void the_server_notification_destination_is_updated_with_new_destination() throws Throwable{
-        ConfigurationItemResource configurationItemResource=null;
-        List<NotificationDestination> notificationDestinations=null;
 
-        int currentAttempts = 0;
-        int maxAttempts = MAX_ATTEMPTS;
-        while(currentAttempts < maxAttempts && notificationDestinations == null){
-            configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
-            notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
-            Thread.sleep(1000);
-            currentAttempts++;
-        }
+        waitForNotificationDestinationUpdate();
+
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
 
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent());
@@ -100,5 +94,18 @@ public class NotificationSteps {
 
         //cleanup
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
+    }
+
+    private ConfigurationItemResource waitForNotificationDestinationUpdate() throws InterruptedException {
+        ConfigurationItemResource configurationItemResource=null;
+        List<NotificationDestination> notificationDestinations=null;
+        int currentAttempts = 0;
+        while(currentAttempts < MAX_ATTEMPTS && notificationDestinations == null){
+            configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+            notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
+            Thread.sleep(1000);
+            currentAttempts++;
+        }
+        return configurationItemResource;
     }
 }
