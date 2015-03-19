@@ -84,7 +84,7 @@ public class DsmClientSteps {
     @Given("^a customer tenant is ready to be created$")
     public void a_customer_tenant_is_ready_to_be_created() throws Throwable {
         String testTenant = "TestTenant" + System.currentTimeMillis();
-        securityTenant = new SecurityTenant().setTenantName(testTenant).setAdminEmail("test@test.com").setAdminPassword("test").setAdminAccount("TestAdmin");
+        securityTenant = new SecurityTenant().setTenantName(testTenant).setAdminEmail("test@test.com").setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
     }
 
     @When("^the dsm rest client is used to create the tenant$")

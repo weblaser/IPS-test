@@ -82,7 +82,7 @@ public class DsmTenantClientTest {
 //        //arrange
 //
 //
-//        Tenant tenant = new Tenant();
+//        Tenant tenantElement = new Tenant();
 //        Integer tenantID = 1;
 //        String agentInitiatedActivationPassword = "SuperSecretPassword";
 //        Tenant expectedTenant = new Tenant().setTenantID(tenantID).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
@@ -95,7 +95,7 @@ public class DsmTenantClientTest {
 //
 //
 //        TenantElement tenantElement = createTenantElement();
-//        when(tenantElementMarshaller.convert(tenant)).thenReturn(tenantElement);
+//        when(tenantElementMarshaller.convert(tenantElement)).thenReturn(tenantElement);
 //        when(tenantAPI.addTenant(any(CreateTenantRequest.class))).thenReturn(tenantResponse);
 //
 //        TenantElement expectedTenantElement = createTenantElement();
@@ -103,7 +103,7 @@ public class DsmTenantClientTest {
 //        when(tenantElementMarshaller.convert(expectedTenantElement)).thenReturn(expectedTenant);
 //
 //        //act
-//        Tenant result = classUnderTest.createDsmTenant(tenant);
+//        Tenant result = classUnderTest.createDsmTenant(tenantElement);
 //
 //        //assert
 //        assertNotNull(result);
@@ -120,10 +120,10 @@ public class DsmTenantClientTest {
 //        String sessionId = "12345";
 //        Integer tenantID = 1;
 //        String agentInitiatedActivationPassword = "SuperSecretPassword";
-//        Tenant tenant = new Tenant().setTenantID(tenantID).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
+//        Tenant tenantElement = new Tenant().setTenantID(tenantID).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
 //        when(dsmLogInClient.connectToDSMClient(anyString(), anyString())).thenReturn(sessionId);
 //        when(tenantAPI.getTenantById(tenantID, sessionId)).thenReturn(new TenantElement());
-//        when(tenantElementMarshaller.convert(any(TenantElement.class))).thenReturn(tenant);
+//        when(tenantElementMarshaller.convert(any(TenantElement.class))).thenReturn(tenantElement);
 //        //act
 //        Tenant result = classUnderTest.createDsmTenant();
 //        //assert

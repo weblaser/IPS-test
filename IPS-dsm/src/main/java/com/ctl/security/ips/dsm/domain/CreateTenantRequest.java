@@ -12,6 +12,6 @@ public class CreateTenantRequest {
 
     private String sessionId;
     private CreateOptions createOptions;
-    private Tenant tenant;
+    private DsmTenant tenantElement;
 
 }
