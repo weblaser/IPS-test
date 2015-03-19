@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -45,8 +46,10 @@ public class PolicyClient {
             String address = hostUrl + POLICIES + accountId;
             logger.log(Level.INFO, "createPolicyForAccount: " + address);
 
-                    restTemplate.exchange(address,
-                            HttpMethod.POST, new HttpEntity<>(policy, clientComponent.createHeaders(bearerToken)), String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(address,
+                    HttpMethod.POST, new HttpEntity<>(policy, clientComponent.createHeaders(bearerToken)), String.class);
+
+            logger.info("Create Policy Status Code: " + responseEntity.getStatusCode().value());
         } catch (RestClientException rce) {
             fail(rce);
         }

@@ -3,7 +3,7 @@ package com.ctl.security.ips.dsm;
 import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
 import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
-import com.ctl.security.ips.dsm.domain.TenantElement;
+import com.ctl.security.ips.dsm.domain.Tenant;
 import manager.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DsmTenantElementClientTest {
+public class DsmTenantClientTest {
 
     @InjectMocks
     private DsmTenantClient classUnderTest;
@@ -57,9 +57,9 @@ public class DsmTenantElementClientTest {
         SecurityTenant expected = new SecurityTenant().setTenantId(tenantId).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
         when(dsmLogInClient.connectToDSMClient(username, password)).thenReturn(sessionId);
         when(restTemplate.postForObject(anyString(), any(CreateTenantRequest.class), eq(CreateTenantResponse.class))).thenReturn(new CreateTenantResponse().setTenantID(tenantId));
-        when(restTemplate.getForObject(anyString(), eq(TenantElement.class))).thenReturn(new TenantElement()
-                .setTenantID(tenantId)
-                .setAgentInitiatedActivationPassword(agentInitiatedActivationPassword));
+//        when(restTemplate.getForObject(anyString(), eq(Tenant.class))).thenReturn(new Tenant()
+//                .setTenantID(tenantId)
+//                .setAgentInitiatedActivationPassword(agentInitiatedActivationPassword));
 
         //act
         SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
@@ -72,7 +72,7 @@ public class DsmTenantElementClientTest {
 
         verify(dsmLogInClient).connectToDSMClient(username, password);
         verify(restTemplate).postForObject(eq("/fakePath/rest/tenants"), any(CreateTenantRequest.class), eq(CreateTenantResponse.class));
-        verify(restTemplate).getForObject("/fakePath/rest/tenants/id/" + result.getTenantId() + "?sID=" + sessionId,  TenantElement.class);
+        verify(restTemplate).getForObject("/fakePath/rest/tenants/id/" + result.getTenantId() + "?sID=" + sessionId,  Tenant.class);
     }
 
 

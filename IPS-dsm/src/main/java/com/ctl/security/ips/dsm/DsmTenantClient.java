@@ -2,10 +2,8 @@ package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.dsm.config.DsmConfig;
-import com.ctl.security.ips.dsm.domain.CreateOptions;
-import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
-import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
-import com.ctl.security.ips.dsm.domain.TenantElement;
+import com.ctl.security.ips.dsm.domain.*;
+import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import manager.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.xml.bind.*;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +46,15 @@ public class DsmTenantClient {
     @Autowired
     private DsmLogInClient dsmLogInClient;
 
+    Map<Long, String> aMap = new HashMap() {{
+        put(1l, "lane");
+        put(2l, "chad");
+        put(3l, "kevin");
+    }};
+
+    @Autowired
+    private CtlSecurityClient ctlSecurityClient;
+
     private HttpHeaders setDsmHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -62,14 +74,15 @@ public class DsmTenantClient {
 //        CreateTenantResponse createTenantResponse = restTemplate.postForObject(url + "/tenants", map, CreateTenantResponse.class);
 
         CreateTenantResponse createTenantResponse = restTemplate.postForObject(url + "/tenants", httpEntity, CreateTenantResponse.class);
-        TenantElement createdTenantElement = restTemplate.getForObject(url + "/tenants/id/" + createTenantResponse.getTenantID() + "?sID=" + sessionId, TenantElement.class);
-        return new SecurityTenant().setAgentInitiatedActivationPassword(createdTenantElement.getAgentInitiatedActivationPassword()).setTenantId(createdTenantElement.getTenantID());
+        Tenant createdTenant = restTemplate.getForObject(url + "/tenants/id/" + createTenantResponse.getTenantID() + "?sID=" + sessionId, Tenant.class);
+//        return new SecurityTenant().setAgentInitiatedActivationPassword(createdTenant.getAgentInitiatedActivationPassword()).setTenantId(createdTenant.getTenantID());
+        return null;
     }
 
     private CreateTenantRequest createDsmCreateTenantRequest(SecurityTenant securityTenant) {
         return new CreateTenantRequest()
                 .setCreateOptions(createDsmCreateTenantOptions(securityTenant))
-                .setTenantElement(createDsmTenantElement(securityTenant));
+                .setTenant(createDsmTenantElement(securityTenant));
     }
 
     private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant){
@@ -78,26 +91,51 @@ public class DsmTenantClient {
                 .setAdminPassword(securityTenant.getAdminPassword())
                 .setAdminEmail(securityTenant.getAdminEmail());
     }
-    private TenantElement createDsmTenantElement(SecurityTenant securityTenant){
-        return new TenantElement()
+    private Tenant createDsmTenantElement(SecurityTenant securityTenant){
+        return new Tenant()
                 .setName(securityTenant.getTenantName());
     }
 
     public SecurityTenant retrieveDsmTenant(Integer tenantId) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
         String sessionId = dsmLogInClient.connectToDSMClient(username, password);
 
+        SecurityTenant securityTenant = null;
+
         try {
-            TenantElement retrievedTenantElement = restTemplate.getForObject(url + "/tenants/id/" + tenantId + "?sID=" + sessionId, TenantElement.class, setDsmHeaders());
+            String address = url + "/tenants/id/" + tenantId + "?sID=" + sessionId;
 
-            SecurityTenant securityTenant = new SecurityTenant()
-                    .setAgentInitiatedActivationPassword(retrievedTenantElement.getAgentInitiatedActivationPassword())
-                    .setTenantId(retrievedTenantElement.getTenantID());
+//            TenantElement retrievedTenantElement = restTemplate.getForObject(address, TenantElement.class, setDsmHeaders());
 
-            return securityTenant;
-        }
-        finally {
+            String responseContent = ctlSecurityClient.get(address).execute().getResponseContent();
+
+            JAXBContext jc = JAXBContext.newInstance(DsmTenant.class);
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+
+//            InputStream inputStream = IOUtils.toInputStream(responseContent, "UTF-8");
+
+//            StreamSource responseContentXml = new StreamSource(responseContent);
+
+            InputStream inputStream = new ByteArrayInputStream(responseContent.getBytes("UTF-8"));
+
+//            JAXBElement<Tenant> jaxbElement = unmarshaller.unmarshal(inputStream);
+
+            DsmTenant dsmTenant = (DsmTenant)unmarshaller.unmarshal(inputStream);
+
+            securityTenant = new SecurityTenant()
+                    .setAgentInitiatedActivationPassword(dsmTenant.getAgentInitiatedActivationPassword())
+                    .setTenantId(dsmTenant.getTenantID());
+
+            System.out.println("hello");
+
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } finally {
             dsmLogInClient.endSession(sessionId);
         }
+        return securityTenant;
     }
 
 }
