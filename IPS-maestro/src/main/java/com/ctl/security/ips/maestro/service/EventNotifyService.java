@@ -57,7 +57,7 @@ public class EventNotifyService {
                         responseEntity = restTemplate.exchange(
                                 notification.getUrl(),
                                 HttpMethod.POST,
-                                new HttpEntity<>(eventBean.getEvent().getMessage()),
+                                new HttpEntity<>(eventBean.getEvent()),
                                 String.class
                         );
                         if (!responseEntity.getStatusCode().is2xxSuccessful()) {

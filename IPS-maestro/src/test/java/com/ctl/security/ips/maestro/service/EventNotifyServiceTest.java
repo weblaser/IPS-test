@@ -99,15 +99,9 @@ public class EventNotifyServiceTest {
 
         basicMockitoVerification();
 
-        for (NotificationDestination notification : notificationDestinations)
-        {
-            verify(restTemplate).exchange(eq(notification.getUrl()),
-                    eq(HttpMethod.POST),
-                    eq(new HttpEntity<>(eventBean.getEvent().getMessage())),
-                    eq(String.class));
-        }
-        assertEquals(true,responseEntity.getStatusCode().is2xxSuccessful());
+        verifyRestTemplateExchange(1, eventBean,notificationDestinations);
 
+         assertEquals(true,responseEntity.getStatusCode().is2xxSuccessful());
 
         final List<LoggingEvent> log = appender.getLog();
         assertEquals((Integer)0, (Integer) log.size());
@@ -137,13 +131,7 @@ public class EventNotifyServiceTest {
 
         assertEquals(false,responseEntity.getStatusCode().is2xxSuccessful());
 
-        for (NotificationDestination notification : notificationDestinations)
-        {
-            verify(restTemplate, times(maxRetryAttempts)).exchange(eq(notification.getUrl()),
-                    eq(HttpMethod.POST),
-                    eq(new HttpEntity<>(eventBean.getEvent().getMessage())),
-                    eq(String.class));
-        }
+        verifyRestTemplateExchange(maxRetryAttempts, eventBean, notificationDestinations);
 
         final List<LoggingEvent> log = appender.getLog();
 
@@ -174,13 +162,7 @@ public class EventNotifyServiceTest {
 
         basicMockitoVerification();
 
-        for (NotificationDestination notification : notificationDestinations)
-        {
-            verify(restTemplate, times(maxRetryAttempts)).exchange(eq(notification.getUrl()),
-                    eq(HttpMethod.POST),
-                    eq(new HttpEntity<>(eventBean.getEvent().getMessage())),
-                    eq(String.class));
-        }
+        verifyRestTemplateExchange(maxRetryAttempts, eventBean, notificationDestinations);
 
         assertNotNull(responseEntity);
         assertNull(responseEntity.getStatusCode());
@@ -192,6 +174,16 @@ public class EventNotifyServiceTest {
         }
         assertEquals(Level.ERROR,log.get(maxRetryAttempts).getLevel());
         assertEquals((Integer)(maxRetryAttempts + 1),(Integer)log.size());
+    }
+
+    private void verifyRestTemplateExchange(Integer amountOfTimes, EventBean eventBean, List<NotificationDestination> notificationDestinations) {
+        for (NotificationDestination notification : notificationDestinations)
+        {
+            verify(restTemplate, times(amountOfTimes)).exchange(eq(notification.getUrl()),
+                    eq(HttpMethod.POST),
+                    eq(new HttpEntity<>(eventBean.getEvent())),
+                    eq(String.class));
+        }
     }
 
     private void basicMockitoVerification() {
