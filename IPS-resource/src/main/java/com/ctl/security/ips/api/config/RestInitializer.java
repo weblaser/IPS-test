@@ -33,8 +33,7 @@ public class RestInitializer implements WebApplicationInitializer {
         servletRegistration.addMapping("/api/*");
 
         FilterRegistration.Dynamic springSecurityFilterChain = servletContext.addFilter("springSecurityFilterChain", DelegatingFilterProxy.class.getName());
-        springSecurityFilterChain.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*" );
-
+        springSecurityFilterChain.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/api/*" );
     }
 
 }
