@@ -10,11 +10,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by Gary Hebel on 3/19/15.
@@ -88,7 +90,6 @@ public class DsmEventClient {
     }
 
     public void sendEvents(List<FirewallEvent> events,String bearerToken) {
-
         for (FirewallEvent event : events){
             //TODO retrieve Tenant Name from DSM
             String tenantName="TCCD";

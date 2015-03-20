@@ -2,7 +2,6 @@ package com.ctl.security.ips.client;
 
 import com.ctl.security.ips.common.exception.IpsException;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
