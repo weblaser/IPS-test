@@ -1,23 +1,36 @@
 package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.SecurityTenant;
-import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
 import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
-import com.ctl.security.ips.dsm.domain.Tenant;
+import com.ctl.security.ips.dsm.domain.DsmTenant;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
+import com.ctl.security.library.common.httpclient.CtlSecurityClient;
+import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.Security;
+import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.*;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,10 +45,41 @@ public class DsmTenantClientTest {
     private DsmTenantClient classUnderTest;
 
     @Mock
-    private RestTemplate restTemplate;
+    private DsmLogInClient dsmLogInClient;
 
     @Mock
-    private DsmLogInClient dsmLogInClient;
+    private CtlSecurityResponse ctlSecurityResponse;
+
+    @Mock
+    private Unmarshaller unmarshaller;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private CtlSecurityClient ctlSecurityClient;
+
+    private final Integer TENANT_ID = 1;
+    private final String SESSION_ID = "123456";
+    private final String USERNAME = "uniqueUsername";
+    private final String PASSWORD = "password";
+    private final String AGENT_PASSWORD = "1D107A18-AA1E-B379-54C5-07519C5BC5D7";
+    private final String TENANT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+            "<tenant>\n" +
+            "    <agentInitiatedActivationPassword>1D107A18-AA1E-B379-54C5-07519C5BC5D7</agentInitiatedActivationPassword>\n" +
+            "    <allModulesVisible>true</allModulesVisible>\n" +
+            "    <country>US</country>\n" +
+            "    <databaseServerID \n" +
+            "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>\n" +
+            "        <demoMode>false</demoMode>\n" +
+            "        <description></description>\n" +
+            "        <guid>B2EABDEC-101F-E8CF-AC25-73C04B548BFA</guid>\n" +
+            "        <hideUnlicensedModules>false</hideUnlicensedModules>\n" +
+            "        <language>en</language>\n" +
+            "        <licenseMode>Inherited</licenseMode>\n" +
+            "        <name>tenant01</name>\n" +
+            "        <state>ACTIVE</state>\n" +
+            "        <tenantID>1</tenantID>\n" +
+            "        <timeZone>Atlantic/St_Helena</timeZone>\n" +
+            "    </tenant>";
+    private final String TENANT_ID_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><createTenantResponse><tenantID>26</tenantID></createTenantResponse>";
 
     @Before
     public void before() {
@@ -44,23 +88,22 @@ public class DsmTenantClientTest {
         ReflectionTestUtils.setField(classUnderTest, "password", "password");
     }
 
-
-
-    @Test @Ignore
-    public void testCreateDsmTenant_createdTenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
+    @Test
+    public void testCreateDsmTenant_CreatedTenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, JAXBException, UnsupportedEncodingException {
         //arrange
         SecurityTenant securityTenant = new SecurityTenant();
-        Integer tenantId = 1;
-        String sessionId = "12345";
-        String username = "userName";
-        String password = "password";
-        String agentInitiatedActivationPassword = "superSecretPassword";
-        SecurityTenant expected = new SecurityTenant().setTenantId(tenantId).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
-        when(dsmLogInClient.connectToDSMClient(username, password)).thenReturn(sessionId);
-        when(restTemplate.postForObject(anyString(), any(CreateTenantRequest.class), eq(CreateTenantResponse.class))).thenReturn(new CreateTenantResponse().setTenantID(tenantId));
-//        when(restTemplate.getForObject(anyString(), eq(Tenant.class))).thenReturn(new Tenant()
-//                .setTenantID(tenantId)
-//                .setAgentInitiatedActivationPassword(agentInitiatedActivationPassword));
+        String responseId = TENANT_ID_XML;
+        String responseTenant = TENANT_XML;
+        InputStream inputStream = new ByteArrayInputStream(responseId.getBytes("UTF-8"));
+        SecurityTenant expected = new SecurityTenant().setTenantId(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
+        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
+
+        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn(responseTenant);
+        when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
+        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
+        when(ctlSecurityClient.post(anyString()).addHeader(anyString(), anyString()).body(any(HashMap.class)).execute()).thenReturn(ctlSecurityResponse);
+        when(ctlSecurityResponse.getResponseContent()).thenReturn(responseId);
+
 
         //act
         SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
@@ -70,76 +113,44 @@ public class DsmTenantClientTest {
         assertNotNull(result.getTenantId());
         assertEquals(expected.getTenantId(), result.getTenantId());
         assertEquals(expected.getAgentInitiatedActivationPassword(), result.getAgentInitiatedActivationPassword());
+  }
 
-        verify(dsmLogInClient).connectToDSMClient(username, password);
-        verify(restTemplate).postForObject(eq("/fakePath/rest/tenants"), any(CreateTenantRequest.class), eq(CreateTenantResponse.class));
-        verify(restTemplate).getForObject("/fakePath/rest/tenants/id/" + result.getTenantId() + "?sID=" + sessionId,  Tenant.class);
+    @Test
+    public void testRetrieveDsmTenant_TenantReturned() throws Exception {
+        //arrange
+        SecurityTenant expected = new SecurityTenant().setTenantId(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
+        String responseTenant = TENANT_XML;
+        InputStream inputStream = new ByteArrayInputStream(responseTenant.getBytes("UTF-8"));
+        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
+
+        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
+        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn(responseTenant);
+        when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
+
+        //act
+        SecurityTenant result = classUnderTest.retrieveDsmTenant(TENANT_ID);
+        //assert
+        assertNotNull(result);
+        assertEquals(expected.getTenantId(), result.getTenantId());
+        assertEquals(expected.getAgentInitiatedActivationPassword(), result.getAgentInitiatedActivationPassword());
     }
 
-
-
-//    @Test
-//    public void testCreateDsmTenant_NoTenantInDsmDatabaseAlready() throws Exception {
+//    @Test(expected = DsmClientException.class)
+//    public void testRetrieveDsmTenant_TenantDoesNotExist() throws Exception {
 //        //arrange
+//        String responseTenant = TENANT_XML;
+//        InputStream inputStream = new ByteArrayInputStream(responseTenant.getBytes("UTF-8"));
+//        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
 //
-//
-//        Tenant tenantElement = new Tenant();
-//        Integer tenantID = 1;
-//        String agentInitiatedActivationPassword = "SuperSecretPassword";
-//        Tenant expectedTenant = new Tenant().setTenantID(tenantID).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
-//        String sessionId = "12345";
-//
-//        when(dsmLogInClient.connectToDSMClient(anyString(), anyString())).thenReturn(sessionId);//1
-//
-//        CreateTenantResponse tenantResponse = new CreateTenantResponse();
-//        tenantResponse.setTenantID(tenantID);
-//
-//
-//        TenantElement tenantElement = createTenantElement();
-//        when(tenantElementMarshaller.convert(tenantElement)).thenReturn(tenantElement);
-//        when(tenantAPI.addTenant(any(CreateTenantRequest.class))).thenReturn(tenantResponse);
-//
-//        TenantElement expectedTenantElement = createTenantElement();
-//        when(tenantAPI.getTenantById(tenantResponse.getTenantID(), sessionId)).thenReturn(expectedTenantElement);
-//        when(tenantElementMarshaller.convert(expectedTenantElement)).thenReturn(expectedTenant);
+//        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
+//        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+//                "<error>\n" +
+//                "    <message>Unable to load. The system may be experiencing loss of database connectivity. Please try again.</message>\n" +
+//                "</error>");
+//        when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
 //
 //        //act
-//        Tenant result = classUnderTest.createDsmTenant(tenantElement);
-//
-//        //assert
-//        assertNotNull(result);
-//        assertEquals(expectedTenant, result);
-//        assertEquals(expectedTenant.getTenantID(), result.getTenantID());
-//        assertNotNull(result.getAgentInitiatedActivationPassword());
-//        assertEquals(expectedTenant.getAgentInitiatedActivationPassword(), result.getAgentInitiatedActivationPassword());
-//
+//        classUnderTest.retrieveDsmTenant(TENANT_ID);
 //    }
 
-//    @Test
-//    public void testCreateDsmTenant_TenantInDsmDatabaseAlready() throws Exception{
-//        //arrange
-//        String sessionId = "12345";
-//        Integer tenantID = 1;
-//        String agentInitiatedActivationPassword = "SuperSecretPassword";
-//        Tenant tenantElement = new Tenant().setTenantID(tenantID).setAgentInitiatedActivationPassword(agentInitiatedActivationPassword);
-//        when(dsmLogInClient.connectToDSMClient(anyString(), anyString())).thenReturn(sessionId);
-//        when(tenantAPI.getTenantById(tenantID, sessionId)).thenReturn(new TenantElement());
-//        when(tenantElementMarshaller.convert(any(TenantElement.class))).thenReturn(tenantElement);
-//        //act
-//        Tenant result = classUnderTest.createDsmTenant();
-//        //assert
-//        assertNotNull(result);
-//        assertEquals(tenantID, result.getTenantID());
-//        assertEquals(agentInitiatedActivationPassword, result.getAgentInitiatedActivationPassword());
-//    }
-
-//        private TenantElement createTenantElement() {
-//        TenantElement tenantElement = new TenantElement();
-//        tenantElement.setName("ExampleCokeTenant");
-//        tenantElement.setCountry("US");
-//        tenantElement.setLanguage("en");
-//        tenantElement.setTimeZone("US/Central");
-//        return tenantElement;
-
-//    }
 }
