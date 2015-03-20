@@ -1,7 +1,7 @@
 package com.ctl.security.ips.api.resource;
 
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.common.domain.Policy.Policy;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.wordnik.swagger.annotations.*;
 import org.apache.http.HttpStatus;
 
@@ -64,5 +64,5 @@ public interface PolicyResource {
     void deletePolicyForAccount(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
                                 @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICY_ID_PARAM) String policyId,
                                 @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String serverDomainName,
-                                @ApiParam(value = USERNAME_LABEL, required = true) @QueryParam(USERNAME_PARAM) String username) throws DsmPolicyClientException;
+                                @ApiParam(value = USERNAME_LABEL, required = true) @QueryParam(USERNAME_PARAM) String username) throws DsmClientException;
 }

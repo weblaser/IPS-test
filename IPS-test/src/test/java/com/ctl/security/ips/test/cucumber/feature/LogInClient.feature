@@ -1,4 +1,4 @@
-@ALL_TESTS @Regression
+@REGRESSION
 Feature: Security - LogInClient To be able to log into the DSM API
 
 

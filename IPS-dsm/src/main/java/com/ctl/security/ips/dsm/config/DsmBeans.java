@@ -18,6 +18,7 @@ import java.util.Map;
 
 /**
  * Created by kevin.wilde on 1/21/2015.
+ *
  */
 @Configuration
 @Profile({"ts", "qa", "prod"})
@@ -75,4 +76,5 @@ public class DsmBeans extends BaseDsmBeans {
         }
         return null;
     }
+
 }

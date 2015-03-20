@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Chad.Middleton on 1/13/2015.
+ *
  */
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = CucumberConfiguration.class)

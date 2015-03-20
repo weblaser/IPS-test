@@ -2,7 +2,7 @@ package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import manager.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DsmPolicyClientTest {
@@ -75,8 +76,8 @@ public class DsmPolicyClientTest {
         when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenReturn(sessionId);
     }
 
-    @Test (expected = DsmPolicyClientException.class)
-    public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, DsmPolicyClientException {
+    @Test (expected = DsmClientException.class)
+    public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, DsmClientException {
         //arrange
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq(sessionId))).thenThrow(ManagerLockoutException_Exception.class);
 
@@ -86,7 +87,7 @@ public class DsmPolicyClientTest {
 
 
     @Test
-    public void retrieveSecurityProfileById_retrievesSecurityProfileById() throws DsmPolicyClientException, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
+    public void retrieveSecurityProfileById_retrievesSecurityProfileById() throws DsmClientException, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
         int id = 0;
         SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
         when(manager.securityProfileRetrieve(id, sessionId)).thenReturn(expectedSecurityProfileTransport);
@@ -101,7 +102,7 @@ public class DsmPolicyClientTest {
     }
 
     @Test
-    public void retrieveSecurityProfileByName_retrievesSecurityProfileByName() throws DsmPolicyClientException, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
+    public void retrieveSecurityProfileByName_retrievesSecurityProfileByName() throws DsmClientException, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
         String name = "name";
         SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
         when(manager.securityProfileRetrieveByName(name, sessionId)).thenReturn(expectedSecurityProfileTransport);
@@ -116,7 +117,7 @@ public class DsmPolicyClientTest {
     }
 
     @Test
-    public void securityProfileDelete_deletesSecurityProfile() throws DsmPolicyClientException, ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception {
+    public void securityProfileDelete_deletesSecurityProfile() throws DsmClientException, ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception {
         int id = 0;
         List<Integer> ids = Arrays.asList(id);
         classUnderTest.securityProfileDelete(ids);

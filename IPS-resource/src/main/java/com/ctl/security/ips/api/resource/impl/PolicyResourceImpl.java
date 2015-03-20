@@ -4,7 +4,7 @@ import com.ctl.security.ips.api.jms.PolicyMessageSender;
 import com.ctl.security.ips.api.resource.PolicyResource;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.service.PolicyServiceRead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,7 @@ public class PolicyResourceImpl implements PolicyResource {
 
     //TODO this method needs to take a policy object as a body in order to get all the data we need
     @Override
-    public void deletePolicyForAccount(String accountId, String policyId, String serverDomainName, String username) throws DsmPolicyClientException {
+    public void deletePolicyForAccount(String accountId, String policyId, String serverDomainName, String username) throws DsmClientException {
         Policy policy = new Policy();
         policy.setVendorPolicyId(policyId);
         policy.setHostName(serverDomainName);

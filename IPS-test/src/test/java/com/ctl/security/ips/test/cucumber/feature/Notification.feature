@@ -1,4 +1,4 @@
-@ALL_TESTS
+@REGRESSION
 Feature:  Security - Notification
 
   Scenario: Update the notification destination
