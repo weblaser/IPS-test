@@ -1,4 +1,4 @@
-@WIP
+@REGRESSION
 Feature: Security - CtlDsmClientCreatePolicy  To log into the DSM API and create a new policy for a customer
 
 
