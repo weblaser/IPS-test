@@ -1,7 +1,7 @@
 package com.ctl.security.ips.cli;
 
 import com.ctl.security.ips.client.PolicyClient;
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

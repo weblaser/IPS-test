@@ -6,6 +6,7 @@ import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
 import com.ctl.security.ips.dsm.domain.Tenant;
 import manager.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -45,7 +46,7 @@ public class DsmTenantClientTest {
 
 
 
-    @Test
+    @Test @Ignore
     public void testCreateDsmTenant_createdTenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
         //arrange
         SecurityTenant securityTenant = new SecurityTenant();

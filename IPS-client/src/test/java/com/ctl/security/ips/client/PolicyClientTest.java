@@ -10,10 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -70,8 +67,9 @@ public class PolicyClientTest {
         //arrange
         Policy expectedPolicy = buildPolicy();
         Policy policyToCreate = new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(Policy.class))).thenReturn(entity);
-        when(entity.getBody()).thenReturn(expectedPolicy);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class))).thenReturn(stringEntity);
+        when(stringEntity.getStatusCode()).thenReturn(HttpStatus.OK);
 
         //act
         classUnderTest.createPolicyForAccount(VALID_ACCOUNT, policyToCreate, SAMPLE_TOKEN);

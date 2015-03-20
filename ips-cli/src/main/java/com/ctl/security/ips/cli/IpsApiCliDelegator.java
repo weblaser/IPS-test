@@ -1,7 +1,7 @@
 package com.ctl.security.ips.cli;
 
 import com.ctl.security.ips.client.PolicyClient;
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
