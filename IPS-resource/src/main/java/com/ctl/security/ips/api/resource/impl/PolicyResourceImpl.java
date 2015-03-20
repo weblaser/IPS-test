@@ -2,7 +2,7 @@ package com.ctl.security.ips.api.resource.impl;
 
 import com.ctl.security.ips.api.jms.PolicyMessageSender;
 import com.ctl.security.ips.api.resource.PolicyResource;
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import com.ctl.security.ips.service.PolicyServiceRead;

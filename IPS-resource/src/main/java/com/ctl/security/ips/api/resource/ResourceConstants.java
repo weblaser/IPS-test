@@ -9,7 +9,7 @@ public class ResourceConstants {
     public static final String HOST_NAME_LABEL = "Host Name";
     public static final String HOST_NAME_PARAM = "hostName";
     public static final String NOTIFICATION_DESTINATION_LABEL = "Notification Destination";
-    public static final String EVENT_LABEL = "Event";
+    public static final String EVENT_LABEL = "FirewallEvent";
 
 
     public static final String UNAUTHORIZED = "Unauthorized";

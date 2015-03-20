@@ -1,6 +1,6 @@
 package com.ctl.security.ips.dsm.domain;
 
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import manager.SecurityProfileTransport;
 
 import org.apache.commons.lang3.math.NumberUtils;

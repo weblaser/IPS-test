@@ -4,7 +4,7 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.client.NotificationClient;
-import com.ctl.security.ips.common.domain.Event;
+import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -165,8 +165,9 @@ public class EventSteps {
 
     private void createEventBean(String accountId, String hostName) {
         //Creates an event
-        Event event = new Event();
-        event.setMessage("An Event Has Happened");
+        FirewallEvent event = new FirewallEvent();
+        event.setReason("An FirewallEvent Reason");
+        event.setHostName("An FirewallEvent Host");
 
         //Sets event bean with correct information
         eventBean = new EventBean(hostName, accountId, event);

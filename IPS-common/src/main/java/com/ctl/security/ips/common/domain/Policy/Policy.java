@@ -1,4 +1,4 @@
-package com.ctl.security.ips.common.domain;
+package com.ctl.security.ips.common.domain.Policy;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -3,7 +3,7 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;

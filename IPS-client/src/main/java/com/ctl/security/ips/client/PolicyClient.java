@@ -1,6 +1,6 @@
 package com.ctl.security.ips.client;
 
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import org.apache.log4j.Level;

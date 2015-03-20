@@ -36,15 +36,14 @@ public class EventClient {
     public void notify(EventBean eventBean, String bearerToken) {
         String address = hostUrl + EVENT +"/"+ eventBean.getAccountId()+"/"+eventBean.getHostName();
 
-        logger.log(Level.INFO, "Event Occurred: " + eventBean.getEvent().getMessage());
-
+        logger.log(Level.INFO, "FirewallEvent Occurred: " + eventBean.getEvent().getReason());
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(address,
                 HttpMethod.POST, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
 
         if(!responseEntity.getStatusCode().is2xxSuccessful()){
-            throw new IpsException("Failed to Post Event to " + address);
+            throw new IpsException("Failed to Post FirewallEvent to " + address);
         }
     }
 }

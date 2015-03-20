@@ -2,7 +2,7 @@ package com.ctl.security.ips.api.resource.impl;
 
 import com.ctl.security.ips.api.jms.EventMessageSender;
 import com.ctl.security.ips.api.resource.EventResource;
-import com.ctl.security.ips.common.domain.Event;
+import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class EventResourceImpl implements EventResource {
     private EventMessageSender eventMessageSender;
 
     @Override
-    public void notify(String account,String hostName,Event event) {
+    public void notify(String account,String hostName,FirewallEvent event) {
         EventBean eventBean = new EventBean(hostName,account,event);
         eventMessageSender.notify(eventBean);
     }

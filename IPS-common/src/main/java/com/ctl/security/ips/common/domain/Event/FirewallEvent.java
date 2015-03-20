@@ -1,6 +1,5 @@
-package com.ctl.security.ips.common.domain;
+package com.ctl.security.ips.common.domain.Event;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,6 +15,8 @@ import java.io.Serializable;
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class Event implements Serializable {
-    private String message;
+public class FirewallEvent implements Serializable {
+
+    private String hostName;
+    private String reason;
 }

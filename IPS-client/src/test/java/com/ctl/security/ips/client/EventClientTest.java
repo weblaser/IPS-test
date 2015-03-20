@@ -1,6 +1,6 @@
 package com.ctl.security.ips.client;
 
-import com.ctl.security.ips.common.domain.Event;
+import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.exception.IpsException;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import org.junit.Test;
@@ -37,8 +37,9 @@ public class EventClientTest {
     public void notify_notifiesAnEventOccurred() throws Exception {
         String hostName = null;
         String accountId = null;
-        Event event = new Event();
-        event.setMessage("This is My Test");
+        FirewallEvent event = new FirewallEvent();
+        event.setReason("This is My Reason");
+        event.setHostName("This is My Host Name");
         EventBean eventBean = new EventBean(hostName,accountId,event);
 
         String hostUrl = "hostUrlValueForTest";
@@ -68,8 +69,9 @@ public class EventClientTest {
         //arrange
         String hostName = null;
         String accountId = null;
-        Event event = new Event();
-        event.setMessage("This is My Test");
+        FirewallEvent event = new FirewallEvent();
+        event.setReason("This is My Reason");
+        event.setHostName("This is My Host Name");
         EventBean eventBean = new EventBean(hostName,accountId,event);
 
         String hostUrl = "hostUrlValueForTest";

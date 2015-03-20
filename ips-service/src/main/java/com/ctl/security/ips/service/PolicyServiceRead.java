@@ -1,16 +1,13 @@
 package com.ctl.security.ips.service;
 
 import com.ctl.security.data.client.service.CmdbService;
-import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyStatus;
-import com.ctl.security.ips.common.jms.bean.PolicyBean;
+import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.common.domain.Policy.PolicyStatus;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

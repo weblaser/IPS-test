@@ -3,12 +3,9 @@ package com.ctl.security.ips.service;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductType;
-import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
-import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyStatus;
-import com.ctl.security.ips.common.jms.bean.PolicyBean;
+import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.common.domain.Policy.PolicyStatus;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
-import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -70,8 +67,8 @@ public class PolicyServiceReadTest {
 
 
 
-    private com.ctl.security.ips.common.domain.Policy buildPolicy() {
-        return new com.ctl.security.ips.common.domain.Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
+    private Policy buildPolicy() {
+        return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE);
     }
     private Product buildProduct() {
         return new Product().

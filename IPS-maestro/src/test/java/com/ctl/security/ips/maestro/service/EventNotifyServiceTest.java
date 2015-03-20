@@ -3,7 +3,7 @@ package com.ctl.security.ips.maestro.service;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.*;
-import com.ctl.security.ips.common.domain.Event;
+import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -205,8 +205,9 @@ public class EventNotifyServiceTest {
     }
 
     private EventBean createEventBean(String hostName, String accountId) {
-        Event event=new Event();
-        event.setMessage("New Message");
+        FirewallEvent event=new FirewallEvent();
+        event.setReason("New Reason");
+        event.setHostName("New HostName");
         return new EventBean(hostName,accountId,event);
     }
 

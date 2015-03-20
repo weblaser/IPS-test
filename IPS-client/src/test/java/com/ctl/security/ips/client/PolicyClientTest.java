@@ -1,7 +1,7 @@
 package com.ctl.security.ips.client;
 
-import com.ctl.security.ips.common.domain.Policy;
-import com.ctl.security.ips.common.domain.PolicyStatus;
+import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.common.domain.Policy.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import org.junit.Before;

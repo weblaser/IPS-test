@@ -1,6 +1,6 @@
 package com.ctl.security.ips.dsm;
 
-import com.ctl.security.ips.common.domain.Policy;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmPolicyClientException;
 import manager.*;
