@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 public class FirewallEventTransportMarshaller {
 
     public FirewallEventTransport convert(FirewallEvent firewallEvent) {
-       FirewallEventTransport firewallEventTransport = new FirewallEventTransport();
-       firewallEventTransport.setHostName(firewallEvent.getHostName());
-       firewallEventTransport.setReason(firewallEvent.getReason());
-       return firewallEventTransport;
+        FirewallEventTransport firewallEventTransport = new FirewallEventTransport();
+        firewallEventTransport.setHostName(firewallEvent.getHostName());
+        firewallEventTransport.setReason(firewallEvent.getReason());
+        return firewallEventTransport;
     }
 
     public FirewallEvent convert(FirewallEventTransport firewallEventTransport) {

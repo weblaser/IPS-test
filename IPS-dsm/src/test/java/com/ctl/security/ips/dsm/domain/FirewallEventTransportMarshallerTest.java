@@ -27,7 +27,7 @@ public class FirewallEventTransportMarshallerTest {
         FirewallEventTransport firewallEventTransport = classUnderTest.convert(firewallEvent);
 
         assertNotNull(firewallEventTransport);
-        assertEquals(firewallEvent.getHostName(),firewallEventTransport.getHostName());
+        assertEquals(firewallEvent.getHostName(), firewallEventTransport.getHostName());
         assertEquals(firewallEvent.getReason(), firewallEventTransport.getReason());
     }
 

@@ -1,6 +1,8 @@
 package com.ctl.security.ips.dsm;
 
+import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import manager.*;
@@ -35,6 +37,9 @@ public class DsmEventClient {
     private DsmLogInClient dsmLogInClient;
 
     @Autowired
+    private EventClient eventClient;
+
+    @Autowired
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
     public List<FirewallEvent> gatherEvents(Date fromTime, Date toTime) throws DsmEventClientException {
@@ -55,7 +60,11 @@ public class DsmEventClient {
             HostFilterTransport hostFilterTransport = new HostFilterTransport();
             hostFilterTransport.setType(EnumHostFilterType.ALL_HOSTS);
 
-            List<FirewallEventTransport> firewallEventTransportList =  manager.firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId).getFirewallEvents().getItem();
+            List<FirewallEventTransport> firewallEventTransportList;
+            firewallEventTransportList =  manager
+                    .firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId)
+                    .getFirewallEvents()
+                    .getItem();
             List<FirewallEvent> firewallEvents = new ArrayList<>();
             for(FirewallEventTransport firewallEventTransport: firewallEventTransportList ){
                 FirewallEvent firewallEvent = firewallEventTransportMarshaller.convert(firewallEventTransport);
@@ -65,9 +74,11 @@ public class DsmEventClient {
             logger.info("gathered " + firewallEvents.size() + " events");
             return firewallEvents;
 
-        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
-                ManagerMaxSessionsException_Exception | ManagerException_Exception | ManagerAuthenticationException_Exception |
-                ManagerTimeoutException_Exception | ManagerValidationException_Exception | DatatypeConfigurationException e) {
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception |
+                ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception |
+                ManagerException_Exception | ManagerAuthenticationException_Exception |
+                ManagerTimeoutException_Exception | ManagerValidationException_Exception |
+                DatatypeConfigurationException e) {
             logger.error("exception caught gathering events: " + e.getMessage());
             throw new DsmEventClientException(e);
         } finally {
@@ -76,12 +87,25 @@ public class DsmEventClient {
         }
     }
 
+    public void sendEvents(List<FirewallEvent> events,String bearerToken) {
+
+        for (FirewallEvent event : events){
+            //TODO retrieve Tenant Name from DSM
+            String tenantName="TCCD";
+            EventBean eventBean = new EventBean(event.getHostName(),tenantName,event);
+            eventClient.notify(eventBean,bearerToken);
+        }
+
+    }
+
+
+
     private XMLGregorianCalendar dateToCalendar(Date date) throws DatatypeConfigurationException {
         GregorianCalendar gregory = new GregorianCalendar();
         gregory.setTime(date);
-
         XMLGregorianCalendar calendar = null;
         calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregory);
         return calendar;
     }
+
 }
