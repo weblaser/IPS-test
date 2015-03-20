@@ -1,4 +1,4 @@
-@REGRESSION
+@WIP
 Feature: Security - CtlDsmClientCreatePolicy  To log into the DSM API and create a new policy for a customer
 
 
@@ -9,13 +9,13 @@ Feature: Security - CtlDsmClientCreatePolicy  To log into the DSM API and create
     And I am able to retrieve the newly created policy
 
 
-  @WIP
+
   Scenario: Successfully create a tenant for a customer
     Given a customer tenant is ready to be created
     When the dsm rest client is used to create the tenant
     Then the tenant has been created in DSM
 
-  @WIP
+
   Scenario: Successfully retrieve a tenant from the DSM
     Given a tenant already exists in the DSM
     When the dsm rest client is used to retrieve the tenant

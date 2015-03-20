@@ -22,6 +22,7 @@
         <module>IPS-maestro</module>
         <module>IPS-dsm</module>
         <module>IPS-dsm-mock-config</module>
+        <module>ips-cli</module>
     </modules>
 
     <scm>
