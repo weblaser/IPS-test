@@ -1,6 +1,8 @@
 package com.ctl.security.ips.dsm;
 
+import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import junit.framework.TestCase;
@@ -20,9 +22,7 @@ import java.util.List;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DsmEventClientTest extends TestCase {
@@ -39,16 +39,23 @@ public class DsmEventClientTest extends TestCase {
     @Mock
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
+    @Mock
+    private EventClient eventClient;
+
+    @Mock
+    private EventBean eventBean;
+
     private String username = "joe";
     private String password = "password";
     private String sessionId = "12345";
+    private String bearerToken = "bearerToken";
 
     @Before
-    public void setup() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
+    public void setup() throws Exception {
         setupUsernamePasswordWhen(username, password, sessionId);
     }
 
-    private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {
+    private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws Exception {
         ReflectionTestUtils.setField(classUnderTest, "username", username);
         ReflectionTestUtils.setField(classUnderTest, "password", password);
 
@@ -68,11 +75,19 @@ public class DsmEventClientTest extends TestCase {
         firewallEventTransports.add(firewallEventTransport1);
         firewallEventTransports.add(firewallEventTransport2);
 
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class), any(HostFilterTransport.class), any(IDFilterTransport.class), anyString())).thenReturn(firewallEventListTransport);
-        when(firewallEventListTransport.getFirewallEvents()).thenReturn(arrayOfFirewallEventTransport);
-        when(arrayOfFirewallEventTransport.getItem()).thenReturn(firewallEventTransports);
-        when(firewallEventTransportMarshaller.convert(firewallEventTransport1)).thenReturn(firewallEvent1);
-        when(firewallEventTransportMarshaller.convert(firewallEventTransport2)).thenReturn(firewallEvent2);
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                anyString()))
+                .thenReturn(firewallEventListTransport);
+        when(firewallEventListTransport.getFirewallEvents())
+                .thenReturn(arrayOfFirewallEventTransport);
+        when(arrayOfFirewallEventTransport.getItem())
+                .thenReturn(firewallEventTransports);
+        when(firewallEventTransportMarshaller.convert(firewallEventTransport1))
+                .thenReturn(firewallEvent1);
+        when(firewallEventTransportMarshaller.convert(firewallEventTransport2))
+                .thenReturn(firewallEvent2);
 
         List<FirewallEvent> events = classUnderTest.gatherEvents(new Date(), new Date());
         assertNotNull(events);
@@ -80,4 +95,26 @@ public class DsmEventClientTest extends TestCase {
         verify(firewallEventTransportMarshaller).convert(firewallEventTransport1);
         verify(firewallEventTransportMarshaller).convert(firewallEventTransport2);
     }
+
+    @Test
+    public void sendEvents_sendsEventsToAPIEndPoint() {
+        FirewallEvent event1 = new FirewallEvent();
+        FirewallEvent event2 = new FirewallEvent();
+        event1.setHostName("Test Host Name 1");
+        event1.setReason("Cause 1");
+        event2.setHostName("Test Host Name 2");
+        event2.setReason("Cause 2");
+
+        List<FirewallEvent> events = new ArrayList<FirewallEvent>();
+        events.add(event1);
+        events.add(event2);
+
+        doNothing().when(eventClient).notify(any(EventBean.class), anyString());
+
+        classUnderTest.sendEvents(events,bearerToken);
+
+        verify(eventClient, times(events.size())).notify(any(EventBean.class), eq(bearerToken));
+    }
+
+
 }
