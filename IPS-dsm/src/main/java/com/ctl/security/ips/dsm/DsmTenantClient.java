@@ -1,21 +1,21 @@
 package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.SecurityTenant;
-import com.ctl.security.ips.dsm.config.DsmConfig;
-import com.ctl.security.ips.dsm.domain.*;
+import com.ctl.security.ips.dsm.domain.CreateOptions;
+import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
+import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
+import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -29,10 +29,6 @@ import java.util.Map;
 @Component
 public class DsmTenantClient {
 
-    @Qualifier(DsmConfig.DSM_REST_BEAN)
-    @Autowired
-    private RestTemplate restTemplate;
-
     @Value("${${spring.profiles.active:local}.dsm.restUrl}")
     private String url;
 
@@ -45,20 +41,8 @@ public class DsmTenantClient {
     @Autowired
     private DsmLogInClient dsmLogInClient;
 
-    Map<Long, String> aMap = new HashMap() {{
-        put(1l, "lane");
-        put(2l, "chad");
-        put(3l, "kevin");
-    }};
-
     @Autowired
     private CtlSecurityClient ctlSecurityClient;
-
-    private HttpHeaders setDsmHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
-    }
 
     private static final Logger logger = Logger.getLogger(DsmTenantClient.class);
 
@@ -71,11 +55,11 @@ public class DsmTenantClient {
 
 
         String address = url + "/tenants";
-        CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient.
-                post(address).
-                addHeader("Content-Type", "application/json").
-                body(createTenantRequestMap).
-                execute();
+        CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
+                .post(address)
+                .addHeader("Content-Type", "application/json")
+                .body(createTenantRequestMap)
+                .execute();
 
         String responseContent = ctlSecurityResponse.getResponseContent();
         logger.info(responseContent);
@@ -90,9 +74,7 @@ public class DsmTenantClient {
             CreateTenantResponse createTenantResponse = (CreateTenantResponse)unmarshaller.unmarshal(inputStream);
 
             createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (JAXBException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         finally {
@@ -126,9 +108,7 @@ public class DsmTenantClient {
 
         try {
             securityTenant = getSecurityTenant(tenantId, sessionId);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (JAXBException | UnsupportedEncodingException e) {
             e.printStackTrace();
         } finally {
             dsmLogInClient.endSession(sessionId);
@@ -148,10 +128,9 @@ public class DsmTenantClient {
 
         DsmTenant dsmTenant = (DsmTenant)unmarshaller.unmarshal(inputStream);
 
-        SecurityTenant securityTenant = new SecurityTenant()
+        return new SecurityTenant()
                 .setAgentInitiatedActivationPassword(dsmTenant.getAgentInitiatedActivationPassword())
                 .setTenantId(dsmTenant.getTenantID());
-        return securityTenant;
     }
 
 }
