@@ -2,7 +2,7 @@
 Feature:  Security - IpsCli
 
 
-  @WIP
+
   Scenario: Get valid response when getting a single policy from an account
     Given there is a policy to retrieve
     When the ips-cli is used to retrieve that policy
