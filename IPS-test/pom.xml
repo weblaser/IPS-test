@@ -18,6 +18,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.ctl.security.library</groupId>
+            <artifactId>security-library-test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-common</artifactId>
             <version>${project.version}</version>
@@ -25,6 +30,11 @@
         <dependency>
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-client</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ctl.security.ips</groupId>
+            <artifactId>ips-cli</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

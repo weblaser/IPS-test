@@ -37,7 +37,7 @@ public class PolicySteps {
 
     private static final Logger logger = Logger.getLogger(PolicySteps.class);
 
-    private static final String VALID_POLICY_ID = "12345";
+    public static final String VALID_POLICY_ID = "12345";
     private static final String VALID = "valid";
     private static final String INVALID_AA = "TCCX";
     private static final String INVALID_POLICY_ID = "45678";

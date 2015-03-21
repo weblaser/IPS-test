@@ -4,6 +4,7 @@ import com.ctl.security.ips.client.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,8 @@ import java.util.Arrays;
 
 @Component
 public class IpsApiCliDelegator {
+
+    private static final Logger logger = Logger.getLogger(IpsApiCliDelegator.class);
 
     public static final String GET_POLICY_FOR_ACCOUNT = "getPolicyForAccount";
 
@@ -48,5 +51,6 @@ public class IpsApiCliDelegator {
         String policyJson = gson.toJson(policy);
 
         System.out.println(policyJson);
+        logger.info(policyJson);
     }
 }
