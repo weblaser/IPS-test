@@ -67,20 +67,21 @@ public class IpsApiCliSteps {
     public void the_policy_is_retrieved() throws Throwable {
         List<LoggingEvent> loggingEvents = appender.getLog();
 
-        loggingEvents.forEach((loggingEvent) -> System.out.print(loggingEvent.getRenderedMessage() + "\n"));
-
-        for(LoggingEvent loggingEvent : loggingEvents){
-            if(loggingEvent.getRenderedMessage().contains("vendorPolicyId")){
-                policyJson = loggingEvent.getRenderedMessage();
-                Gson gson = new Gson();
-                policy = gson.fromJson(policyJson, Policy.class);
-            }
-        }
+        loggingEvents.forEach((loggingEvent) -> renderPolicyFromLog(loggingEvent));
 
         assertNotNull(policyJson);
         assertNotNull(policy);
         assertNotNull(policy.getVendorPolicyId());
 
+    }
+
+    private void renderPolicyFromLog(LoggingEvent loggingEvent) {
+        System.out.print(loggingEvent.getRenderedMessage() + "\n");
+        if(loggingEvent.getRenderedMessage().contains("vendorPolicyId")){
+            policyJson = loggingEvent.getRenderedMessage();
+            Gson gson = new Gson();
+            policy = gson.fromJson(policyJson, Policy.class);
+        }
     }
 
 }
