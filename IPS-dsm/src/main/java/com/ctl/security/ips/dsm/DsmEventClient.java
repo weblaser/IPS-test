@@ -89,15 +89,6 @@ public class DsmEventClient {
         }
     }
 
-    public void sendEvents(List<FirewallEvent> events,String bearerToken) {
-        for (FirewallEvent event : events){
-            //TODO retrieve Tenant Name from DSM
-            String tenantName="TCCD";
-            EventBean eventBean = new EventBean(event.getHostName(),tenantName,event);
-            eventClient.notify(eventBean,bearerToken);
-        }
-
-    }
 
 
 

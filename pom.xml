@@ -67,7 +67,6 @@
             <artifactId>log4j-core</artifactId>
         </dependency>
 
-
         <!--Jersey -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>

@@ -96,25 +96,6 @@ public class DsmEventClientTest extends TestCase {
         verify(firewallEventTransportMarshaller).convert(firewallEventTransport2);
     }
 
-    @Test
-    public void sendEvents_sendsEventsToAPIEndPoint() {
-        FirewallEvent event1 = new FirewallEvent();
-        FirewallEvent event2 = new FirewallEvent();
-        event1.setHostName("Test Host Name 1");
-        event1.setReason("Cause 1");
-        event2.setHostName("Test Host Name 2");
-        event2.setReason("Cause 2");
-
-        List<FirewallEvent> events = new ArrayList<FirewallEvent>();
-        events.add(event1);
-        events.add(event2);
-
-        doNothing().when(eventClient).notify(any(EventBean.class), anyString());
-
-        classUnderTest.sendEvents(events,bearerToken);
-
-        verify(eventClient, times(events.size())).notify(any(EventBean.class), eq(bearerToken));
-    }
 
 
 }

@@ -3,8 +3,8 @@ package com.ctl.security.ips.client;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 public class PolicyClient {
 
-    private static final Logger logger = Logger.getLogger(PolicyClient.class);
+    private static final Logger logger = LogManager.getLogger(PolicyClient.class);
 
     public static final String POLICIES = "policies/";
     public static final String USERNAME = "username";
@@ -44,7 +44,7 @@ public class PolicyClient {
     public void createPolicyForAccount(String accountId, Policy policy, String bearerToken) {
         try {
             String address = hostUrl + POLICIES + accountId;
-            logger.log(Level.INFO, "createPolicyForAccount: " + address);
+            logger.info("createPolicyForAccount: " + address);
 
             ResponseEntity<String> responseEntity = restTemplate.exchange(address,
                     HttpMethod.POST, new HttpEntity<>(policy, clientComponent.createHeaders(bearerToken)), String.class);
@@ -59,7 +59,7 @@ public class PolicyClient {
         List<Policy> response = null;
         try {
             String address = hostUrl + POLICIES + account;
-            logger.log(Level.INFO, "getPoliciesForAccount: " + address);
+            logger.info("getPoliciesForAccount: " + address);
 
             response = Arrays.asList(restTemplate.exchange(address,
                     HttpMethod.GET, new HttpEntity<>(clientComponent.createHeaders(bearerToken)), Policy[].class).getBody());
@@ -73,7 +73,7 @@ public class PolicyClient {
         Policy response = null;
         try {
             String address = hostUrl + POLICIES + account + "/" + id;
-            logger.log(Level.INFO, "getPolicyForAccount: " + address);
+            logger.info("getPolicyForAccount: " + address);
 
             response = restTemplate.exchange(address,
                     HttpMethod.GET, new HttpEntity<>(clientComponent.createHeaders(bearerToken)), Policy.class).getBody();
@@ -86,7 +86,7 @@ public class PolicyClient {
     public void updatePolicyForAccount(String account, String id, Policy policy, String bearerToken) {
         try {
             String address = hostUrl + POLICIES + account;
-            logger.log(Level.INFO, "updatePolicyForAccount: " + address);
+            logger.info("updatePolicyForAccount: " + address);
 
             restTemplate.exchange(address,
                     HttpMethod.PUT, new HttpEntity<>(policy, clientComponent.createHeaders(bearerToken)), String.class);
@@ -97,7 +97,7 @@ public class PolicyClient {
 
     public void deletePolicyForAccount(String account, String id, String username, String serverDomainName, String bearerToken) {
         String address = hostUrl + POLICIES + account + "/" + id + "/" + serverDomainName + "?" + USERNAME + "=" + username;
-        logger.log(Level.INFO, "deletePolicyForAccount: " + address);
+        logger.info("deletePolicyForAccount: " + address);
 
         try {
             HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
