@@ -6,7 +6,6 @@ import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import com.ctl.security.library.test.TestAppender;
 import com.google.gson.Gson;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -29,7 +28,7 @@ public class IpsApiCliSteps {
 
     private static final Logger logger = Logger.getLogger(IpsApiCliSteps.class);
 
-    final TestAppender appender = new TestAppender();
+    final TestAppender testAppender = new TestAppender();
     final Logger rootLogger = Logger.getRootLogger();
 
     private String bearerToken;
@@ -58,14 +57,14 @@ public class IpsApiCliSteps {
                 accountId,
                 policyId};
 
-        rootLogger.addAppender(appender);
+        rootLogger.addAppender(testAppender);
         IpsApiCli.main(args);
-        rootLogger.removeAppender(appender);
+        rootLogger.removeAppender(testAppender);
     }
 
     @Then("^the policy is retrieved$")
     public void the_policy_is_retrieved() throws Throwable {
-        List<LoggingEvent> loggingEvents = appender.getLog();
+        List<LoggingEvent> loggingEvents = testAppender.getLog();
 
         loggingEvents.forEach((loggingEvent) -> renderPolicyFromLog(loggingEvent));
 
