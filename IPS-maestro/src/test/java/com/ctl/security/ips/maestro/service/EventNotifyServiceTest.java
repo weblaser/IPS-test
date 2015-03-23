@@ -5,6 +5,7 @@ import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemRe
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
+import com.ctl.security.library.test.TestAppender;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -220,26 +221,6 @@ public class EventNotifyServiceTest {
         return Arrays.asList(notificationDestination);
     }
 
-    class TestAppender extends AppenderSkeleton {
-        private final List<LoggingEvent> log = new ArrayList<LoggingEvent>();
 
-        @Override
-        public boolean requiresLayout() {
-            return false;
-        }
-
-        @Override
-        protected void append(final LoggingEvent loggingEvent) {
-            log.add(loggingEvent);
-        }
-
-        @Override
-        public void close() {
-        }
-
-        public List<LoggingEvent> getLog() {
-            return new ArrayList<LoggingEvent>(log);
-        }
-    }
 
 }
