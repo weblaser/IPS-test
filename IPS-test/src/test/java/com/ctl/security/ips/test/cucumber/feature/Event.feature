@@ -1,4 +1,4 @@
-@REGRESSION @WIP
+@REGRESSION
 Feature: Security - Event
 
   Scenario: Send an event to a set notification destination URL

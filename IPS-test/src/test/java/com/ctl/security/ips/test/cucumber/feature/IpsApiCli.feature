@@ -1,5 +1,5 @@
 @REGRESSION
-Feature:  Security - IpsCli
+Feature:  Security - IpsApiCli
 
 
 

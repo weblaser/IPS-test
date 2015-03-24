@@ -1,5 +1,5 @@
-@REGRESSION
-Feature: Security - CtlDsmClientCreatePolicy  To log into the DSM API and create a new policy for a customer
+@IN_PROGRESS
+Feature: Security - DsmClient  To log into the DSM API and create a new policy for a customer
 
 
   Scenario: Successfully create a new policy for a tenant
