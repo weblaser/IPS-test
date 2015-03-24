@@ -1,4 +1,4 @@
-@REGRESSION
+@IN_PROGRESS
 Feature: Security - DsmClient  To log into the DSM API and create a new policy for a customer
 
 
