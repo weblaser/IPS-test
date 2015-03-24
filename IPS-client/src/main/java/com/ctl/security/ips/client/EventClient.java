@@ -2,8 +2,8 @@ package com.ctl.security.ips.client;
 
 import com.ctl.security.ips.common.exception.IpsException;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class EventClient {
 
-    private static final Logger logger = Logger.getLogger(EventClient.class);
+    private static final Logger logger = LogManager.getLogger(EventClient.class);
 
     @Autowired
     private ClientComponent clientComponent;
@@ -35,7 +35,7 @@ public class EventClient {
     public void notify(EventBean eventBean, String bearerToken) {
         String address = hostUrl + EVENT +"/"+ eventBean.getAccountId()+"/"+eventBean.getHostName();
 
-        logger.log(Level.INFO, "FirewallEvent Occurred: " + eventBean.getEvent().getReason());
+        logger.info("FirewallEvent Occurred: " + eventBean.getEvent().getReason());
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(address,

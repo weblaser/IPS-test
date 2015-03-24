@@ -1,8 +1,8 @@
 package com.ctl.security.ips.client;
 
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class NotificationClient {
 
-    private static final Logger logger = Logger.getLogger(NotificationClient.class);
+    private static final Logger logger = LogManager.getLogger(NotificationClient.class);
 
     @Autowired
     private ClientComponent clientComponent;
@@ -33,7 +33,7 @@ public class NotificationClient {
 
     public void updateNotificationDestination(NotificationDestinationBean notificationDestinationBean, String bearerToken) {
             String address = hostUrl + NOTIFICATIONS +"/"+ notificationDestinationBean.getAccountId()+"/"+notificationDestinationBean.getHostName();
-            logger.log(Level.INFO, "updatePolicyForAccount: " + address);
+            logger.info("updatePolicyForAccount: " + address);
 
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
         restTemplate.exchange(address,
