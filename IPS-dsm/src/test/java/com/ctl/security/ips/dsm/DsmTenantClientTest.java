@@ -88,7 +88,7 @@ public class DsmTenantClientTest {
     }
 
     @Test
-    public void testCreateDsmTenant_CreatedTenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, JAXBException, UnsupportedEncodingException {
+    public void testCreateDsmTenant_CreatedTenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, JAXBException, UnsupportedEncodingException, DsmClientException {
         //arrange
         SecurityTenant securityTenant = new SecurityTenant();
         String responseId = TENANT_ID_XML;
@@ -115,6 +115,24 @@ public class DsmTenantClientTest {
   }
 
     @Test
+    public void createDsmTenant_handlesException() throws DsmClientException {
+        SecurityTenant securityTenant = new SecurityTenant();
+        when(ctlSecurityClient.post(anyString()).addHeader(anyString(), anyString()).body(any(HashMap.class)).execute()).thenThrow(JAXBException.class);
+
+        SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
+
+        assertNull(result);
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void createDsmTenant_handlesLoginException() throws DsmClientException {
+        SecurityTenant securityTenant = new SecurityTenant();
+        when(ctlSecurityClient.post(anyString()).addHeader(anyString(), anyString()).body(any(HashMap.class)).execute()).thenThrow(ManagerSecurityException_Exception.class);
+
+        SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
+    }
+
+    @Test
     public void testRetrieveDsmTenant_TenantReturned() throws Exception {
         //arrange
         SecurityTenant expected = new SecurityTenant().setTenantId(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
@@ -134,22 +152,35 @@ public class DsmTenantClientTest {
         assertEquals(expected.getAgentInitiatedActivationPassword(), result.getAgentInitiatedActivationPassword());
     }
 
-//    @Test(expected = DsmClientException.class)
-//    public void testRetrieveDsmTenant_TenantDoesNotExist() throws Exception {
-//        //arrange
-//        String responseTenant = TENANT_XML;
-//        InputStream inputStream = new ByteArrayInputStream(responseTenant.getBytes("UTF-8"));
-//        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
-//
-//        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
-//        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
-//                "<error>\n" +
-//                "    <message>Unable to load. The system may be experiencing loss of database connectivity. Please try again.</message>\n" +
-//                "</error>");
-//        when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
-//
-//        //act
-//        classUnderTest.retrieveDsmTenant(TENANT_ID);
-//    }
+    @Test
+    public void retrieveDsmTenant_returnsNullResponseWhenTenantNotFound() throws Exception {
+        //arrange
+        String responseTenant = TENANT_XML;
+        InputStream inputStream = new ByteArrayInputStream(responseTenant.getBytes("UTF-8"));
+        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
+
+        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
+        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<error>\n" +
+                "    <message>Unable to load. The system may be experiencing loss of database connectivity. Please try again.</message>\n" +
+                "</error>");
+        when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
+
+        //act
+        SecurityTenant securityTenant = classUnderTest.retrieveDsmTenant(TENANT_ID);
+
+        assertNull(securityTenant);
+    }
+
+
+    @Test(expected = DsmClientException.class)
+    public void retrieveDsmTenant_handlesLoginError() throws Exception {
+        //arrange
+        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
+        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenThrow(ManagerSecurityException_Exception.class);
+
+        //act
+        classUnderTest.retrieveDsmTenant(TENANT_ID);
+    }
 
 }
