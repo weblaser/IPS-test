@@ -23,10 +23,6 @@ public class InformantScheduler implements Runnable {
     @Autowired
     private StdSchedulerFactory stdSchedulerFactory;
 
-    public InformantScheduler(){
-        run();
-    }
-
     @Override
     public void run() {
         try {
