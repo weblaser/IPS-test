@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static org.mockito.Matchers.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
@@ -36,13 +37,13 @@ public class MockDsmBeans extends BaseDsmBeans {
     public static final String EXPECTED_DELETED_POLICY = "expectedDeletedPolicy";
     public static final String CURRENT_EXPECTED_POLICY = "currentExpectedPolicy";
 
-    @Value("${${spring.profiles.active:local}.dsm.protocol}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String restProtocol;
-    @Value("${${spring.profiles.active:local}.dsm.host}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.host}")
     private String restHost;
-    @Value("${${spring.profiles.active:local}.dsm.port}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.port}")
     private Integer restPort;
-    @Value("${${spring.profiles.active:local}.dsm.path}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.path}")
     private String restPath;
 
     @Mock
@@ -58,8 +59,8 @@ public class MockDsmBeans extends BaseDsmBeans {
     public Manager manager() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
 
         logger.error("loading mock dsm manager!!!!!");
-
         setupMockManagerPolicyInteraction();
+        setupRestDsmWireMock();
         return manager;
     }
 
@@ -131,6 +132,9 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     private void setupRestDsmWireMock(){
         wireMockServer = new WireMockServer(restPort);
+        configureFor(restHost, restPort);
+        wireMockServer.start();
+//        wireMockServer.stop();
     }
 
 

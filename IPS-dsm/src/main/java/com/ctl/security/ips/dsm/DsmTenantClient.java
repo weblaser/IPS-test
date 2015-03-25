@@ -32,13 +32,13 @@ public class DsmTenantClient {
     @Value("${${spring.profiles.active:local}.dsm.restUrl}")
     private String url;
 
-    @Value("${${spring.profiles.active:local}.dsm.protocol}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String protocol;
-    @Value("${${spring.profiles.active:local}.dsm.host}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.host}")
     private String host;
-    @Value("${${spring.profiles.active:local}.dsm.port}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.port}")
     private String port;
-    @Value("${${spring.profiles.active:local}.dsm.path}")
+    @Value("${${spring.profiles.active:local}.dsm.rest.path}")
     private String path;
 
     @Value("${${spring.profiles.active:local}.dsm.username}")
@@ -63,7 +63,7 @@ public class DsmTenantClient {
         createTenantRequestMap.put("createTenantRequest", request);
 
 
-        String address = protocol + host + port + path + "/tenants";
+        String address = protocol + host + ":" + port + path + "/tenants";
         CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
                 .post(address)
                 .addHeader("Content-Type", "application/json")
