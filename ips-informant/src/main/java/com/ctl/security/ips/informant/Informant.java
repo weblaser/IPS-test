@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by Sean Robb on 3/24/2015.
  */
-@Component
+
 public class Informant implements Job {
     private static final String USERNAME = "kweber.tccd";
     private static final String PASSWORD = "1qaz@WSX";
