@@ -2,7 +2,6 @@ package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
-import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import manager.*;
@@ -10,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;

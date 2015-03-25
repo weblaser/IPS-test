@@ -1,4 +1,4 @@
-package com.ctl.security.ips.informant.cofig;
+package com.ctl.security.ips.informant.config;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -7,12 +7,14 @@ import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
+import com.ctl.security.ips.dsm.config.DsmConfig;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import org.joda.time.DateTime;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.config.java.annotation.Import;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
