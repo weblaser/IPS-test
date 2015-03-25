@@ -46,16 +46,16 @@ public class EventSteps {
     private EventBean eventBean;
     private String bearerToken;
 
-    WireMockServer wireMockServer;
+    private WireMockServer wireMockServer;
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
-    int destinationPort;
+    private int destinationPort;
 
     @Value("${${spring.profiles.active:local}.ips.test.host}")
-    String destinationHostName;
+    private String destinationHostName;
 
-    String accountId = ClcAuthenticationComponent.VALID_AA;
-    String hostName = "server.host.name." + System.currentTimeMillis();
+    private String accountId = ClcAuthenticationComponent.VALID_AA;
+    private String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Given("^an event occurs for a valid configuration item$")
     public void an_event_occurs(){

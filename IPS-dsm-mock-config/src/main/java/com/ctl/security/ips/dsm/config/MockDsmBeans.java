@@ -1,5 +1,6 @@
 package com.ctl.security.ips.dsm.config;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import manager.*;
 import org.apache.log4j.Logger;
 import org.mockito.Matchers;
@@ -8,6 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -34,8 +36,19 @@ public class MockDsmBeans extends BaseDsmBeans {
     public static final String EXPECTED_DELETED_POLICY = "expectedDeletedPolicy";
     public static final String CURRENT_EXPECTED_POLICY = "currentExpectedPolicy";
 
+    @Value("${${spring.profiles.active:local}.dsm.protocol}")
+    private String restProtocol;
+    @Value("${${spring.profiles.active:local}.dsm.host}")
+    private String restHost;
+    @Value("${${spring.profiles.active:local}.dsm.port}")
+    private Integer restPort;
+    @Value("${${spring.profiles.active:local}.dsm.path}")
+    private String restPath;
+
     @Mock
     private Manager manager;
+
+    private WireMockServer wireMockServer;
 
     public MockDsmBeans() {
         MockitoAnnotations.initMocks(this);
@@ -116,7 +129,9 @@ public class MockDsmBeans extends BaseDsmBeans {
     }
 
 
-
+    private void setupRestDsmWireMock(){
+        wireMockServer = new WireMockServer(restPort);
+    }
 
 
 }
