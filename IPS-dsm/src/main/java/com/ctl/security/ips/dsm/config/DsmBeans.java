@@ -1,7 +1,7 @@
 package com.ctl.security.ips.dsm.config;
 
 import manager.Manager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,8 +24,7 @@ import java.util.Map;
 @Profile({"ts", "qa", "prod"})
 public class DsmBeans extends BaseDsmBeans {
 
-    private static final Logger logger = Logger.getLogger(DsmBeans.class);
-
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmBeans.class);
 
     @Bean
     public Manager manager() {

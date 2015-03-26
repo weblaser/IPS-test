@@ -4,7 +4,7 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.maestro.config.MaestroConfig;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 
 /**
@@ -36,7 +37,7 @@ public class EventNotifyService {
     private Integer retryWaitTime;
 
 
-    private static final Logger logger = Logger.getLogger(EventNotifyService.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(EventNotifyService.class);
 
     public void notify(EventBean eventBean){
 

@@ -1,5 +1,6 @@
 package com.ctl.security.ips.informant.config;
 
+import com.ctl.security.ips.informant.InformantConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

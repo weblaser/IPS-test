@@ -1,5 +1,6 @@
 package com.ctl.security.ips.informant;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,7 +13,7 @@ public class InformantApplicationTest {
     @InjectMocks
     InformantApplication classUnderTest;
 
-    @Test
+    @Test @Ignore
     public void main_startsInformant() throws Exception {
 
         Exception exception = null;
