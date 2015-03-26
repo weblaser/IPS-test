@@ -24,21 +24,21 @@ public class InformantScheduler implements Runnable {
 
     @Override
     public void run() {
-//        try {
-//            Scheduler scheduler = stdSchedulerFactory.getScheduler();
-//
-//            JobDetail jobDetail = newJob(Informant.class)
-//                    .withIdentity("Informant Job", "Informant")
-//                    .build();
-//            Trigger trigger = newTrigger()
-//                    .withIdentity("Informant Time Trigger", "Informant")
-//                    .withSchedule(simpleSchedule().withIntervalInMinutes(5))
-//                    .forJob(jobDetail)
-//                    .build();
-//
-//            scheduler.scheduleJob(jobDetail, trigger);
-//        } catch (SchedulerException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Scheduler scheduler = stdSchedulerFactory.getScheduler();
+
+            JobDetail jobDetail = newJob(Informant.class)
+                    .withIdentity("Informant Job", "Informant")
+                    .build();
+            Trigger trigger = newTrigger()
+                    .withIdentity("Informant Time Trigger", "Informant")
+                    .withSchedule(simpleSchedule().withIntervalInMinutes(5))
+                    .forJob(jobDetail)
+                    .build();
+
+            scheduler.scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 }

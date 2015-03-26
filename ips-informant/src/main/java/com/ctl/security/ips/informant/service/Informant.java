@@ -9,6 +9,7 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import org.joda.time.DateTime;
+import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,7 @@ import java.util.List;
  */
 
 @Component
-//public class Informant implements Job {
-public class Informant {
+public class Informant implements Job {
     private static final String USERNAME = "kweber.tccd";
     private static final String PASSWORD = "1qaz@WSX";
     public static final String TCCD = "TCCD";
