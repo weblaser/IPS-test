@@ -1,9 +1,11 @@
 package com.ctl.security.ips.informant;
 
+import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
 import com.ctl.security.ips.dsm.config.DsmConfig;
 import org.quartz.impl.StdSchedulerFactory;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -12,8 +14,8 @@ import org.springframework.context.annotation.Import;
  */
 
 @Configuration
-@Import(DsmConfig.class)
-//@ComponentScan(basePackages = {"com.ctl.security.ips.informant"})
+@Import({DsmConfig.class, ClcClientCoreAppConfig.class})
+@ComponentScan(basePackages = {"com.ctl.security.ips.informant"})
 public class InformantConfig {
 
 
