@@ -14,6 +14,7 @@ public class InformantApplicationTest {
     InformantApplication classUnderTest;
 
     @Test @Ignore
+    //TODO: Move this test to ips-test because it is an integration test, additionally it requires the spring.active.profiles=local to be set
     public void main_startsInformant() throws Exception {
 
         Exception exception = null;

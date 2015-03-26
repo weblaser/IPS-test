@@ -31,23 +31,23 @@ public class InformantSchedulerTest {
     @Mock
     private Scheduler scheduler;
 
-    @Test @Ignore
+    @Test
     public void start_schedulesInformant() throws Exception {
-//        JobDetail jobDetail = newJob(Informant.class)
-//                .withIdentity("Informant Job", "Informant")
-//                .build();
-//        Trigger trigger = newTrigger()
-//                .withIdentity("Informant Time Trigger", "Informant")
-//                .withSchedule(simpleSchedule().withIntervalInMinutes(5))
-//                .forJob(jobDetail)
-//                .build();
-//
-//        when(stdSchedulerFactory.getScheduler())
-//                .thenReturn(scheduler);
-//
-//        classUnderTest.run();
-//
-//        verify(stdSchedulerFactory).getScheduler();
-//        verify(scheduler).scheduleJob(jobDetail, trigger);
+        JobDetail jobDetail = newJob(Informant.class)
+                .withIdentity("Informant Job", "Informant")
+                .build();
+        Trigger trigger = newTrigger()
+                .withIdentity("Informant Time Trigger", "Informant")
+                .withSchedule(simpleSchedule().withIntervalInMinutes(5))
+                .forJob(jobDetail)
+                .build();
+
+        when(stdSchedulerFactory.getScheduler())
+                .thenReturn(scheduler);
+
+        classUnderTest.run();
+
+        verify(stdSchedulerFactory).getScheduler();
+        verify(scheduler).scheduleJob(jobDetail, trigger);
     }
 }
