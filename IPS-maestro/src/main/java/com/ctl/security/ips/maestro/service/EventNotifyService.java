@@ -4,7 +4,7 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.maestro.config.MaestroConfig;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,8 +36,8 @@ public class EventNotifyService {
     @Value("${${spring.profiles.active:local}.ips.retryWaitTime}")
     private Integer retryWaitTime;
 
-
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(EventNotifyService.class);
+    //TODO: After story SECURITY-755 is completed switch to org.apache.logging.log4j.LogManager
+    private static final Logger logger = Logger.getLogger(EventNotifyService.class);
 
     public void notify(EventBean eventBean){
 
