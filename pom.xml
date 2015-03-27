@@ -72,6 +72,16 @@
             <artifactId>jersey-bean-validation</artifactId>
         </dependency>
 
+        <!-- Jackson -->
+        <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+
         <!--Test -->
         <dependency>
             <groupId>org.mockito</groupId>
