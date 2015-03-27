@@ -10,6 +10,7 @@ import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
 import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,8 @@ public class DsmTenantClient {
     @Autowired
     private CtlSecurityClient ctlSecurityClient;
 
-    private static final Logger logger = Logger.getLogger(DsmTenantClient.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmTenantClient.class);
+
 
     public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException{
         String sessionId = null;

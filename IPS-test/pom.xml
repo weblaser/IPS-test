@@ -14,6 +14,7 @@
     <properties>
         <cucumber.version>1.2.0</cucumber.version>
         <clc.client.version>1.0.0-SNAPSHOT</clc.client.version>
+        <security.data.version>1.0.0-SNAPSHOT</security.data.version>
     </properties>
 
     <dependencies>
@@ -46,7 +47,7 @@
         <dependency>
             <groupId>com.ctl.security.data</groupId>
             <artifactId>security-data-client</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${security.data.version}</version>
         </dependency>
         <dependency>
             <groupId>com.ctl.security.ips</groupId>

@@ -19,6 +19,7 @@ import java.net.URI;
 @PropertySource("classpath:properties/ips.client.properties")
 @Import({SecurityLibraryCommonAppConfig.class})
 public class ClientConfig {
+
     @Bean
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();

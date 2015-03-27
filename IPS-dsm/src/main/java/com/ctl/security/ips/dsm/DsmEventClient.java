@@ -2,14 +2,15 @@ package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
-import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import manager.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -24,7 +25,7 @@ import java.util.List;
 @Component
 public class DsmEventClient {
 
-    private static final Logger logger = Logger.getLogger(DsmEventClient.class);
+    private static final Logger logger = LogManager.getLogger(DsmEventClient.class);
 
     @Autowired
     private Manager manager;

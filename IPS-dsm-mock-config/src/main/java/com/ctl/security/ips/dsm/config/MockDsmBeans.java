@@ -1,15 +1,13 @@
 package com.ctl.security.ips.dsm.config;
 
 import manager.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -17,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Matchers.*;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +25,7 @@ import static org.mockito.Mockito.when;
 @Profile({"local", "dev"})
 public class MockDsmBeans extends BaseDsmBeans {
 
-    private static final Logger logger = Logger.getLogger(MockDsmBeans.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(MockDsmBeans.class);
 
     public static final String EXPECTED_POLICY = "expectedPolicy";
     public static final String EXPECTED_DELETED_POLICY = "expectedDeletedPolicy";

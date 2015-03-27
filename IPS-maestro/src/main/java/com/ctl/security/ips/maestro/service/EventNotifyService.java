@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
 
 /**
@@ -35,7 +36,7 @@ public class EventNotifyService {
     @Value("${${spring.profiles.active:local}.ips.retryWaitTime}")
     private Integer retryWaitTime;
 
-
+    //TODO: After story SECURITY-755 is completed switch to org.apache.logging.log4j.LogManager
     private static final Logger logger = Logger.getLogger(EventNotifyService.class);
 
     public void notify(EventBean eventBean){

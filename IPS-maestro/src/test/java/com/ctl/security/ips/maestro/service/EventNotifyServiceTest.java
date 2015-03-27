@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 public class EventNotifyServiceTest {
 
     @InjectMocks
-    EventNotifyService classUnderTest;
+    private EventNotifyService classUnderTest;
 
     @Mock
     private ConfigurationItemClient configurationItemClient;

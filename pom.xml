@@ -23,6 +23,7 @@
         <module>IPS-dsm</module>
         <module>IPS-dsm-mock-config</module>
         <module>ips-cli</module>
+        <module>ips-informant</module>
     </modules>
 
     <scm>
@@ -31,14 +32,8 @@
         <url>https://github.com/CenturylinkTechnology/ips-api.git</url>
     </scm>
 
-    <properties>
-        <spring.version>4.1.0.RELEASE</spring.version>
-        <jersey.version>2.6</jersey.version>
-        <sonar.exclusions>**/*Exception.java</sonar.exclusions>
-    </properties>
-
     <dependencies>
-    
+
         <!--Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -75,6 +70,16 @@
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
             <artifactId>jersey-bean-validation</artifactId>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
         </dependency>
 
         <!--Test -->
