@@ -3,6 +3,7 @@ package com.ctl.security.ips.informant;
 import com.ctl.security.ips.informant.service.InformantScheduler;
 import org.quartz.SchedulerException;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Import;
  *
  */
 
-@SpringBootApplication
+@EnableAutoConfiguration
 @Import(InformantConfig.class)
 public class InformantApplication {
 //    private static Logger logger = LogManager.getLogger(InformantApplication.class);
