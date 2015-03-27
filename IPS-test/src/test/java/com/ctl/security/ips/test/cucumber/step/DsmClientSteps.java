@@ -4,6 +4,7 @@ import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.DsmTenantClient;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -31,10 +32,7 @@ public class DsmClientSteps {
     private DsmTenantClient dsmTenantClient;
 
     @Autowired
-    private RestTemplate restTemplate;
-//
-//    @Autowired
-//    private Manager manager;
+    private Manager manager;
 
     @Autowired
     private DsmClientComponent dsmClientComponent;
@@ -105,7 +103,7 @@ public class DsmClientSteps {
     }
 
     @When("^the dsm rest client is used to retrieve the tenant$")
-    public void the_dsm_rest_client_is_used_to_retrieve_the_tenant() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
+    public void the_dsm_rest_client_is_used_to_retrieve_the_tenant() throws DsmClientException {
         newlyCreateSecurityTenant = dsmTenantClient.retrieveDsmTenant(tenantId);
     }
 

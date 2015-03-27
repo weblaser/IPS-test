@@ -5,6 +5,7 @@ import com.ctl.security.ips.dsm.domain.CreateOptions;
 import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
 import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
 import com.ctl.security.ips.dsm.domain.DsmTenant;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
@@ -12,6 +13,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -55,36 +57,42 @@ public class DsmTenantClient {
 
     private static final Logger logger = Logger.getLogger(DsmTenantClient.class);
 
-    public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
-        String sessionId = dsmLogInClient.connectToDSMClient(username, password);
-        CreateTenantRequest request = createDsmCreateTenantRequest(securityTenant).setSessionId(sessionId);
-
-        Map<String, CreateTenantRequest> createTenantRequestMap = new HashMap<>();
-        createTenantRequestMap.put("createTenantRequest", request);
-
-
-        String address = protocol + host + port + path + "/tenants";
-        CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
-                .post(address)
-                .addHeader("Content-Type", "application/json")
-                .body(createTenantRequestMap)
-                .execute();
-
-        String responseContent = ctlSecurityResponse.getResponseContent();
-        logger.info(responseContent);
-
+    public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException{
+        String sessionId = null;
+        CreateTenantResponse createTenantResponse = null;
         SecurityTenant createdSecurityTenant = null;
         try {
+
+            sessionId = dsmLogInClient.connectToDSMClient(username, password);
+
+            CreateTenantRequest createTenantRequestMap = createDsmCreateTenantRequest(securityTenant).setSessionId(sessionId);
+
+            String address = protocol + host + port + path + "/tenants";
+            CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
+                    .post(address)
+                    .addHeader("Content-Type", "application/json")
+                    .body(createTenantRequestMap)
+                    .execute();
+
+            String responseContent = ctlSecurityResponse.getResponseContent();
+            logger.info(responseContent);
+
             JAXBContext jc = JAXBContext.newInstance(CreateTenantResponse.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
 
             InputStream inputStream = new ByteArrayInputStream(responseContent.getBytes("UTF-8"));
 
-            CreateTenantResponse createTenantResponse = (CreateTenantResponse)unmarshaller.unmarshal(inputStream);
+            createTenantResponse = (CreateTenantResponse)unmarshaller.unmarshal(inputStream);
 
             createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
+
         } catch (JAXBException | UnsupportedEncodingException e) {
-            e.printStackTrace();
+            logger.error(e);
+            return null;
+        }
+        catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception e ) {
+            logger.error(e);
+            throw new DsmClientException(e);
         }
         finally {
             dsmLogInClient.endSession(sessionId);
@@ -110,16 +118,21 @@ public class DsmTenantClient {
                 .setName(securityTenant.getTenantName());
     }
 
-    public SecurityTenant retrieveDsmTenant(Integer tenantId) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
-        String sessionId = dsmLogInClient.connectToDSMClient(username, password);
-
+    public SecurityTenant retrieveDsmTenant(Integer tenantId) throws DsmClientException {
+        String sessionId = null;
         SecurityTenant securityTenant = null;
 
         try {
+            sessionId = dsmLogInClient.connectToDSMClient(username, password);
             securityTenant = getSecurityTenant(tenantId, sessionId);
-        } catch (JAXBException | UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } finally {
+        } catch (JAXBException | UnsupportedEncodingException e){
+            logger.error(e);
+            return null;
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception | ManagerAuthenticationException_Exception | ManagerException_Exception e) {
+            logger.error(e);
+            throw new DsmClientException(e);
+        }
+        finally {
             dsmLogInClient.endSession(sessionId);
         }
         return securityTenant;
@@ -128,6 +141,7 @@ public class DsmTenantClient {
     private SecurityTenant getSecurityTenant(Integer tenantId, String sessionId) throws JAXBException, UnsupportedEncodingException {
         String address = url + "/tenants/id/" + tenantId + "?sID=" + sessionId;
 
+
         String responseContent = ctlSecurityClient.get(address).execute().getResponseContent();
 
         JAXBContext jc = JAXBContext.newInstance(DsmTenant.class);
@@ -135,11 +149,13 @@ public class DsmTenantClient {
 
         InputStream inputStream = new ByteArrayInputStream(responseContent.getBytes("UTF-8"));
 
-        DsmTenant dsmTenant = (DsmTenant)unmarshaller.unmarshal(inputStream);
+        DsmTenant dsmTenant = (DsmTenant) unmarshaller.unmarshal(inputStream);
 
         return new SecurityTenant()
                 .setAgentInitiatedActivationPassword(dsmTenant.getAgentInitiatedActivationPassword())
                 .setTenantId(dsmTenant.getTenantID());
+
+
     }
 
 }
