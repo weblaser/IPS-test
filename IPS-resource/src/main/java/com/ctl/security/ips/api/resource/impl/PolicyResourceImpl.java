@@ -21,8 +21,8 @@ public class PolicyResourceImpl implements PolicyResource {
     private PolicyMessageSender policyMessageSender;
 
     @Override
-    public void createPolicyForAccount(String accountId, Policy policy) {
-        PolicyBean policyBean = new PolicyBean(accountId, policy);
+    public void createPolicyForAccount(String accountId, Policy policy, String bearerToken) {
+        PolicyBean policyBean = new PolicyBean(accountId, policy, bearerToken.substring(7));
         policyMessageSender.createPolicyForAccount(policyBean);
     }
 
@@ -43,12 +43,12 @@ public class PolicyResourceImpl implements PolicyResource {
 
     //TODO this method needs to take a policy object as a body in order to get all the data we need
     @Override
-    public void deletePolicyForAccount(String accountId, String policyId, String serverDomainName, String username) throws DsmClientException {
+    public void deletePolicyForAccount(String accountId, String policyId, String serverDomainName, String username, String bearerToken) throws DsmClientException {
         Policy policy = new Policy();
         policy.setVendorPolicyId(policyId);
         policy.setHostName(serverDomainName);
         policy.setUsername(username);
-        policyMessageSender.deletePolicyForAccount(new PolicyBean(accountId, policy));
+        policyMessageSender.deletePolicyForAccount(new PolicyBean(accountId, policy, bearerToken.substring(7)));
     }
 
 }

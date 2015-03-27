@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 /**
  * Created by kevin.wilde on 2/13/2015.
+ *
  */
 
 @ToString
@@ -21,4 +22,5 @@ import java.io.Serializable;
 public class PolicyBean implements Serializable {
     private String accountId;
     private Policy policy;
+    private String bearerToken;
 }
