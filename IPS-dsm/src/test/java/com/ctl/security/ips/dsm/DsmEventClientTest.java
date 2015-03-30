@@ -90,6 +90,7 @@ public class DsmEventClientTest extends TestCase {
                 .thenReturn(firewallEvent2);
 
         List<FirewallEvent> events = classUnderTest.gatherEvents(new Date(), new Date());
+
         assertNotNull(events);
         assertEquals(firewallEventTransports.size(), events.size());
         verify(firewallEventTransportMarshaller).convert(firewallEventTransport1);

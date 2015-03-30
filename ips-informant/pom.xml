@@ -50,6 +50,11 @@
             <artifactId>CLC-client-core</artifactId>
             <version>${clc.client.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ctl.security.library</groupId>
+            <artifactId>security-library-test</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
 
         <!--Joda Time-->
         <dependency>

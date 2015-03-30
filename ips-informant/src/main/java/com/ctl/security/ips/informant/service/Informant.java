@@ -13,6 +13,7 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 
 @Component
-public class Informant implements Job {
+public class Informant {
     private static final String USERNAME = "kweber.tccd";
     private static final String PASSWORD = "1qaz@WSX";
     public static final String TCCD = "TCCD";
@@ -55,11 +56,11 @@ public class Informant implements Job {
 
     }
 
-//    @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    @Scheduled(cron = "*/5 * * * * *")
+    public void inform(){
         try {
-            Date toDate = DateTime.now().minusMinutes(5).toDate();
-            Date formDate = DateTime.now().toDate();
+            Date toDate = DateTime.now().toDate();
+            Date formDate = DateTime.now().minusMinutes(5).toDate();
             List<FirewallEvent> events = dsmEventClient.gatherEvents(formDate, toDate);
             String bearerToken = authenticate();
             sendEvents(events, bearerToken);

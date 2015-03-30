@@ -7,6 +7,7 @@ import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
+import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import com.ctl.security.ips.informant.service.Informant;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.quartz.JobExecutionContext;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -45,30 +47,89 @@ public class InformantTest {
     private String bearerToken;
 
     @Test
-    public void run_gathersEventsAndSendsEvents() throws Exception {
-        String tenantName = Informant.TCCD;
-        JobExecutionContext jobExecutionContext=null;
-        FirewallEvent firewallEvent1 = new FirewallEvent();
-        firewallEvent1.setHostName("hostName1");
-        FirewallEvent firewallEvent2 = new FirewallEvent();
-        firewallEvent2.setHostName("hostName2");
-        List<FirewallEvent> firewallEvents = Arrays.asList(firewallEvent1, firewallEvent2);
-        EventBean eventBean1 = new EventBean(firewallEvent1.getHostName(), tenantName, firewallEvent1);
-        EventBean eventBean2 = new EventBean(firewallEvent2.getHostName(), tenantName, firewallEvent2);
+    public void run_gathersEvents() throws Exception {
+        FirewallEvent firewallEvent = createFirewallEvent("hostName1");
 
+        List<FirewallEvent> firewallEvents = Arrays.asList(firewallEvent);
+
+        setUpMocksForInform(firewallEvents);
+
+        classUnderTest.inform();
+
+        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+    }
+
+    @Test
+    public void run_gathersEventsAndSendsOneEvent() throws Exception {
+        List<FirewallEvent> firewallEvents = CreateFirewallEvents(1);
+        List<EventBean> eventBeans = createEventBeans(firewallEvents);
+
+        setUpMocksForInform(firewallEvents);
+
+        classUnderTest.inform();
+
+        verifyNotificationsOfEventBeans(eventBeans);
+    }
+
+    @Test
+    public void run_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
+        List<FirewallEvent> firewallEvents = CreateFirewallEvents(5);
+        List<EventBean> eventBeans = createEventBeans(firewallEvents);
+
+        setUpMocksForInform(firewallEvents);
+
+        classUnderTest.inform();
+
+        verifyNotificationsOfEventBeans(eventBeans);
+    }
+
+    private void setUpMocksForInform(List<FirewallEvent> firewallEvents) throws DsmEventClientException {
         when(dsmEventClient.gatherEvents(any(Date.class), any(Date.class)))
                 .thenReturn(firewallEvents);
         when(authenticationClient.authenticateV2Api(any(ClcAuthenticationRequest.class)))
                 .thenReturn(clcAuthenticationResponse);
         when(clcAuthenticationResponse.getBearerToken())
                 .thenReturn(bearerToken);
+    }
 
-        classUnderTest.execute(jobExecutionContext);
+    private FirewallEvent createFirewallEvent(String hostName) {
+        FirewallEvent firewallEvent = new FirewallEvent();
+        firewallEvent.setHostName(hostName);
+        return firewallEvent;
+    }
 
-        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
-        verify(authenticationClient).authenticateV2Api(any(ClcAuthenticationRequest.class));
-        verify(eventClient).notify(eventBean1, bearerToken);
-        verify(eventClient).notify(eventBean2, bearerToken);
+    private EventBean createEventBean(FirewallEvent firewallEvent) {
+        EventBean eventBean = new EventBean(firewallEvent.getHostName(), Informant.TCCD, firewallEvent);
+        return eventBean;
+    }
+
+    private void verifyNotificationsOfEventBeans(List<EventBean> eventBeans) {
+        for (EventBean currentEventBean : eventBeans) {
+            verify(eventClient).notify(currentEventBean, bearerToken);
+        }
+    }
+
+    private List<FirewallEvent> CreateFirewallEvents(int count) {
+        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<EventBean> eventBeans = new ArrayList<>();
+        for (int eventCount = 0; eventCount < count; eventCount++) {
+            FirewallEvent firewallEvent = createFirewallEvent("Host Name " + eventCount);
+            firewallEvents.add(firewallEvent);
+
+            EventBean eventBean = createEventBean(firewallEvent);
+            eventBeans.add(eventBean);
+        }
+        return firewallEvents;
+    }
+
+    private   List<EventBean> createEventBeans(List<FirewallEvent> firewallEvents){
+        List<EventBean> eventBeans = new ArrayList<>();
+
+        for (FirewallEvent currentFirewallEvent : firewallEvents) {
+            EventBean eventBean = createEventBean(currentFirewallEvent);
+            eventBeans.add(eventBean);
+        }
+        return eventBeans;
     }
 
 }

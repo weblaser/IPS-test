@@ -68,6 +68,7 @@ public class DsmEventClient {
                     .firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId)
                     .getFirewallEvents()
                     .getItem();
+
             List<FirewallEvent> firewallEvents = new ArrayList<>();
             for(FirewallEventTransport firewallEventTransport: firewallEventTransportList ){
                 FirewallEvent firewallEvent = firewallEventTransportMarshaller.convert(firewallEventTransport);
