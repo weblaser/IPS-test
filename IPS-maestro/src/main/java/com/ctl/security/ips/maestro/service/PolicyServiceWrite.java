@@ -2,6 +2,7 @@ package com.ctl.security.ips.maestro.service;
 
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
+import com.ctl.security.clc.client.common.domain.SoftwarePackage;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy.Policy;
@@ -36,16 +37,15 @@ public class PolicyServiceWrite extends PolicyService {
         Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean.getPolicy());
         InstallationBean installationBean = buildInstallationBean(policyBean);
         cmdbService.installProduct(installationBean);
-        SecurityTenant securityTenant = new SecurityTenant();
-        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
+        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());
         ClcExecutePackageRequest clcExecutePackageRequest = new ClcExecutePackageRequest().addServer(policyBean.getPolicy().getHostName());
         clcExecutePackageRequest.getSoftwarePackage()
-                .addParameter("Tenant ID", createdSecurityTenant.getTenantId().toString())
-                .addParameter("Agent Activation Password", createdSecurityTenant.getAgentInitiatedActivationPassword())
-                .addParameter("Policy ID", newlyCreatedPolicy.getVendorPolicyId())
-                .addParameter("DSM FQDN", "") //TODO find this damn thing!!!!
-                .addParameter("Bearer Token", policyBean.getBearerToken())
-                .addParameter("Server Account Alias", policyBean.getAccountId());
+                .addParameter("DSM.Tenant.ID", createdSecurityTenant.getTenantId().toString())
+                .addParameter("DSM.Agent.Activation.Password", createdSecurityTenant.getAgentInitiatedActivationPassword())
+                .addParameter("DSM.Policy.ID", newlyCreatedPolicy.getVendorPolicyId())
+                .addParameter("DSM.Name", "") //TODO find this damn thing!!!!
+                .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
+                .addParameter("T3.Account.Alias", policyBean.getAccountId());
         packageInstallationService.installClcPackage(clcExecutePackageRequest, policyBean.getAccountId(), policyBean.getBearerToken());
         return newlyCreatedPolicy.setTenantId(createdSecurityTenant.getTenantId().toString());
     }
