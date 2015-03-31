@@ -25,8 +25,8 @@ import java.util.List;
 
 @Component
 public class Informant implements Job {
-    private static final String USERNAME = "kweber.tccd";
-    private static final String PASSWORD = "1qaz@WSX";
+    private static final String USERNAME = "Bugs";
+    private static final String PASSWORD = "vZb]9yKv==Bnmozn";
     public static final String TCCD = "TCCD";
 
     @Autowired
