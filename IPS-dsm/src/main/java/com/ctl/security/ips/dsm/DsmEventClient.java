@@ -51,39 +51,17 @@ public class DsmEventClient {
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
             logger.info("session created with id " + sessionId);
 
-            IDFilterTransport idFilterTransport = new IDFilterTransport();
-            idFilterTransport.setOperator(EnumOperator.GREATER_THAN);
-            idFilterTransport.setId(0);
-
-            TimeFilterTransport timeFilterTransport = new TimeFilterTransport();
-            timeFilterTransport.setType(EnumTimeFilterType.CUSTOM_RANGE);
-            timeFilterTransport.setRangeFrom(dateToCalendar(fromTime));
-            timeFilterTransport.setRangeTo(dateToCalendar(toTime));
-
-            HostFilterTransport hostFilterTransport = new HostFilterTransport();
-            hostFilterTransport.setType(EnumHostFilterType.ALL_HOSTS);
-
             List<FirewallEventTransport> firewallEventTransportList;
-            firewallEventTransportList =  manager
-                    .firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId)
-                    .getFirewallEvents()
-                    .getItem();
+            firewallEventTransportList = getFirewallEventTransports(fromTime, toTime, sessionId);
 
-            List<FirewallEvent> firewallEvents = new ArrayList<>();
-            for(FirewallEventTransport firewallEventTransport: firewallEventTransportList ){
-                FirewallEvent firewallEvent = firewallEventTransportMarshaller.convert(firewallEventTransport);
-                firewallEvents.add(firewallEvent);
-            }
+            List<FirewallEvent> firewallEvents = marshallToFirewallEvents(firewallEventTransportList);
 
             logger.info("gathered " + firewallEvents.size() + " events");
             return firewallEvents;
-
-        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception |
-                ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception |
-                ManagerException_Exception | ManagerAuthenticationException_Exception |
-                ManagerTimeoutException_Exception | ManagerValidationException_Exception |
-                DatatypeConfigurationException e) {
-            logger.error("exception caught gathering events: " + e.getMessage());
+        } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
+                ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
+                ManagerMaxSessionsException_Exception  | ManagerException_Exception e) {
+            logger.error("Exception caught connecting to the dsm: " + e.getMessage());
             throw new DsmEventClientException(e);
         } finally {
             dsmLogInClient.endSession(sessionId);
@@ -91,8 +69,60 @@ public class DsmEventClient {
         }
     }
 
+    private List<FirewallEvent> marshallToFirewallEvents(List<FirewallEventTransport> firewallEventTransportList) {
+        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        for (FirewallEventTransport firewallEventTransport : firewallEventTransportList) {
+            FirewallEvent firewallEvent = firewallEventTransportMarshaller.convert(firewallEventTransport);
+            firewallEvents.add(firewallEvent);
+        }
+        return firewallEvents;
+    }
 
+    private List<FirewallEventTransport> getFirewallEventTransports(Date fromTime, Date toTime, String sessionId) throws DsmEventClientException {
+        try {
+            List<FirewallEventTransport> firewallEventTransportList;
 
+            IDFilterTransport idFilterTransport = getIdFilterTransport();
+
+            TimeFilterTransport timeFilterTransport = getTimeFilterTransport(fromTime, toTime);
+
+            HostFilterTransport hostFilterTransport = getHostFilterTransport();
+
+            firewallEventTransportList = manager
+                    .firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId)
+                    .getFirewallEvents()
+                    .getItem();
+
+            return firewallEventTransportList;
+
+        } catch (ManagerException_Exception | ManagerAuthenticationException_Exception |
+                ManagerTimeoutException_Exception | ManagerValidationException_Exception |
+                DatatypeConfigurationException e) {
+            logger.error("Exception caught gathering events: " + e.getMessage());
+            throw new DsmEventClientException(e);
+        }
+    }
+
+    private HostFilterTransport getHostFilterTransport() {
+        HostFilterTransport hostFilterTransport = new HostFilterTransport();
+        hostFilterTransport.setType(EnumHostFilterType.ALL_HOSTS);
+        return hostFilterTransport;
+    }
+
+    private TimeFilterTransport getTimeFilterTransport(Date fromTime, Date toTime) throws DatatypeConfigurationException {
+        TimeFilterTransport timeFilterTransport = new TimeFilterTransport();
+        timeFilterTransport.setType(EnumTimeFilterType.CUSTOM_RANGE);
+        timeFilterTransport.setRangeFrom(dateToCalendar(fromTime));
+        timeFilterTransport.setRangeTo(dateToCalendar(toTime));
+        return timeFilterTransport;
+    }
+
+    private IDFilterTransport getIdFilterTransport() {
+        IDFilterTransport idFilterTransport = new IDFilterTransport();
+        idFilterTransport.setOperator(EnumOperator.GREATER_THAN);
+        idFilterTransport.setId(0);
+        return idFilterTransport;
+    }
 
     private XMLGregorianCalendar dateToCalendar(Date date) throws DatatypeConfigurationException {
         GregorianCalendar gregory = new GregorianCalendar();

@@ -9,13 +9,11 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import com.ctl.security.ips.informant.service.Informant;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.quartz.JobExecutionContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;

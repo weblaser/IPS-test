@@ -1,5 +1,7 @@
 package com.ctl.security.ips.dsm.config;
 
+import com.ctl.security.ips.dsm.adapter.EventAdapter;
+import com.ctl.security.ips.dsm.adapter.MockEventAdapterImpl;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.mockito.Matchers;
@@ -47,6 +49,12 @@ public class MockDsmBeans extends BaseDsmBeans {
         return manager;
     }
 
+    @Bean
+    public EventAdapter eventAdapter() {
+        EventAdapter eventAdapter = new MockEventAdapterImpl();
+        return eventAdapter;
+    }
+
     private void setupMockManagerPolicyInteraction() throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerValidationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
 
         setupDsmAuthentication();
@@ -76,7 +84,7 @@ public class MockDsmBeans extends BaseDsmBeans {
         expectedSecurityProfileTransport.setName(validDsmPolicyName);
         expectedPolicies.put(EXPECTED_POLICY, expectedSecurityProfileTransport);
 
-        when(manager.securityProfileRetrieve(anyInt(),anyString())).thenAnswer(new Answer<Object>() {
+        when(manager.securityProfileRetrieve(anyInt(), anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));
@@ -85,7 +93,7 @@ public class MockDsmBeans extends BaseDsmBeans {
             }
         });
 
-        when(manager.securityProfileRetrieveByName(anyString(),anyString())).thenAnswer(new Answer<Object>() {
+        when(manager.securityProfileRetrieveByName(anyString(), anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));
@@ -112,8 +120,12 @@ public class MockDsmBeans extends BaseDsmBeans {
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
 
-
-
-
+    private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
+        FirewallEventListTransport firewallEventListTransport= new FirewallEventListTransport();
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                anyString())).thenReturn(eventAdapter().getEventTransportList());
+    }
 
 }

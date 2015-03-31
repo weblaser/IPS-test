@@ -9,9 +9,6 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import org.joda.time.DateTime;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -56,12 +53,12 @@ public class Informant {
 
     }
 
-    @Scheduled(cron = "*/5 * * * * *")
+    @Scheduled(cron = "* */5 * * * *")
     public void inform(){
         try {
             Date toDate = DateTime.now().toDate();
-            Date formDate = DateTime.now().minusMinutes(5).toDate();
-            List<FirewallEvent> events = dsmEventClient.gatherEvents(formDate, toDate);
+            Date fromDate = DateTime.now().minusMinutes(5).toDate();
+            List<FirewallEvent> events = dsmEventClient.gatherEvents(fromDate, toDate);
             String bearerToken = authenticate();
             sendEvents(events, bearerToken);
         } catch (DsmEventClientException e) {
