@@ -55,6 +55,14 @@ public class MockDsmBeans extends BaseDsmBeans {
         return eventAdapter;
     }
 
+
+    @Bean
+    FirewallEventListTransport eventListTransport(){
+        FirewallEventListTransport felt = new FirewallEventListTransport();
+        felt.setFirewallEvents(new ArrayOfFirewallEventTransport());
+        return felt;
+    }
+
     private void setupMockManagerPolicyInteraction() throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerValidationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
 
         setupDsmAuthentication();
@@ -68,6 +76,7 @@ public class MockDsmBeans extends BaseDsmBeans {
         setupPolicyRetrieve(policyKeys, expectedPolicies, expectedSecurityProfileTransport);
         setupPolicySave(expectedSecurityProfileTransport);
         setupPolicyDelete(policyKeys, expectedPolicies);
+        setupFirewallEventRetrieve();
     }
 
     private void setupDsmAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
@@ -121,7 +130,6 @@ public class MockDsmBeans extends BaseDsmBeans {
     }
 
     private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
-        FirewallEventListTransport firewallEventListTransport= new FirewallEventListTransport();
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),

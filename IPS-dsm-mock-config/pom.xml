@@ -28,7 +28,6 @@
             <artifactId>IPS-dsm</artifactId>
             <version>${project.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -40,6 +39,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
     </dependencies>
 
 

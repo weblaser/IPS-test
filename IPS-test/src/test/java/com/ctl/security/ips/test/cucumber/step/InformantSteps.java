@@ -75,8 +75,6 @@ public class InformantSteps {
         firewallEvent.setHostName("An FirewallEvent Host");
 
         eventAdapter.postEvent(firewallEvent);
-        eventAdapter.postEvent(firewallEvent);
-        eventAdapter.postEvent(firewallEvent);
     }
 
     @Then("^the events are posted to the correct notification destination$")
