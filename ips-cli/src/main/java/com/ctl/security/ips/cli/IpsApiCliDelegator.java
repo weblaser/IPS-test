@@ -17,6 +17,7 @@ import java.util.Arrays;
 @Component
 public class IpsApiCliDelegator {
 
+    //TODO: After story SECURITY-755 is completed switch to org.apache.logging.log4j.LogManager
     private static final Logger logger = Logger.getLogger(IpsApiCliDelegator.class);
 
     public static final String GET_POLICY_FOR_ACCOUNT = "getPolicyForAccount";

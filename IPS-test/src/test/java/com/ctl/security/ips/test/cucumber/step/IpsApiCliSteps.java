@@ -11,6 +11,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -26,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
 public class IpsApiCliSteps {
 
-    private static final Logger logger = Logger.getLogger(IpsApiCliSteps.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(IpsApiCliSteps.class);
 
     final TestAppender testAppender = new TestAppender();
     final Logger rootLogger = Logger.getRootLogger();

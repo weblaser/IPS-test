@@ -27,6 +27,7 @@ public class PolicyResourceImplTest {
 
     private static final String TEST_ACCOUNT = "TCCD";
     private static final String TEST_ID = "12345";
+    private static final String TEST_TOKEN = "Bearer tokensParents";
 
     @InjectMocks
     PolicyResource classUnderTest = new PolicyResourceImpl();
@@ -45,10 +46,10 @@ public class PolicyResourceImplTest {
         expectedPolicy.setVendorPolicyId(TEST_ID);
         String accountId = TEST_ACCOUNT;
 
-        PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated);
+        PolicyBean policyBean = new PolicyBean(accountId, policyToBeCreated, TEST_TOKEN.substring(7));
 
         //act
-        classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated);
+        classUnderTest.createPolicyForAccount(TEST_ACCOUNT, policyToBeCreated, TEST_TOKEN);
 
         //assert
         verify(policyMessageSender).createPolicyForAccount(eq(policyBean));
@@ -105,9 +106,9 @@ public class PolicyResourceImplTest {
         Policy policy = new Policy();
         String vendorPolicyId = TEST_ID;
         policy.setVendorPolicyId(vendorPolicyId);
-        PolicyBean policyBean = new PolicyBean(accountId, policy);
+        PolicyBean policyBean = new PolicyBean(accountId, policy, TEST_TOKEN.substring(7));
 
-        classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID, username, serverDomainName);
+        classUnderTest.deletePolicyForAccount(TEST_ACCOUNT, TEST_ID, username, serverDomainName, TEST_TOKEN);
 
         //assert
         verify(policyMessageSender).deletePolicyForAccount(policyBean);

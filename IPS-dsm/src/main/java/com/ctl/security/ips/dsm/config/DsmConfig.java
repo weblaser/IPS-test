@@ -1,7 +1,7 @@
 package com.ctl.security.ips.dsm.config;
 
 import com.ctl.security.ips.client.config.ClientConfig;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.context.annotation.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Import({DsmBeans.class, ClientConfig.class})
 public class DsmConfig {
 
-    private static final Logger logger = Logger.getLogger(DsmConfig.class);
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmConfig.class);
     public static final String DSM_REST_BEAN = "DsmRestBean";
 
     @Bean(name= DSM_REST_BEAN)

@@ -20,6 +20,8 @@ public interface PolicyResource {
     public static final String POLICY = "Policy";
     public static final String USERNAME_LABEL = "Username";
     public static final String USERNAME_PARAM = "username";
+    public static final String TOKEN = "Bearer Token";
+
 
     @POST
     @Path("/{" + ResourceConstants.ACCT_PARAM + "}")
@@ -27,7 +29,8 @@ public interface PolicyResource {
     @ApiResponses(value = {@ApiResponse(code = HttpStatus.SC_OK, message = "Policy Created"),
             @ApiResponse(code = HttpStatus.SC_FORBIDDEN, message = ResourceConstants.UNAUTHORIZED)})
     void createPolicyForAccount(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
-                                @ApiParam(value = POLICY, required = true) Policy policy);
+                                @ApiParam(value = POLICY, required = true) Policy policy,
+                                @ApiParam(value = TOKEN, required = true) @HeaderParam("Authorization") String bearerToken);
 
     @GET
     @Path("/{" + ResourceConstants.ACCT_PARAM + "}")
@@ -64,5 +67,6 @@ public interface PolicyResource {
     void deletePolicyForAccount(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
                                 @ApiParam(value = POLICY_ID, required = true) @PathParam(POLICY_ID_PARAM) String policyId,
                                 @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String serverDomainName,
-                                @ApiParam(value = USERNAME_LABEL, required = true) @QueryParam(USERNAME_PARAM) String username) throws DsmClientException;
+                                @ApiParam(value = USERNAME_LABEL, required = true) @QueryParam(USERNAME_PARAM) String username,
+                                @ApiParam(value = TOKEN, required = true) @HeaderParam("Authorization") String bearerToken)throws DsmClientException;
 }
