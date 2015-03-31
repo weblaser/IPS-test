@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClcAuthenticationComponent {
 
-    private static final String VALID_USERNAME = "kweber.tccd";
-    private static final String VALID_PASSWORD = "1qaz@WSX";
+    private static final String VALID_USERNAME = "Bugs";
+    private static final String VALID_PASSWORD = "vZb]9yKv==Bnmozn";
     static final String VALID_AA = "TCCD";
 
     @Autowired
