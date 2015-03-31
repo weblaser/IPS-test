@@ -1,6 +1,5 @@
 package com.ctl.security.ips.dsm.config;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Profile;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
@@ -47,7 +45,7 @@ public class MockDsmBeans extends BaseDsmBeans {
     @Mock
     private Manager manager;
 
-    private WireMockServer wireMockServer;
+
 
     public MockDsmBeans() {
         MockitoAnnotations.initMocks(this);
@@ -58,7 +56,6 @@ public class MockDsmBeans extends BaseDsmBeans {
 
         logger.error("loading mock dsm manager!!!!!");
         setupMockManagerPolicyInteraction();
-        setupRestDsmWireMock();
         return manager;
     }
 
@@ -128,12 +125,7 @@ public class MockDsmBeans extends BaseDsmBeans {
     }
 
 
-    private void setupRestDsmWireMock(){
-        wireMockServer = new WireMockServer(restPort);
-        configureFor(restHost, restPort);
-        wireMockServer.start();
-//        wireMockServer.stop();
-    }
+
 
 
 }

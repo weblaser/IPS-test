@@ -6,7 +6,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-@PropertySources({@PropertySource("classpath:/dsm.client.properties")})
+@PropertySources({@PropertySource("classpath:properties/dsm.client.properties")})
 @Configuration
 @ComponentScan(basePackages = {"com.ctl.security.ips.dsm"})
 @Import({DsmBeans.class, ClientConfig.class})

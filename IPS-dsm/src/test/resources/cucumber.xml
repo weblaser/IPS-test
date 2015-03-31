@@ -10,5 +10,5 @@
     <context:component-scan base-package="com.ctl.security.dsm" />
     <context:annotation-config />
 
-    <context:property-placeholder location="dsm.client.properties" />
+    <context:property-placeholder location="properties/dsm.client.properties" />
 </beans>
