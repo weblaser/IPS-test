@@ -18,7 +18,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-common</artifactId>
@@ -33,11 +32,6 @@
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>ips-cli</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ctl.security.ips</groupId>
-            <artifactId>IPS-maestro</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.ctl.security.clc.client</groupId>
