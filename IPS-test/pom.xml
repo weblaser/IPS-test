@@ -18,7 +18,6 @@
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-common</artifactId>

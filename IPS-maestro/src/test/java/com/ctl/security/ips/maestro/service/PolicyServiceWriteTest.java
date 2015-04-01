@@ -69,7 +69,7 @@ public class PolicyServiceWriteTest {
         SecurityTenant securityTenant = new SecurityTenant();
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
         when(dsmTenantClient.createDsmTenant(securityTenant)).thenReturn(createdSecurityTenant);
-//
+
         //act
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
 
