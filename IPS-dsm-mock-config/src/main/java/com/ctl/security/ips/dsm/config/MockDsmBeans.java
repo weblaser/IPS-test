@@ -32,6 +32,7 @@ public class MockDsmBeans extends BaseDsmBeans {
     public static final String EXPECTED_POLICY = "expectedPolicy";
     public static final String EXPECTED_DELETED_POLICY = "expectedDeletedPolicy";
     public static final String CURRENT_EXPECTED_POLICY = "currentExpectedPolicy";
+    public static final String SESSION_ID = "123";
 
     @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String restProtocol;
@@ -44,8 +45,6 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     @Mock
     private Manager manager;
-
-
 
     public MockDsmBeans() {
         MockitoAnnotations.initMocks(this);
@@ -75,7 +74,7 @@ public class MockDsmBeans extends BaseDsmBeans {
     }
 
     private void setupDsmAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
-        String sessionId = "123";
+        String sessionId = SESSION_ID;
         when(manager.authenticate(BaseDsmBeans.APIUSER, BaseDsmBeans.PASSWORD_CORRECT)).thenReturn(sessionId);
         when(manager.authenticate(BaseDsmBeans.APIUSER, BaseDsmBeans.PASSWORD_WRONG)).thenThrow(ManagerAuthenticationException_Exception.class);
         when(manager.authenticate(BaseDsmBeans.APIUSER_WRONG, BaseDsmBeans.PASSWORD_CORRECT)).thenThrow(ManagerAuthenticationException_Exception.class);

@@ -43,6 +43,7 @@ public class DsmClientSteps {
 
     private SecurityTenant securityTenant;
     private SecurityTenant newlyCreateSecurityTenant;
+    private SecurityTenant retrievedNewlyCreateSecurityTenant;
 
     private String username = "apiuser";
     private String password = "trejachad32jUgEs";
@@ -81,6 +82,10 @@ public class DsmClientSteps {
 
     @Given("^a customer tenant is ready to be created$")
     public void a_customer_tenant_is_ready_to_be_created() throws Throwable {
+        setupTenantToBeCreated();
+    }
+
+    private void setupTenantToBeCreated() {
         String testTenant = "TestTenant" + System.currentTimeMillis();
         securityTenant = new SecurityTenant().setTenantName(testTenant).setAdminEmail("test@test.com").setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
     }
@@ -98,17 +103,18 @@ public class DsmClientSteps {
     }
 
     @Given("^a tenant already exists in the DSM$")
-    public void a_tenant_already_exists_in_the_DSM() {
-        tenantId = 19;
+    public void a_tenant_already_exists_in_the_DSM() throws DsmClientException {
+        setupTenantToBeCreated();
+        newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
     }
 
     @When("^the dsm rest client is used to retrieve the tenant$")
     public void the_dsm_rest_client_is_used_to_retrieve_the_tenant() throws DsmClientException {
-        newlyCreateSecurityTenant = dsmTenantClient.retrieveDsmTenant(tenantId);
+        retrievedNewlyCreateSecurityTenant = dsmTenantClient.retrieveDsmTenant(newlyCreateSecurityTenant.getTenantId());
     }
 
     @Then("^the correct tenant is returned$")
     public void the_correct_tenant_is_returned() {
-        assertNotNull(newlyCreateSecurityTenant);
+        assertNotNull(retrievedNewlyCreateSecurityTenant);
     }
 }

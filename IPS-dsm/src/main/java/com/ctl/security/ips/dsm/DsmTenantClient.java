@@ -9,12 +9,10 @@ import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
-import org.apache.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -31,6 +29,10 @@ import java.util.Map;
  */
 @Component
 public class DsmTenantClient {
+
+    public static final String PATH_TENANTS = "/tenants";
+    public static final String PATH_TENANTS_ID = "/tenants/id/";
+    public static final String QUERY_PARAM_SESSION_ID = "sID=";
 
     @Value("${${spring.profiles.active:local}.dsm.restUrl}")
     private String url;
@@ -67,10 +69,14 @@ public class DsmTenantClient {
 
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
 
-            CreateTenantRequest createTenantRequestMap = createDsmCreateTenantRequest(securityTenant).setSessionId(sessionId);
+            CreateTenantRequest createTenantRequest = createDsmCreateTenantRequest(securityTenant).setSessionId(sessionId);
 
-        String address = protocol + host + ":" + port + path + "/tenants";
-        CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
+            Map<String, CreateTenantRequest> createTenantRequestMap = new HashMap<>();
+            createTenantRequestMap.put("createTenantRequest", createTenantRequest);
+
+            String address = protocol + host + ":" + port + path + PATH_TENANTS;
+
+            CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
                 .post(address)
                 .addHeader("Content-Type", "application/json")
                 .body(createTenantRequestMap)
@@ -141,8 +147,7 @@ public class DsmTenantClient {
     }
 
     private SecurityTenant getSecurityTenant(Integer tenantId, String sessionId) throws JAXBException, UnsupportedEncodingException {
-        String address = url + "/tenants/id/" + tenantId + "?sID=" + sessionId;
-
+        String address = protocol + host + ":" + port + path + PATH_TENANTS_ID + tenantId + "?" + QUERY_PARAM_SESSION_ID + sessionId;
 
         String responseContent = ctlSecurityClient.get(address).execute().getResponseContent();
 
