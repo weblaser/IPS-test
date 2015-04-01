@@ -52,8 +52,9 @@ public class Informant {
         }
 
     }
-
-    @Scheduled(cron = "* */5 * * * *")
+//TODO Make this configurable
+//    @Scheduled(cron = "* */5 * * * *")
+@Scheduled(cron = "*/5 * * * * *")
     public void inform(){
         try {
             Date toDate = DateTime.now().toDate();

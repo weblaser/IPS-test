@@ -6,27 +6,32 @@ import manager.ArrayOfFirewallEventTransport;
 import manager.FirewallEventListTransport;
 import manager.FirewallEventTransport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by Sean Robb on 3/30/2015.
  */
-
+@Component("MockEventAdapter")
 public class MockEventAdapterImpl implements EventAdapter {
 
     @Autowired
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
-    @Autowired
     private FirewallEventListTransport firewallEventListTransport;
 
+    public MockEventAdapterImpl() {
+        firewallEventListTransport = new FirewallEventListTransport();
+        firewallEventListTransport.setFirewallEvents(new ArrayOfFirewallEventTransport());
+    }
+
     @Override
-    public void postEvent(FirewallEvent firewallEvent) {
+    public void triggerEvent(FirewallEvent firewallEvent) {
         FirewallEventTransport firewallEventTransport = firewallEventTransportMarshaller.convert(firewallEvent);
-        //ArrayOfFirewallEventTransport arrayOfFirewallEventTransport = new ArrayOfFirewallEventTransport();
-        ArrayOfFirewallEventTransport arrayOfFirewallEventTransport = firewallEventListTransport.getFirewallEvents();
-        arrayOfFirewallEventTransport.getItem().add(firewallEventTransport);
+        firewallEventListTransport.getFirewallEvents()
+                .getItem()
+                .add(firewallEventTransport);
     }
 
     @Override

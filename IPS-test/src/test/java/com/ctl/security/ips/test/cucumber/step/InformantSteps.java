@@ -61,7 +61,7 @@ public class InformantSteps {
     public void a_DSM_agent_is_running_on_configuration_item() throws Throwable {
         ConfigurationItem configurationItem = createAndConfigureConfigurationItem(accountId, hostName);
         String destinationURL="http://" + destinationHostName + ":" + destinationPort + urlPath;
-        getAndSetNotificationDestination(destinationURL, configurationItem);
+        createAndSetNotificationDestination(destinationURL, configurationItem);
 
         createWireMockServer(destinationHostName, destinationPort);
         createWireMockServerStub(urlPath, HttpStatus.SC_OK);
@@ -74,17 +74,13 @@ public class InformantSteps {
         firewallEvent.setReason("An FirewallEvent Reason");
         firewallEvent.setHostName("An FirewallEvent Host");
 
-        eventAdapter.postEvent(firewallEvent);
+        eventAdapter.triggerEvent(firewallEvent);
     }
 
     @Then("^the events are posted to the correct notification destination$")
     public void the_events_are_posted_to_the_correct_notification_destination() throws Throwable {
         waitForPostRequests(1, urlPath);
         verify(postRequestedFor(urlEqualTo(urlPath)));
-    }
-
-    private void getAndSetNotificationDestination(String destinationURL, ConfigurationItem configurationItem) {
-        createAndSetNotificationDestination(destinationURL,configurationItem);
     }
 
     private void createWireMockServer(String destinationHostName, int destinationPort) {
@@ -122,21 +118,26 @@ public class InformantSteps {
     }
 
     private void createAndSetNotificationDestination(String destinationURL, ConfigurationItem configurationItem) {
-        NotificationDestination notificationDestination = new NotificationDestination();
-        notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
-        notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
-        notificationDestination.setTypeCode(NotificationDestinationType.WEBHOOK);
-        notificationDestination.setUrl(destinationURL);
-
-        NotificationDestinationBean notificationDestinationBean = new NotificationDestinationBean(configurationItem.getHostName(),
-                configurationItem.getAccount().getCustomerAccountId(),
-                Arrays.asList(notificationDestination));
+        NotificationDestinationBean notificationDestinationBean;
+        notificationDestinationBean = getNotificationDestinationBean(destinationURL, configurationItem);
 
         bearerToken = clcAuthenticationComponent.authenticate();
 
         notificationClient.updateNotificationDestination(notificationDestinationBean, bearerToken);
 
         waitForNotificationDestinationUpdate(configurationItem);
+    }
+
+    private NotificationDestinationBean getNotificationDestinationBean(String destinationURL, ConfigurationItem configurationItem) {
+        NotificationDestination notificationDestination = new NotificationDestination();
+        notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
+        notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
+        notificationDestination.setTypeCode(NotificationDestinationType.WEBHOOK);
+        notificationDestination.setUrl(destinationURL);
+
+        return new NotificationDestinationBean(configurationItem.getHostName(),
+                configurationItem.getAccount().getCustomerAccountId(),
+                Arrays.asList(notificationDestination));
     }
 
     private void waitForNotificationDestinationUpdate(ConfigurationItem configurationItem) {

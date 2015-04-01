@@ -7,7 +7,7 @@ import manager.FirewallEventListTransport;
  * Created by Sean Robb on 3/30/2015.
  */
 public interface EventAdapter {
-    void postEvent(FirewallEvent firewallEvent);
+    void triggerEvent(FirewallEvent firewallEvent);
 
     FirewallEventListTransport getEventTransportList();
 }

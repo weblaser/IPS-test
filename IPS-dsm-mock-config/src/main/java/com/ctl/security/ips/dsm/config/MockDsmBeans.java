@@ -9,7 +9,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
@@ -24,6 +27,7 @@ import static org.mockito.Mockito.when;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
+@ComponentScan("com.ctl.security.ips.dsm")
 @Profile({"local", "dev"})
 public class MockDsmBeans extends BaseDsmBeans {
 
@@ -35,6 +39,10 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     @Mock
     private Manager manager;
+
+    @Autowired
+    @Qualifier("MockEventAdapter")
+    private EventAdapter eventAdapter;
 
     public MockDsmBeans() {
         MockitoAnnotations.initMocks(this);
@@ -49,19 +57,12 @@ public class MockDsmBeans extends BaseDsmBeans {
         return manager;
     }
 
-    @Bean
-    public EventAdapter eventAdapter() {
-        EventAdapter eventAdapter = new MockEventAdapterImpl();
-        return eventAdapter;
-    }
-
-
-    @Bean
-    FirewallEventListTransport eventListTransport(){
-        FirewallEventListTransport felt = new FirewallEventListTransport();
-        felt.setFirewallEvents(new ArrayOfFirewallEventTransport());
-        return felt;
-    }
+//    @Bean
+//    FirewallEventListTransport eventListTransport(){
+//        FirewallEventListTransport felt = new FirewallEventListTransport();
+//        felt.setFirewallEvents(new ArrayOfFirewallEventTransport());
+//        return felt;
+//    }
 
     private void setupMockManagerPolicyInteraction() throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerValidationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
 
@@ -133,7 +134,12 @@ public class MockDsmBeans extends BaseDsmBeans {
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
-                anyString())).thenReturn(eventAdapter().getEventTransportList());
+                anyString())).thenAnswer(new Answer<FirewallEventListTransport>() {
+            @Override
+            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return eventAdapter.getEventTransportList();
+            }
+        });//(eventAdapter.getEventTransportList());
     }
 
 }
