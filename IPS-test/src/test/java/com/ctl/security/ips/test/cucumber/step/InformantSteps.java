@@ -41,7 +41,7 @@ public class InformantSteps {
     private NotificationClient notificationClient;
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
@@ -89,7 +89,7 @@ public class InformantSteps {
         //TODO Create Test for TS,QA,PROD
         String activeProfiles = environment.getActiveProfiles()[0];
 
-        if(activeProfiles.equalsIgnoreCase("local")||activeProfiles.equalsIgnoreCase("dev")) {
+        if(activeProfiles.equalsIgnoreCase("local")){//||activeProfiles.equalsIgnoreCase("dev")) {
             wireMockServer.verify(postRequestedFor(urlEqualTo(urlPath)));
         }
 
