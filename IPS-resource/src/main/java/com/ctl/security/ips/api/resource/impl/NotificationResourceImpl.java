@@ -6,6 +6,7 @@ import com.ctl.security.ips.api.resource.NotificationResource;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import java.util.List;
 
 

@@ -15,8 +15,10 @@ import cucumber.api.java.en.When;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 /**
@@ -58,15 +60,15 @@ public class EventSteps {
     private String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Given("^an event occurs for a valid configuration item$")
-    public void an_event_occurs(){
+    public void an_event_occurs() {
         createEventBean(accountId, hostName);
         createAndConfigureConfigurationItem(accountId, hostName);
     }
 
     @Given("^the notification destination is (valid|invalid)$")
-    public void the_notification_destination_is_validity(String validity){
+    public void the_notification_destination_is_validity(String validity) {
         if (VALID.equalsIgnoreCase(validity)) {
-            createAndSetNotificationDestination(destinationHostName,destinationPort, SOME_VALID_ADDRESS);
+            createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_VALID_ADDRESS);
         } else {
             createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_INVALID_ADDRESS);
         }
@@ -112,7 +114,7 @@ public class EventSteps {
                         .withStatus(httpStatus)));
     }
 
-    private void createAndConfigureConfigurationItem(String accountId, String hostName){
+    private void createAndConfigureConfigurationItem(String accountId, String hostName) {
         Account account = new Account()
                 .setCustomerAccountId(accountId);
 
@@ -123,7 +125,7 @@ public class EventSteps {
         configurationItemClient.createConfigurationItem(configurationItem);
     }
 
-    private void createAndSetNotificationDestination(String destinationHostName, Integer destinationPort, String path){
+    private void createAndSetNotificationDestination(String destinationHostName, Integer destinationPort, String path) {
         NotificationDestination notificationDestination = new NotificationDestination();
         notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
         notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
@@ -141,7 +143,7 @@ public class EventSteps {
         waitForNotificationDestinationUpdate();
     }
 
-    private void waitForNotificationDestinationUpdate(){
+    private void waitForNotificationDestinationUpdate() {
         List<NotificationDestination> notificationDestinations = null;
         ConfigurationItem configurationItem = configurationItemClient
                 .getConfigurationItem(hostName, accountId)
@@ -160,7 +162,10 @@ public class EventSteps {
     }
 
     private void sleep(int amount) {
-        try {Thread.sleep(amount);} catch (Exception e) {}
+        try {
+            Thread.sleep(amount);
+        } catch (Exception e) {
+        }
     }
 
     private void createEventBean(String accountId, String hostName) {

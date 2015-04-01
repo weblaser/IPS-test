@@ -1,7 +1,7 @@
 package com.ctl.security.ips.api.resource;
 
-import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.wordnik.swagger.annotations.*;
 import org.apache.http.HttpStatus;
 

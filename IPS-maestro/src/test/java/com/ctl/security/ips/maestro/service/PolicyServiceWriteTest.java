@@ -1,8 +1,6 @@
 package com.ctl.security.ips.maestro.service;
 
-import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
-import com.ctl.security.clc.client.common.domain.SoftwarePackage;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductType;
@@ -28,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -72,7 +69,7 @@ public class PolicyServiceWriteTest {
         SecurityTenant securityTenant = new SecurityTenant();
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
         when(dsmTenantClient.createDsmTenant(securityTenant)).thenReturn(createdSecurityTenant);
-//
+
         //act
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
 

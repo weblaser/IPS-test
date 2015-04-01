@@ -1,5 +1,8 @@
 package com.ctl.security.ips.dsm.config;
 
+import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +15,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.*;
@@ -24,6 +36,8 @@ import static org.mockito.Mockito.when;
  * Created by kevin.wilde on 1/21/2015.
  */
 @Configuration
+@ComponentScan("com.ctl.security.ips.dsm")
+@PropertySource("classpath:properties/ips.dsm.mock.test.properties")
 @Profile({"local", "dev"})
 public class MockDsmBeans extends BaseDsmBeans {
 
@@ -45,6 +59,17 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     @Mock
     private Manager manager;
+    @Autowired
+    private RestTemplate restTemplate;
+    @Autowired
+    private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
+
+    @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.port}")
+    private int destinationPort;
+    @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.eventTriggerAddress}")
+    private String host;
+    @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.host}")
+    private String destinationHostName;
 
     public MockDsmBeans() {
         MockitoAnnotations.initMocks(this);
@@ -71,6 +96,7 @@ public class MockDsmBeans extends BaseDsmBeans {
         setupPolicyRetrieve(policyKeys, expectedPolicies, expectedSecurityProfileTransport);
         setupPolicySave(expectedSecurityProfileTransport);
         setupPolicyDelete(policyKeys, expectedPolicies);
+        setupFirewallEventRetrieve();
     }
 
     private void setupDsmAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
@@ -87,7 +113,7 @@ public class MockDsmBeans extends BaseDsmBeans {
         expectedSecurityProfileTransport.setName(validDsmPolicyName);
         expectedPolicies.put(EXPECTED_POLICY, expectedSecurityProfileTransport);
 
-        when(manager.securityProfileRetrieve(anyInt(),anyString())).thenAnswer(new Answer<Object>() {
+        when(manager.securityProfileRetrieve(anyInt(), anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));
@@ -96,7 +122,7 @@ public class MockDsmBeans extends BaseDsmBeans {
             }
         });
 
-        when(manager.securityProfileRetrieveByName(anyString(),anyString())).thenAnswer(new Answer<Object>() {
+        when(manager.securityProfileRetrieveByName(anyString(), anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));
@@ -107,7 +133,8 @@ public class MockDsmBeans extends BaseDsmBeans {
     }
 
     private void setupPolicySave(SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception {
-        when(manager.securityProfileSave(Matchers.any(SecurityProfileTransport.class), anyString())).thenReturn(expectedSecurityProfileTransport);
+        when(manager.securityProfileSave(Matchers.any(SecurityProfileTransport.class), anyString()))
+                .thenReturn(expectedSecurityProfileTransport);
     }
 
     private void setupPolicyDelete(final Map<String, String> policyKeys, Map<String, SecurityProfileTransport> expectedPolicies) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception {
@@ -123,8 +150,33 @@ public class MockDsmBeans extends BaseDsmBeans {
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
 
+    private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                anyString())).thenAnswer(new Answer<FirewallEventListTransport>() {
+            @Override
+            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock){
 
+                List<FirewallEvent> response = null;
 
+                FirewallEventListTransport firewallEventListTransport = new FirewallEventListTransport();
+                firewallEventListTransport.setFirewallEvents(new ArrayOfFirewallEventTransport());
+                try {
 
+                    String address="http://" + destinationHostName+":"+ destinationPort + host;
+                    response = Arrays.asList(restTemplate.exchange(address,HttpMethod.GET,
+                            null, FirewallEvent[].class).getBody());
+                    for(FirewallEvent firewallEvent : response) {
+                        firewallEventListTransport.getFirewallEvents().getItem()
+                                .add(firewallEventTransportMarshaller.convert(firewallEvent));
+                    }
+                } catch (RestClientException rce) {
+                    //do nothing
+                }
+               return firewallEventListTransport;
+            }
+        });
+    }
 
 }

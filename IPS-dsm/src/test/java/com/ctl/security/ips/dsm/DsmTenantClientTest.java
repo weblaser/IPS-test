@@ -1,14 +1,12 @@
 package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.SecurityTenant;
-import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
 import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -16,22 +14,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestClientException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.security.Security;
 import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**

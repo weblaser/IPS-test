@@ -1,10 +1,9 @@
 package com.ctl.security.ips.informant;
 
-import com.ctl.security.ips.informant.service.InformantScheduler;
-import org.quartz.SchedulerException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 
@@ -16,15 +15,13 @@ import org.springframework.context.annotation.Import;
 @EnableAutoConfiguration
 @Import(InformantConfig.class)
 public class InformantApplication {
-//    private static Logger logger = LogManager.getLogger(InformantApplication.class);
+    private static Logger logger = LogManager.getLogger(InformantApplication.class);
 
-    public static void main(String[] args) throws SchedulerException {
+    public static void main(String[] args) {
 
         ApplicationContext applicationContext = SpringApplication.run(InformantApplication.class, args);
 
-        InformantScheduler informantScheduler = applicationContext.getBean(InformantScheduler.class);
-        informantScheduler.run();
-
+        logger.info("Informant Started...");
     }
 
 }

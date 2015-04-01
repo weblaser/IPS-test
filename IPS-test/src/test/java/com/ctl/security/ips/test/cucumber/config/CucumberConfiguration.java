@@ -10,8 +10,9 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  * @author lane.maxwell
  */
 @Configuration
+//TODO fix this component scan
 @ComponentScan("com.ctl.security")
-@Import({SecurityDataClientAppConfig.class})
+@Import({SecurityDataClientAppConfig.class,MockConfig.class,RealConfig.class})
 @PropertySources({
         @PropertySource("classpath:properties/security.data.client.properties"),
         @PropertySource("classpath:properties/ips.service.properties"),

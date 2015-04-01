@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.ctl.security.ips</groupId>
             <artifactId>IPS-dsm</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -39,6 +39,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
     </dependencies>
 
 

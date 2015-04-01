@@ -9,10 +9,8 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import org.joda.time.DateTime;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -24,10 +22,10 @@ import java.util.List;
  */
 
 @Component
-public class Informant implements Job {
+public class Informant {
     private static final String USERNAME = "Bugs";
     private static final String PASSWORD = "vZb]9yKv==Bnmozn";
-    public static final String TCCD = "TCCD";
+    public static final String ACCOUNT = "TCCD";
 
     @Autowired
     private DsmEventClient dsmEventClient;
@@ -48,19 +46,19 @@ public class Informant implements Job {
     private void sendEvents(List<FirewallEvent> firewallEvents, String bearerToken) {
         for (FirewallEvent firewallEvent : firewallEvents) {
             //TODO retrieve Tenant Name from DSM
-            String tenantName = TCCD;
+            String tenantName = ACCOUNT;
             EventBean eventBean = new EventBean(firewallEvent.getHostName(), tenantName, firewallEvent);
             eventClient.notify(eventBean, bearerToken);
         }
 
     }
 
-//    @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    @Scheduled(cron = "${${spring.profiles.active}.informant.cron}")
+    public void inform(){
         try {
-            Date toDate = DateTime.now().minusMinutes(5).toDate();
-            Date formDate = DateTime.now().toDate();
-            List<FirewallEvent> events = dsmEventClient.gatherEvents(formDate, toDate);
+            Date toDate = DateTime.now().toDate();
+            Date fromDate = DateTime.now().minusMinutes(5).toDate();
+            List<FirewallEvent> events = dsmEventClient.gatherEvents(fromDate, toDate);
             String bearerToken = authenticate();
             sendEvents(events, bearerToken);
         } catch (DsmEventClientException e) {
