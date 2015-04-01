@@ -97,7 +97,7 @@ public class InformantTest {
     }
 
     private EventBean createEventBean(FirewallEvent firewallEvent) {
-        EventBean eventBean = new EventBean(firewallEvent.getHostName(), Informant.TCCD, firewallEvent);
+        EventBean eventBean = new EventBean(firewallEvent.getHostName(), Informant.ACCOUNT, firewallEvent);
         return eventBean;
     }
 

@@ -2,11 +2,7 @@ package com.ctl.security.ips.informant;
 
 import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
 import com.ctl.security.ips.dsm.config.DsmConfig;
-import org.quartz.impl.StdSchedulerFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -18,13 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 @Import({DsmConfig.class, ClcClientCoreAppConfig.class})
+@PropertySource("classpath:properties/informant.properties")
 @ComponentScan(basePackages = {"com.ctl.security.ips.informant"})
 public class InformantConfig {
-
-
-    @Bean
-    public StdSchedulerFactory stdSchedulerFactory() {
-        return new StdSchedulerFactory();
-    }
 
 }

@@ -1,7 +1,7 @@
 package com.ctl.security.ips.test.cucumber.config;
 
-import com.ctl.security.ips.dsm.adapter.EventAdapter;
-import com.ctl.security.ips.dsm.adapter.MockEventAdapterImpl;
+import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
+import com.ctl.security.ips.test.cucumber.adapter.EventAdapterImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,8 +15,6 @@ import org.springframework.context.annotation.Profile;
 public class RealConfig {
 
     @Bean EventAdapter eventAdapter(){
-        //TODO Change to EventAdapterImpl
-//        return new EventAdapterImpl();
-        return new MockEventAdapterImpl();
+        return new EventAdapterImpl();
     }
 }

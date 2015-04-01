@@ -25,7 +25,7 @@ import java.util.List;
 public class Informant {
     private static final String USERNAME = "Bugs";
     private static final String PASSWORD = "vZb]9yKv==Bnmozn";
-    public static final String TCCD = "TCCD";
+    public static final String ACCOUNT = "TCCD";
 
     @Autowired
     private DsmEventClient dsmEventClient;
@@ -46,15 +46,14 @@ public class Informant {
     private void sendEvents(List<FirewallEvent> firewallEvents, String bearerToken) {
         for (FirewallEvent firewallEvent : firewallEvents) {
             //TODO retrieve Tenant Name from DSM
-            String tenantName = TCCD;
+            String tenantName = ACCOUNT;
             EventBean eventBean = new EventBean(firewallEvent.getHostName(), tenantName, firewallEvent);
             eventClient.notify(eventBean, bearerToken);
         }
 
     }
-//TODO Make this configurable
-//    @Scheduled(cron = "* */5 * * * *")
-@Scheduled(cron = "*/5 * * * * *")
+
+    @Scheduled(cron = "${${spring.profiles.active}.informant.cron}")
     public void inform(){
         try {
             Date toDate = DateTime.now().toDate();

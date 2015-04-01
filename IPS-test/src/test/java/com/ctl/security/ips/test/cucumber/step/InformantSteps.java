@@ -5,7 +5,7 @@ import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
-import com.ctl.security.ips.dsm.adapter.EventAdapter;
+import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import cucumber.api.java.en.Given;
@@ -14,6 +14,7 @@ import cucumber.api.java.en.When;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,14 +40,17 @@ public class InformantSteps {
     @Autowired
     private NotificationClient notificationClient;
 
+    @Autowired
+    Environment environment;
+
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     int destinationPort;
 
     @Value("${${spring.profiles.active:local}.ips.test.host}")
-    String destinationHostName;
+    private String destinationHostName;
 
-    String urlPath ="/someAddress";
+    private String urlPath ="/someAddress";
 
     private String bearerToken;
 
@@ -72,15 +76,23 @@ public class InformantSteps {
         //Creates a FirewallEvent
         FirewallEvent firewallEvent = new FirewallEvent();
         firewallEvent.setReason("An FirewallEvent Reason");
-        firewallEvent.setHostName("An FirewallEvent Host");
+        firewallEvent.setHostName(hostName);
 
-        eventAdapter.triggerEvent(firewallEvent);
+        eventAdapter.triggerEvent(Arrays.asList(firewallEvent));
     }
 
     @Then("^the events are posted to the correct notification destination$")
     public void the_events_are_posted_to_the_correct_notification_destination() throws Throwable {
+
         waitForPostRequests(1, urlPath);
-        verify(postRequestedFor(urlEqualTo(urlPath)));
+
+        //TODO Create Test for TS,QA,PROD
+        String activeProfiles = environment.getActiveProfiles()[0];
+
+        if(activeProfiles.equalsIgnoreCase("local")||activeProfiles.equalsIgnoreCase("dev")) {
+            wireMockServer.verify(postRequestedFor(urlEqualTo(urlPath)));
+        }
+
     }
 
     private void createWireMockServer(String destinationHostName, int destinationPort) {
@@ -90,7 +102,7 @@ public class InformantSteps {
     }
 
     private void createWireMockServerStub(String notificationUrlPath, int httpStatus) {
-        stubFor(post(urlPathEqualTo(notificationUrlPath))
+        wireMockServer.stubFor(post(urlPathEqualTo(notificationUrlPath))
                 .willReturn(aResponse()
                         .withStatus(httpStatus)));
     }
@@ -99,7 +111,7 @@ public class InformantSteps {
         int currentAttempts = 0;
         List<LoggedRequest> loggedRequests;
         do {
-            loggedRequests = findAll(postRequestedFor(urlEqualTo(address)));
+            loggedRequests = wireMockServer.findAll(postRequestedFor(urlEqualTo(address)));
             sleep(1000);
             currentAttempts++;
         } while (loggedRequests.size() < requests && currentAttempts < MAX_ATTEMPTS);
