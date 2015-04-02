@@ -12,7 +12,8 @@ import org.springframework.web.client.RestTemplate;
 @Import({DsmConfig.class, SecurityDataClientAppConfig.class, JmsConfig.class, ClcClientCoreAppConfig.class})
 @PropertySources({
         @PropertySource("classpath:properties/security.data.client.properties"),
-        @PropertySource("classpath:properties/ips.service.properties")
+        @PropertySource("classpath:properties/ips.service.properties"),
+        @PropertySource("classpath:properties/maestro.properties")
 })
 public class MaestroConfig {
 
