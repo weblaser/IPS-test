@@ -33,11 +33,11 @@ public class PackageInstallationService {
         int counter = 0;
         String response;
         do {
-            response = serverClient.getPackageStatus(clcExecutePackageResponses.get(0).getLinks().get(0).getId(), accountAlias, bearerToken);
-            counter++;
             if(counter > 0){
                 sleep();
             }
+            response = serverClient.getPackageStatus(clcExecutePackageResponses.get(0).getLinks().get(0).getId(), accountAlias, bearerToken);
+            counter++;
         }
         while (!SUCCEEDED.equals(response) && !FAILED.equals(response) && counter < packageStatusCheckMaxRetryAttempts);
         return response;

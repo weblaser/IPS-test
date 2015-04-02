@@ -43,12 +43,21 @@ public class InformantSteps {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private WaitComponent waitComponent;
+
+    @Autowired
+    private WireMockComponent wireMockComponent;
+
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     int destinationPort;
 
     @Value("${${spring.profiles.active:local}.ips.test.host}")
     private String destinationHostName;
+
+    @Value("${${spring.profiles.active:local}.ips.test.retryWaitTime}")
+    private Integer retryWaitTime;
 
     private String urlPath ="/someAddress";
 
@@ -67,8 +76,8 @@ public class InformantSteps {
         String destinationURL="http://" + destinationHostName + ":" + destinationPort + urlPath;
         createAndSetNotificationDestination(destinationURL, configurationItem);
 
-        createWireMockServer(destinationHostName, destinationPort);
-        createWireMockServerStub(urlPath, HttpStatus.SC_OK);
+        wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
+        wireMockComponent.createWireMockServerStub(urlPath, HttpStatus.SC_OK);
     }
 
     @When("^events are posted to DSM$")
@@ -93,18 +102,8 @@ public class InformantSteps {
             wireMockServer.verify(postRequestedFor(urlEqualTo(urlPath)));
         }
 
-    }
+        wireMockServer.stop();
 
-    private void createWireMockServer(String destinationHostName, int destinationPort) {
-        wireMockServer = new WireMockServer(destinationPort);
-        configureFor(destinationHostName, destinationPort);
-        wireMockServer.start();
-    }
-
-    private void createWireMockServerStub(String notificationUrlPath, int httpStatus) {
-        wireMockServer.stubFor(post(urlPathEqualTo(notificationUrlPath))
-                .willReturn(aResponse()
-                        .withStatus(httpStatus)));
     }
 
     private void waitForPostRequests(int requests, String address) {
@@ -112,7 +111,7 @@ public class InformantSteps {
         List<LoggedRequest> loggedRequests;
         do {
             loggedRequests = wireMockServer.findAll(postRequestedFor(urlEqualTo(address)));
-            sleep(1000);
+            waitComponent.sleep(retryWaitTime, currentAttempts);
             currentAttempts++;
         } while (loggedRequests.size() < requests && currentAttempts < MAX_ATTEMPTS);
     }
@@ -162,16 +161,10 @@ public class InformantSteps {
                     .getAccount()
                     .getNotificationDestinations();
 
-            sleep(1000);
+            waitComponent.sleep(retryWaitTime, currentAttempts);
             currentAttempts++;
         }
     }
 
-    private void sleep(int amount) {
-        try {
-            Thread.sleep(amount);
-        } catch (Exception e) {
-        }
-    }
 
 }

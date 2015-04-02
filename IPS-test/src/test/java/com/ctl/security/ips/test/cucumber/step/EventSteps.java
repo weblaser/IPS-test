@@ -42,6 +42,15 @@ public class EventSteps {
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
+    @Autowired
+    private WaitComponent waitComponent;
+
+    @Autowired
+    private WireMockComponent wireMockComponent;
+
+    @Value("${${spring.profiles.active:local}.ips.test.retryWaitTime}")
+    private Integer retryWaitTime;
+
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
     private Integer maxRetryAttempts;
 
@@ -73,10 +82,11 @@ public class EventSteps {
             createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_INVALID_ADDRESS);
         }
 
-        createWireMockServer(destinationPort, destinationHostName);
+        wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
 
-        createWireMockServerStub(SOME_VALID_ADDRESS, HttpStatus.SC_OK);
-        createWireMockServerStub(SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
+        wireMockComponent.createWireMockServerStub(SOME_VALID_ADDRESS, HttpStatus.SC_OK);
+
+        wireMockComponent.createWireMockServerStub(SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
     }
 
     @When("^the event notification is posted to the events endpoint$")
@@ -95,23 +105,11 @@ public class EventSteps {
 
     @Then("^the event information is attempted to be sent to the URL multiple times$")
     public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times() {
-        waitForPostRequests(maxRetryAttempts, SOME_VALID_ADDRESS);
+        waitForPostRequests(maxRetryAttempts, SOME_INVALID_ADDRESS);
 
         verify(maxRetryAttempts, postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
 
         testCleanUpAndStopWireMock();
-    }
-
-    private void createWireMockServer(int destinationPort, String destinationHostName) {
-        wireMockServer = new WireMockServer(destinationPort);
-        configureFor(destinationHostName, destinationPort);
-        wireMockServer.start();
-    }
-
-    private void createWireMockServerStub(String notificationUrlPath, int httpStatus) {
-        stubFor(post(urlPathEqualTo(notificationUrlPath))
-                .willReturn(aResponse()
-                        .withStatus(httpStatus)));
     }
 
     private void createAndConfigureConfigurationItem(String accountId, String hostName) {
@@ -126,6 +124,7 @@ public class EventSteps {
     }
 
     private void createAndSetNotificationDestination(String destinationHostName, Integer destinationPort, String path) {
+
         NotificationDestination notificationDestination = new NotificationDestination();
         notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
         notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
@@ -144,27 +143,23 @@ public class EventSteps {
     }
 
     private void waitForNotificationDestinationUpdate() {
+
         List<NotificationDestination> notificationDestinations = null;
-        ConfigurationItem configurationItem = configurationItemClient
-                .getConfigurationItem(hostName, accountId)
-                .getContent();
 
         int currentAttempts = 0;
 
         while (currentAttempts < MAX_ATTEMPTS && notificationDestinations == null) {
+
+            ConfigurationItem configurationItem = configurationItemClient
+                    .getConfigurationItem(hostName, accountId)
+                    .getContent();
+
             notificationDestinations = configurationItem
                     .getAccount()
                     .getNotificationDestinations();
 
-            sleep(1000);
+            waitComponent.sleep(retryWaitTime, currentAttempts);
             currentAttempts++;
-        }
-    }
-
-    private void sleep(int amount) {
-        try {
-            Thread.sleep(amount);
-        } catch (Exception e) {
         }
     }
 
@@ -183,9 +178,11 @@ public class EventSteps {
         List<LoggedRequest> loggedRequests;
         do {
             loggedRequests = findAll(postRequestedFor(urlEqualTo(address)));
-            sleep(1000);
+
+            waitComponent.sleep(retryWaitTime, currentAttempts);
             currentAttempts++;
         } while (loggedRequests.size() < requests && currentAttempts < MAX_ATTEMPTS);
+
     }
 
     private void testCleanUpAndStopWireMock() {
