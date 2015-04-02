@@ -6,6 +6,7 @@ import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.DsmTenantClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -61,9 +63,7 @@ public class DsmClientSteps {
 
     @When("^I execute the \"(.*?)\" operation against the DSM API$")
     public void i_execute_the_operation_against_the_DSM_API(String arg1) throws Throwable {
-
-        newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
-
+            newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
     }
 
 
@@ -89,9 +89,13 @@ public class DsmClientSteps {
         securityTenant = new SecurityTenant().setTenantName(testTenant).setAdminEmail("test@test.com").setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
     }
 
-    @When("^the dsm rest client is used to create the tenant$")
-    public void the_dsm_rest_client_is_used_to_create_the_tenant() throws Throwable {
-        newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
+    @When("^the dsm rest client is used to (create|delete) the tenant$")
+    public void the_dsm_rest_client_is_used_to_create_the_tenant(String crud) throws Throwable {
+        if (crud == "create") {
+            newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
+        } else {
+            dsmTenantClient.deleteDsmTenant(newlyCreateSecurityTenant.getTenantId().toString());
+        }
     }
 
     @Then("^the tenant has been created in DSM$")
@@ -115,5 +119,11 @@ public class DsmClientSteps {
     @Then("^the correct tenant is returned$")
     public void the_correct_tenant_is_returned() {
         assertNotNull(retrievedNewlyCreateSecurityTenant);
+    }
+
+    @Then("^the tenant is pending deletion$")
+    public void the_tenant_is_no_longer_available() throws DsmClientException {
+        SecurityTenant securityTenant = dsmTenantClient.retrieveDsmTenant(newlyCreateSecurityTenant.getTenantId());
+        assertEquals("PENDING_DELETION", securityTenant.getState());
     }
 }

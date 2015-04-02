@@ -1,17 +1,16 @@
 package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.common.domain.SecurityTenant;
-import com.ctl.security.ips.dsm.domain.CreateOptions;
-import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
-import com.ctl.security.ips.dsm.domain.CreateTenantResponse;
-import com.ctl.security.ips.dsm.domain.DsmTenant;
+import com.ctl.security.ips.dsm.domain.*;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
+import com.ctl.security.library.common.httpclient.CtlSecurityRequest;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBContext;
@@ -23,9 +22,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.http.HttpStatus.*;
+
 /**
  * Created by Chad.Middleton on 1/15/2015.
- *
  */
 @Component
 public class DsmTenantClient {
@@ -61,7 +61,7 @@ public class DsmTenantClient {
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmTenantClient.class);
 
 
-    public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException{
+    public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException {
         String sessionId = null;
         CreateTenantResponse createTenantResponse = null;
         SecurityTenant createdSecurityTenant = null;
@@ -69,7 +69,8 @@ public class DsmTenantClient {
 
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
 
-            CreateTenantRequest createTenantRequest = createDsmCreateTenantRequest(securityTenant).setSessionId(sessionId);
+            CreateTenantRequest createTenantRequest = createDsmCreateTenantRequest(securityTenant)
+                    .setSessionId(sessionId);
 
             Map<String, CreateTenantRequest> createTenantRequestMap = new HashMap<>();
             createTenantRequestMap.put("createTenantRequest", createTenantRequest);
@@ -77,10 +78,10 @@ public class DsmTenantClient {
             String address = protocol + host + ":" + port + path + PATH_TENANTS;
 
             CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
-                .post(address)
-                .addHeader("Content-Type", "application/json")
-                .body(createTenantRequestMap)
-                .execute();
+                    .post(address)
+                    .addHeader("Content-Type", "application/json")
+                    .body(createTenantRequestMap)
+                    .execute();
 
             String responseContent = ctlSecurityResponse.getResponseContent();
             logger.info(responseContent);
@@ -90,19 +91,19 @@ public class DsmTenantClient {
 
             InputStream inputStream = new ByteArrayInputStream(responseContent.getBytes("UTF-8"));
 
-            createTenantResponse = (CreateTenantResponse)unmarshaller.unmarshal(inputStream);
+            createTenantResponse = (CreateTenantResponse) unmarshaller.unmarshal(inputStream);
 
             createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
 
         } catch (JAXBException | UnsupportedEncodingException e) {
             logger.error(e);
             return null;
-        }
-        catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception e ) {
+        } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
+                ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
+                ManagerMaxSessionsException_Exception | ManagerException_Exception e) {
             logger.error(e);
             throw new DsmClientException(e);
-        }
-        finally {
+        } finally {
             dsmLogInClient.endSession(sessionId);
         }
 
@@ -115,13 +116,14 @@ public class DsmTenantClient {
                 .setTenantElement(createDsmTenantElement(securityTenant));
     }
 
-    private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant){
+    private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant) {
         return new CreateOptions()
                 .setAdminAccount(securityTenant.getAdminAccount())
                 .setAdminPassword(securityTenant.getAdminPassword())
                 .setAdminEmail(securityTenant.getAdminEmail());
     }
-    private DsmTenant createDsmTenantElement(SecurityTenant securityTenant){
+
+    private DsmTenant createDsmTenantElement(SecurityTenant securityTenant) {
         return new DsmTenant()
                 .setName(securityTenant.getTenantName());
     }
@@ -133,14 +135,15 @@ public class DsmTenantClient {
         try {
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
             securityTenant = getSecurityTenant(tenantId, sessionId);
-        } catch (JAXBException | UnsupportedEncodingException e){
+        } catch (JAXBException | UnsupportedEncodingException e) {
             logger.error(e);
             return null;
-        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception | ManagerAuthenticationException_Exception | ManagerException_Exception e) {
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception |
+                ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception |
+                ManagerAuthenticationException_Exception | ManagerException_Exception e) {
             logger.error(e);
             throw new DsmClientException(e);
-        }
-        finally {
+        } finally {
             dsmLogInClient.endSession(sessionId);
         }
         return securityTenant;
@@ -160,9 +163,34 @@ public class DsmTenantClient {
 
         return new SecurityTenant()
                 .setAgentInitiatedActivationPassword(dsmTenant.getAgentInitiatedActivationPassword())
-                .setTenantId(dsmTenant.getTenantID());
-
+                .setTenantId(dsmTenant.getTenantID())
+                .setState(dsmTenant.getState());
 
     }
 
+    public void deleteDsmTenant(String tenantId) throws DsmClientException {
+        String sessionId = null;
+        try {
+            sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            String address = protocol + host + ":" + port + path + PATH_TENANTS_ID + tenantId + "?" +
+                    QUERY_PARAM_SESSION_ID + sessionId;
+
+            CtlSecurityRequest ctlSecurityRequest = ctlSecurityClient.delete(address);
+
+            CtlSecurityResponse ctlSecurityResponse = ctlSecurityRequest.execute();
+
+            HttpStatus httpStatus = valueOf(ctlSecurityResponse.getStatusCode());
+
+            if (httpStatus.is2xxSuccessful() == false) {
+                throw new DsmClientException(new Exception("Could not delete Tenant"));
+            }
+
+        } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception |
+                ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception |
+                ManagerAuthenticationException_Exception | ManagerException_Exception e) {
+            throw new DsmClientException(e);
+        } finally {
+            dsmLogInClient.endSession(sessionId);
+        }
+    }
 }

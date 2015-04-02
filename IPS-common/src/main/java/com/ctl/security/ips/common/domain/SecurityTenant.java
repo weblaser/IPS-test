@@ -16,5 +16,6 @@ public class SecurityTenant {
     public String adminPassword;
     public String adminEmail;
     public String tenantName;
+    public String state;
 
 }

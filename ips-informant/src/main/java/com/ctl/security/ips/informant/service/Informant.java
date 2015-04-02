@@ -57,6 +57,7 @@ public class Informant {
     public void inform(){
         try {
             Date toDate = DateTime.now().toDate();
+
             Date fromDate = DateTime.now().minusMinutes(5).toDate();
             List<FirewallEvent> events = dsmEventClient.gatherEvents(fromDate, toDate);
             String bearerToken = authenticate();

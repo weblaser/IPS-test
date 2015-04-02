@@ -56,3 +56,4 @@ Feature:  Security - policy
     And I POST a policy
     When I DELETE a invalid policy
     Then I receive a response with error message 403 Forbidden.
+

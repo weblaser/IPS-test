@@ -4,8 +4,10 @@ import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
+import com.ctl.security.library.common.httpclient.CtlSecurityRequest;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import manager.*;
+import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,11 +27,11 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DsmTenantClientTest {
@@ -46,9 +48,14 @@ public class DsmTenantClientTest {
     @Mock
     private Unmarshaller unmarshaller;
 
+    @Mock
+    private CtlSecurityRequest ctlSecurityRequest;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CtlSecurityClient ctlSecurityClient;
 
+    private final int GOOD_STATUS_CODE = HttpStatus.SC_OK;
+    private final int BAD_STATUS_CODE = HttpStatus.SC_BAD_REQUEST;
     private final Integer TENANT_ID = 1;
     private final String SESSION_ID = "123456";
     private final String USERNAME = "uniqueUsername";
@@ -74,11 +81,25 @@ public class DsmTenantClientTest {
             "    </tenant>";
     private final String TENANT_ID_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><createTenantResponse><tenantID>26</tenantID></createTenantResponse>";
 
+    public static final String PATH_TENANTS = "/tenants";
+    public static final String PATH_TENANTS_ID = "/tenants/id/";
+    public static final String QUERY_PARAM_SESSION_ID = "sID=";
+
+    private final String protocol = "protocol";
+    private final String host = "host";
+    private final String port = "port";
+    private final String path = "path";
+
     @Before
     public void before() {
         ReflectionTestUtils.setField(classUnderTest, "url", "/fakePath/rest");
-        ReflectionTestUtils.setField(classUnderTest, "username", "userName");
-        ReflectionTestUtils.setField(classUnderTest, "password", "password");
+        ReflectionTestUtils.setField(classUnderTest, "username", USERNAME);
+        ReflectionTestUtils.setField(classUnderTest, "password", PASSWORD);
+        ReflectionTestUtils.setField(classUnderTest, "protocol", protocol);
+        ReflectionTestUtils.setField(classUnderTest, "host", host);
+        ReflectionTestUtils.setField(classUnderTest, "port", port);
+        ReflectionTestUtils.setField(classUnderTest, "path", path);
+
     }
 
     @Test
@@ -106,7 +127,7 @@ public class DsmTenantClientTest {
         assertNotNull(result.getTenantId());
         assertEquals(expected.getTenantId(), result.getTenantId());
         assertEquals(expected.getAgentInitiatedActivationPassword(), result.getAgentInitiatedActivationPassword());
-  }
+    }
 
     @Test
     public void createDsmTenant_handlesException() throws DsmClientException {
@@ -177,4 +198,138 @@ public class DsmTenantClientTest {
         classUnderTest.retrieveDsmTenant(TENANT_ID);
     }
 
+    /**
+     * Given a tenant is created in the DSM API
+     * When that tenant is deleted with the REST API
+     * Then the tenant is no longer available
+     */
+
+    private void setupForDeleteTest(int statusCode) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
+        when(ctlSecurityClient.delete(anyString())).thenReturn(ctlSecurityRequest);
+        when(ctlSecurityRequest.execute()).thenReturn(ctlSecurityResponse);
+        when(ctlSecurityResponse.getStatusCode()).thenReturn(statusCode);
+        when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
+    }
+
+    @Test
+    public void deleteDsmTenantTest_connectsToDsm() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        setupForDeleteTest(GOOD_STATUS_CODE);
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).connectToDSMClient(anyString(), anyString());
+    }
+
+    @Test
+    public void deleteDsmTenantTest_endsSession() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        setupForDeleteTest(GOOD_STATUS_CODE);
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
+
+    @Test (expected = DsmClientException.class)
+    public void deleteDsmTenantTest_failsToDeleteInDSM() throws Exception {
+        String tenantId = TENANT_ID.toString();
+        String address = protocol + host + ":" + port + path + PATH_TENANTS_ID + tenantId + "?"
+                + QUERY_PARAM_SESSION_ID + SESSION_ID;
+
+        setupForDeleteTest(BAD_STATUS_CODE);
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(ctlSecurityClient).delete(address);
+        verify(ctlSecurityRequest).execute();
+    }
+
+    @Test
+    public void deleteDsmTenantTest_deletesDsmTenant() throws Exception {
+        String tenantId = TENANT_ID.toString();
+        String address = protocol + host + ":" + port + path + PATH_TENANTS_ID + tenantId + "?"
+                + QUERY_PARAM_SESSION_ID + SESSION_ID;
+
+        setupForDeleteTest(GOOD_STATUS_CODE);
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(ctlSecurityClient).delete(address);
+        verify(ctlSecurityRequest).execute();
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void deleteDsmTenantTest_throwsManagerSecurityException_Exception() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        when(dsmLogInClient.connectToDSMClient(anyString(), anyString()))
+                .thenThrow(new ManagerSecurityException_Exception());
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void deleteDsmTenantTest_throwsManagerLockoutException_Exception() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        when(dsmLogInClient.connectToDSMClient(anyString(), anyString()))
+                .thenThrow(new ManagerLockoutException_Exception());
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void deleteDsmTenantTest_throwsManagerMaxSessionsException_Exception() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        when(dsmLogInClient.connectToDSMClient(anyString(), anyString()))
+                .thenThrow(new ManagerMaxSessionsException_Exception());
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void deleteDsmTenantTest_throwsManagerCommunicationException_Exception() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        when(dsmLogInClient.connectToDSMClient(anyString(), anyString()))
+                .thenThrow(new ManagerCommunicationException_Exception());
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void deleteDsmTenantTest_throwsManagerAuthenticationException_Exception() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        when(dsmLogInClient.connectToDSMClient(anyString(), anyString()))
+                .thenThrow(new ManagerAuthenticationException_Exception());
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
+
+    @Test(expected = DsmClientException.class)
+    public void deleteDsmTenantTest_throwsManagerException_Exception() throws Exception {
+        String tenantId = TENANT_ID.toString();
+
+        when(dsmLogInClient.connectToDSMClient(anyString(), anyString()))
+                .thenThrow(new ManagerException_Exception());
+
+        classUnderTest.deleteDsmTenant(tenantId);
+
+        verify(dsmLogInClient).endSession(anyString());
+    }
 }
