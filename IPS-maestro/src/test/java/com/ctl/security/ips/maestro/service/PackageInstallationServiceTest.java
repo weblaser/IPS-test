@@ -6,11 +6,13 @@ import com.ctl.security.clc.client.common.domain.Link;
 import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.clc.client.common.exception.PackageStatusException;
 import com.ctl.security.clc.client.core.bean.ServerClient;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +29,19 @@ public class PackageInstallationServiceTest {
     private static final String TEST_TOKEN = "someToken";
     private static final String TEST_SERVER = "Server";
     private static final String TEST_ID = "someId";
+    public static final int PACKAGE_STATUS_CHECK_MAX_RETRY_ATTEMPTS = 20;
+    public static final int PACKAGE_STATUS_CHECK_MAX_WAIT_TIME = 0;
     @InjectMocks
     private PackageInstallationService classUnderTest;
 
     @Mock
     private ServerClient serverClient;
+
+    @Before
+    public void setup(){
+        ReflectionTestUtils.setField(classUnderTest, "packageStatusCheckMaxRetryAttempts", PACKAGE_STATUS_CHECK_MAX_RETRY_ATTEMPTS);
+        ReflectionTestUtils.setField(classUnderTest, "packageStatusCheckRetryWaitTime", PACKAGE_STATUS_CHECK_MAX_WAIT_TIME);
+    }
 
     @Test
     public void testInstallClcPackage_InsallationClcPackageExecuted() throws Exception {
