@@ -24,6 +24,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 public class MockDsmRest {
 
     public static final String TENANT_ID = "42";
+    private static final String active = "ACTIVE";
+    private static final String pending_deletion = "PENDING_DELETION";
+    private final String tenantScenario = "Tenant Scenario";
+    private final String velocityTenantIdKey = "tenantId";
+    private final String velocityStateKey = "state";
+    private final String templateName = "vm/ResponseTenantGet.vm";
+
     @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String restProtocol;
     @Value("${${spring.profiles.active:local}.dsm.rest.host}")
@@ -53,31 +60,65 @@ public class MockDsmRest {
 
         VelocityContext velocityContext = new VelocityContext();
 
-        velocityContext.put("tenantId", tenantId);
+        velocityContext.put(velocityTenantIdKey, tenantId);
+
+        mockTenantCreate(tenantId,sessionId,velocityContext);
+
+        mockTenantDelete(tenantId, sessionId,velocityContext);
 
 
+//        wireMockServer.stop();
+    }
 
+    private void mockTenantCreate(String tenantId, String sessionId, VelocityContext velocityContext) {
         String pathTenantCreate = restPath + DsmTenantClient.PATH_TENANTS;
+        String tenantCreatedState = "TenantCreated";
 
         StringWriter stringWriterCreate = new StringWriter();
-        velocityEngine.mergeTemplate("vm/ResponseTenantCreate.vm", StandardCharsets.UTF_8.name(), velocityContext, stringWriterCreate);
+        velocityEngine.mergeTemplate(templateName, StandardCharsets.UTF_8.name(), velocityContext, stringWriterCreate);
         String responseTenantCreateTenantXml = stringWriterCreate.toString();
 
         stubFor(post(urlPathEqualTo(pathTenantCreate))
+                .inScenario(tenantScenario)
+                .willSetStateTo(tenantCreatedState)
                 .willReturn(aResponse()
-                .withStatus(HttpStatus.SC_OK)
-                .withBody(responseTenantCreateTenantXml)));
+                        .withStatus(HttpStatus.SC_OK)
+                        .withBody(responseTenantCreateTenantXml)));
+
+        mockTenantGet(tenantId, sessionId, velocityContext, tenantCreatedState, active);
+    }
+
+    private void mockTenantDelete(String tenantId, String sessionId, VelocityContext velocityContext) {
+        String tenantDeletedState = "TenantDeleted";
+
+        String pathTenantDelete = restPath + DsmTenantClient.PATH_TENANTS_ID + tenantId
+                + "?" + DsmTenantClient.QUERY_PARAM_SESSION_ID + sessionId;
+
+        stubFor(delete(urlPathEqualTo(pathTenantDelete))
+                .inScenario(tenantScenario)
+                .willSetStateTo(tenantDeletedState)
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.SC_OK)));
+
+        mockTenantGet(tenantId, sessionId, velocityContext, tenantDeletedState, pending_deletion);
+    }
+
+    private void mockTenantGet(String tenantId, String sessionId, VelocityContext velocityContext,String scenarioState,String state) {
+        velocityContext.put(velocityStateKey, state);
 
         StringWriter stringWriterGet = new StringWriter();
-        velocityEngine.mergeTemplate("vm/ResponseTenantGet.vm", StandardCharsets.UTF_8.name(), velocityContext, stringWriterGet);
+        velocityEngine.mergeTemplate(templateName, StandardCharsets.UTF_8.name(),
+                velocityContext, stringWriterGet);
         String responseTenantGetTenantXml = stringWriterGet.toString();
 
-        String pathTenantGet = restPath + DsmTenantClient.PATH_TENANTS_ID + tenantId + "?" + DsmTenantClient.QUERY_PARAM_SESSION_ID + sessionId;
+        String pathTenantGet = restPath + DsmTenantClient.PATH_TENANTS_ID + tenantId
+                + "?" + DsmTenantClient.QUERY_PARAM_SESSION_ID + sessionId;
+
         stubFor(get(urlPathEqualTo(pathTenantGet))
+                .inScenario(tenantScenario)
+                .whenScenarioStateIs(scenarioState)
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.SC_OK)
                         .withBody(responseTenantGetTenantXml)));
-
-//        wireMockServer.stop();
     }
 }

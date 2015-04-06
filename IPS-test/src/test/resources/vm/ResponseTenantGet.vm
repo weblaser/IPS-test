@@ -1,1 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?><tenant><agentInitiatedActivationPassword>9D9407D6-5F38-88A5-51E2-BB9D632E1ACD</agentInitiatedActivationPassword><allModulesVisible>true</allModulesVisible><country>US</country><databaseServerID xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/><demoMode>false</demoMode><description></description><guid>90EFF897-68AE-0C45-F08B-30E5C94AC50C</guid><hideUnlicensedModules>true</hideUnlicensedModules><language>en</language><licenseMode>Inherited</licenseMode><name>TestTenant1427915352540</name><state>ACTIVE</state><tenantID>$tenantId</tenantID><timeZone>Atlantic/St_Helena</timeZone></tenant>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tenant>
+    <agentInitiatedActivationPassword>9D9407D6-5F38-88A5-51E2-BB9D632E1ACD</agentInitiatedActivationPassword>
+    <allModulesVisible>true</allModulesVisible>
+    <country>US</country>
+    <databaseServerID xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+    <demoMode>false</demoMode>
+    <description></description>
+    <guid>90EFF897-68AE-0C45-F08B-30E5C94AC50C</guid>
+    <hideUnlicensedModules>true</hideUnlicensedModules>
+    <language>en</language>
+    <licenseMode>Inherited</licenseMode>
+    <name>TestTenant1427915352540</name>
+    <state>$state</state>
+    <tenantID>$tenantId</tenantID>
+    <timeZone>Atlantic/St_Helena</timeZone>
+</tenant>

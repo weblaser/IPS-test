@@ -28,27 +28,28 @@ public class DsmClientSteps {
 
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
-
     @Autowired
     private DsmTenantClient dsmTenantClient;
-
     @Autowired
     private Manager manager;
 
     @Autowired
     private DsmClientComponent dsmClientComponent;
 
-
     private Policy policy;
+
     private Policy newlyCreatedCtlPolicy;
+
 
     private SecurityTenant securityTenant;
     private SecurityTenant newlyCreateSecurityTenant;
-    private SecurityTenant retrievedNewlyCreateSecurityTenant;
 
+    private SecurityTenant retrievedNewlyCreateSecurityTenant;
     private String username = "apiuser";
     private String password = "trejachad32jUgEs";
+
     private Integer tenantId;
+
 
 
     @Given("^I have a policy that I want to create in DSM$")
@@ -61,9 +62,38 @@ public class DsmClientSteps {
 
     }
 
+    @Given("^a customer tenant is ready to be created$")
+    public void a_customer_tenant_is_ready_to_be_created() throws Throwable {
+        setupTenantToBeCreated();
+    }
+
+    @Given("^a tenant already exists in the DSM$")
+    public void a_tenant_already_exists_in_the_DSM() throws DsmClientException {
+        setupTenantToBeCreated();
+        newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
+    }
+
+
+    @When("^the dsm rest client is used to (create|delete) the tenant$")
+    public void the_dsm_rest_client_is_used_to_create_the_tenant(String crud) throws Throwable {
+        final String create = "create";
+        final String delete = "delete";
+
+        if (crud.equalsIgnoreCase(create)) {
+            newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
+        } else if (crud.equalsIgnoreCase(delete)) {
+            dsmTenantClient.deleteDsmTenant(newlyCreateSecurityTenant.getTenantId().toString());
+        }
+    }
+
+    @When("^the dsm rest client is used to retrieve the tenant$")
+    public void the_dsm_rest_client_is_used_to_retrieve_the_tenant() throws DsmClientException {
+        retrievedNewlyCreateSecurityTenant = dsmTenantClient.retrieveDsmTenant(newlyCreateSecurityTenant.getTenantId());
+    }
+
     @When("^I execute the \"(.*?)\" operation against the DSM API$")
     public void i_execute_the_operation_against_the_DSM_API(String arg1) throws Throwable {
-            newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
+        newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
     }
 
 
@@ -78,42 +108,11 @@ public class DsmClientSteps {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, newlyCreatedCtlPolicy, true);
     }
 
-
-    @Given("^a customer tenant is ready to be created$")
-    public void a_customer_tenant_is_ready_to_be_created() throws Throwable {
-        setupTenantToBeCreated();
-    }
-
-    private void setupTenantToBeCreated() {
-        String testTenant = "TestTenant" + System.currentTimeMillis();
-        securityTenant = new SecurityTenant().setTenantName(testTenant).setAdminEmail("test@test.com").setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
-    }
-
-    @When("^the dsm rest client is used to (create|delete) the tenant$")
-    public void the_dsm_rest_client_is_used_to_create_the_tenant(String crud) throws Throwable {
-        if (crud == "create") {
-            newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
-        } else {
-            dsmTenantClient.deleteDsmTenant(newlyCreateSecurityTenant.getTenantId().toString());
-        }
-    }
-
     @Then("^the tenant has been created in DSM$")
     public void the_tenant_has_been_created_in_DSM() throws Throwable {
         assertNotNull(newlyCreateSecurityTenant);
         assertNotNull(newlyCreateSecurityTenant.getTenantId());
         assertNotNull(newlyCreateSecurityTenant.getAgentInitiatedActivationPassword());
-    }
-
-    @Given("^a tenant already exists in the DSM$")
-    public void a_tenant_already_exists_in_the_DSM() throws DsmClientException {
-        setupTenantToBeCreated();
-        newlyCreateSecurityTenant = dsmTenantClient.createDsmTenant(securityTenant);
-    }
-
-    @When("^the dsm rest client is used to retrieve the tenant$")
-    public void the_dsm_rest_client_is_used_to_retrieve_the_tenant() throws DsmClientException {
-        retrievedNewlyCreateSecurityTenant = dsmTenantClient.retrieveDsmTenant(newlyCreateSecurityTenant.getTenantId());
     }
 
     @Then("^the correct tenant is returned$")
@@ -124,6 +123,15 @@ public class DsmClientSteps {
     @Then("^the tenant is pending deletion$")
     public void the_tenant_is_no_longer_available() throws DsmClientException {
         SecurityTenant securityTenant = dsmTenantClient.retrieveDsmTenant(newlyCreateSecurityTenant.getTenantId());
+
+        //after deletion attempt to the DSM the tenant goes to a PENDING_DELETION state
+        // for 7 days then is deleted from the DSM
         assertEquals("PENDING_DELETION", securityTenant.getState());
+    }
+
+    private void setupTenantToBeCreated() {
+        String testTenant = "TestTenant" + System.currentTimeMillis();
+        securityTenant = new SecurityTenant().setTenantName(testTenant).setAdminEmail("test@test.com")
+                .setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
     }
 }
