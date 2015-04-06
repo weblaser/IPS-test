@@ -26,10 +26,9 @@ public class MockDsmRest {
     public static final String TENANT_ID = "42";
     private static final String active = "ACTIVE";
     private static final String pending_deletion = "PENDING_DELETION";
-    private final String tenantScenario = "Tenant Scenario";
+    private final String tenantScenario = "Tenant";
     private final String velocityTenantIdKey = "tenantId";
     private final String velocityStateKey = "state";
-    private final String templateName = "vm/ResponseTenantGet.vm";
 
     @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String restProtocol;
@@ -75,7 +74,7 @@ public class MockDsmRest {
         String tenantCreatedState = "TenantCreated";
 
         StringWriter stringWriterCreate = new StringWriter();
-        velocityEngine.mergeTemplate(templateName, StandardCharsets.UTF_8.name(), velocityContext, stringWriterCreate);
+        velocityEngine.mergeTemplate("vm/ResponseTenantCreate.vm", StandardCharsets.UTF_8.name(), velocityContext, stringWriterCreate);
         String responseTenantCreateTenantXml = stringWriterCreate.toString();
 
         stubFor(post(urlPathEqualTo(pathTenantCreate))
@@ -104,12 +103,12 @@ public class MockDsmRest {
     }
 
     private void mockTenantGet(String tenantId, String sessionId, VelocityContext velocityContext,String scenarioState,String state) {
-        velocityContext.put(velocityStateKey, state);
-
         StringWriter stringWriterGet = new StringWriter();
-        velocityEngine.mergeTemplate(templateName, StandardCharsets.UTF_8.name(),
+        velocityContext.put(velocityStateKey, state);
+        velocityEngine.mergeTemplate("vm/ResponseTenantGet.vm", StandardCharsets.UTF_8.name(),
                 velocityContext, stringWriterGet);
         String responseTenantGetTenantXml = stringWriterGet.toString();
+
 
         String pathTenantGet = restPath + DsmTenantClient.PATH_TENANTS_ID + tenantId
                 + "?" + DsmTenantClient.QUERY_PARAM_SESSION_ID + sessionId;
