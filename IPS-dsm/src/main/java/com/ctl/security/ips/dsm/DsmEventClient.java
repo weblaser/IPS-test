@@ -48,6 +48,7 @@ public class DsmEventClient {
     public List<FirewallEvent> gatherEvents(Date fromTime, Date toTime) throws DsmEventClientException {
         String sessionId = null;
         try {
+            //TODO log in to DSM with different accounts to recover events for that single account
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
             logger.info("session created with id " + sessionId);
 

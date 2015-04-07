@@ -9,18 +9,29 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import com.ctl.security.ips.informant.service.Informant;
+import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
+import static junit.framework.TestCase.assertNotNull;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,10 +40,8 @@ public class InformantTest {
 
     @InjectMocks
     private Informant classUnderTest;
-
     @Mock
     private DsmEventClient dsmEventClient;
-
     @Mock
     private EventClient eventClient;
 
@@ -42,7 +51,18 @@ public class InformantTest {
     @Mock
     private ClcAuthenticationResponse clcAuthenticationResponse;
 
+    @Mock
+    private File file;
+
     private String bearerToken;
+
+    private final String lastExecutionDateString = String.valueOf(DateTime.now().minus(100).toDate().getTime());
+
+    @Before
+    public void init() {
+        file = new File("lastExecutionTest.txt");
+        ReflectionTestUtils.setField(classUnderTest, "file", file);
+    }
 
     @Test
     public void run_gathersEvents() throws Exception {
@@ -51,6 +71,7 @@ public class InformantTest {
         List<FirewallEvent> firewallEvents = Arrays.asList(firewallEvent);
 
         setUpMocksForInform(firewallEvents);
+        setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
@@ -58,11 +79,12 @@ public class InformantTest {
     }
 
     @Test
-    public void run_gathersEventsAndSendsOneEvent() throws Exception {
+    public void inform_gathersEventsAndSendsOneEvent() throws Exception {
         List<FirewallEvent> firewallEvents = CreateFirewallEvents(1);
         List<EventBean> eventBeans = createEventBeans(firewallEvents);
 
         setUpMocksForInform(firewallEvents);
+        setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
@@ -70,24 +92,120 @@ public class InformantTest {
     }
 
     @Test
-    public void run_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
+    public void inform_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
         List<FirewallEvent> firewallEvents = CreateFirewallEvents(5);
         List<EventBean> eventBeans = createEventBeans(firewallEvents);
 
         setUpMocksForInform(firewallEvents);
+        setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
         verifyNotificationsOfEventBeans(eventBeans);
     }
 
-    private void setUpMocksForInform(List<FirewallEvent> firewallEvents) throws DsmEventClientException {
+    @Test
+    public void inform_writesExecutionTimeToAFile() throws Exception {
+        setUpMocksForInform(null);
+        setupReadingLastExecutionDate(lastExecutionDateString);
+
+        classUnderTest.inform();
+
+        String dateReadString = FileUtils.readFileToString(file);
+        assertNotNull(dateReadString);
+
+        Date fromDate = new Date();
+        fromDate.setTime(Long.parseLong(dateReadString));
+
+        verify(dsmEventClient).gatherEvents(any(Date.class), eq(fromDate));
+    }
+
+    @Test
+    public void inform_readsExecutionTimeToAFile() throws Exception {
+        setUpMocksForInform(null);
+        setupReadingLastExecutionDate(lastExecutionDateString);
+
+        classUnderTest.inform();
+
+        Date lastExecutionDate = new Date();
+        lastExecutionDate.setTime(Long.parseLong(lastExecutionDateString));
+        verify(dsmEventClient).gatherEvents(eq(lastExecutionDate), any(Date.class));
+    }
+
+    @Test
+    public void inform_nullEventsAreGathered() throws Exception {
+        setUpMocksForInform(null);
+        setupReadingLastExecutionDate(lastExecutionDateString);
+
+        classUnderTest.inform();
+
+        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+    }
+
+    @Test
+    public void inform_noEventsAreGathered() throws Exception {
+        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        setUpMocksForInform(firewallEvents);
+        setupReadingLastExecutionDate(lastExecutionDateString);
+
+        classUnderTest.inform();
+
+        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+    }
+
+    @Test
+    public void inform_couldNotWriteLastExecutionDate() throws Exception {
+        setUpMocksForInform(null);
+        setupReadingLastExecutionDate(lastExecutionDateString);
+        setupWritingLastExecutionDateNoFileFailure();
+
+        classUnderTest.inform();
+
+        //TODO Verify that logging has been done
+    }
+
+    @Test
+    public void inform_couldNotReadLastExecutionDateParseFailure() throws Exception {
+        setUpMocksForInform(null);
+        setupReadingLastExecutionDateParseFailure();
+
+        classUnderTest.inform();
+        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+    }
+
+    @Test
+    public void inform_couldNotReadLastExecutionDateNoFileFailure() throws Exception {
+        setUpMocksForInform(null);
+        setupReadingLastExecutionDateNoFileFailure();
+
+        classUnderTest.inform();
+        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+    }
+
+    private void setUpMocksForInform(List<FirewallEvent> firewallEvents) throws DsmEventClientException, IOException {
         when(dsmEventClient.gatherEvents(any(Date.class), any(Date.class)))
                 .thenReturn(firewallEvents);
         when(authenticationClient.authenticateV2Api(any(ClcAuthenticationRequest.class)))
                 .thenReturn(clcAuthenticationResponse);
         when(clcAuthenticationResponse.getBearerToken())
                 .thenReturn(bearerToken);
+        ReflectionTestUtils.setField(classUnderTest, "defaultGatheringLength", "1");
+    }
+
+    private void setupReadingLastExecutionDate(String lastExecutionDateString) throws IOException {
+        FileUtils.write(file, lastExecutionDateString, false);
+    }
+
+    private void setupReadingLastExecutionDateParseFailure() throws IOException {
+        FileUtils.write(file, "FAILURE", false);
+    }
+
+    private void setupReadingLastExecutionDateNoFileFailure() throws IOException {
+        FileUtils.forceDelete(file);
+    }
+
+    private void setupWritingLastExecutionDateNoFileFailure() throws IOException {
+        FileUtils.forceDelete(file);
     }
 
     private FirewallEvent createFirewallEvent(String hostName) {
@@ -120,7 +238,7 @@ public class InformantTest {
         return firewallEvents;
     }
 
-    private   List<EventBean> createEventBeans(List<FirewallEvent> firewallEvents){
+    private List<EventBean> createEventBeans(List<FirewallEvent> firewallEvents) {
         List<EventBean> eventBeans = new ArrayList<>();
 
         for (FirewallEvent currentFirewallEvent : firewallEvents) {

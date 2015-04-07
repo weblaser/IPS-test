@@ -19,4 +19,5 @@ public class FirewallEvent implements Serializable {
 
     private String hostName;
     private String reason;
+    //TODO save accountID as well
 }
