@@ -40,10 +40,10 @@ public class PolicyServiceWrite extends PolicyService {
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());
         ClcExecutePackageRequest clcExecutePackageRequest = new ClcExecutePackageRequest().addServer(policyBean.getPolicy().getHostName());
         clcExecutePackageRequest.getSoftwarePackage()
-                .addParameter("DSM.Tenant.ID", createdSecurityTenant.getTenantId().toString())
+                .addParameter("DSM.Tenant.ID", createdSecurityTenant.getGuid())
                 .addParameter("DSM.Agent.Activation.Password", createdSecurityTenant.getAgentInitiatedActivationPassword())
                 .addParameter("DSM.Policy.ID", newlyCreatedPolicy.getVendorPolicyId())
-                .addParameter("DSM.Name", "") //TODO find this damn thing!!!!
+                .addParameter("DSM.Name", "")
                 .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
                 .addParameter("T3.Account.Alias", policyBean.getAccountId());
         packageInstallationService.installClcPackage(clcExecutePackageRequest, policyBean.getAccountId(), policyBean.getBearerToken());

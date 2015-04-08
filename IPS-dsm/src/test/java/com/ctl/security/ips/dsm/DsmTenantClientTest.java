@@ -54,6 +54,7 @@ public class DsmTenantClientTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CtlSecurityClient ctlSecurityClient;
 
+    private final String TENANT_GUID = "B2EABDEC-101F-E8CF-AC25-73C04B548BFA";
     private final int GOOD_STATUS_CODE = HttpStatus.SC_OK;
     private final int BAD_STATUS_CODE = HttpStatus.SC_BAD_REQUEST;
     private final Integer TENANT_ID = 1;
@@ -109,8 +110,8 @@ public class DsmTenantClientTest {
         String responseId = TENANT_ID_XML;
         String responseTenant = TENANT_XML;
         InputStream inputStream = new ByteArrayInputStream(responseId.getBytes("UTF-8"));
-        SecurityTenant expected = new SecurityTenant().setTenantId(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
-        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
+        SecurityTenant expected = new SecurityTenant().setTenantId(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD).setGuid(TENANT_GUID);
+        DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD).setGuid(TENANT_GUID);
 
         when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn(responseTenant);
         when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
@@ -127,6 +128,7 @@ public class DsmTenantClientTest {
         assertNotNull(result.getTenantId());
         assertEquals(expected.getTenantId(), result.getTenantId());
         assertEquals(expected.getAgentInitiatedActivationPassword(), result.getAgentInitiatedActivationPassword());
+        assertEquals(expected.getGuid(), result.getGuid());
     }
 
     @Test

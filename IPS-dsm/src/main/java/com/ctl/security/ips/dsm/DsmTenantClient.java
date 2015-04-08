@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -119,7 +120,6 @@ public class DsmTenantClient {
     private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant) {
         return new CreateOptions()
                 .setAdminAccount(securityTenant.getAdminAccount())
-                .setAdminPassword(securityTenant.getAdminPassword())
                 .setAdminEmail(securityTenant.getAdminEmail());
     }
 
@@ -164,6 +164,7 @@ public class DsmTenantClient {
         return new SecurityTenant()
                 .setAgentInitiatedActivationPassword(dsmTenant.getAgentInitiatedActivationPassword())
                 .setTenantId(dsmTenant.getTenantID())
+                .setGuid(dsmTenant.getGuid())
                 .setState(dsmTenant.getState());
 
     }
