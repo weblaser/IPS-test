@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# description:  start up informant: must be started as java user
+#               shutdown informant
+#               restart informant
+#
+# author Gary Hebel
+
+RETVAL=0
+JAVA8="/opt/jdk8/bin/java"
+APP_NAME="ips-informant"
+APP_HOME="/opt/java-app/informant"
+JAVA_OPTS="-Dspring.profiles.active=dev"
+PID_DIR="/var/run/informant"
+PID_FILE="$PID_DIR/informant.pid"
+
+start() {
+        if [ "$(whoami)" != "java" ]
+        then
+                echo "This service should be run as user java, not $(whoami)"
+                exit 1
+        fi
+
+        echo "starting informant..."
+        if [ ! -f $PID_FILE ]; then
+                exec -a ips-informant nohup $JAVA8 -jar $JAVA_OPTS $APP_HOME/ips-informant.jar > /dev/null 2>&1 & echo $! > $PID_FILE
+                echo "informant started: PID = `cat $PID_FILE`"
+        else
+                echo "informant is already running..."
+                exit 1
+        fi
+}
+
+stop() {
+        if [ -f $PID_FILE ]; then
+                PID=`cat $PID_FILE`
+                echo "stopping informant (PID = $PID)"
+                kill $PID;
+                echo "informant stopped"
+                rm -f $PID_FILE
+        else
+                echo "informant is not running..."
+                return 1
+        fi
+}
+
+status() {
+        if [ -f $PID_FILE ]; then
+                PID=`cat $PID_FILE`
+                echo "informant is running (PID = $PID)"
+        else
+                echo "informant is stopped"
+        fi
+}
+
+if [ ! -d "$PID_DIR" ]; then
+        sudo mkdir $PID_DIR
+        sudo chown java:java $PID_DIR
+fi
+
+case "$1" in
+        start)
+                start
+                RETVAL=$?
+                ;;
+        stop)
+                stop
+                RETVAL=$?
+                ;;
+        status)
+                status
+                RETVAL=$?
+                ;;
+        restart)
+                stop
+                start
+                RETVAL=$?
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|status}"
+                RETVAL=1
+                ;;
+esac
+exit $RETVAL
