@@ -76,7 +76,7 @@ public class DsmTenantClientTest {
 
     @Before
     public void before() {
-        ReflectionTestUtils.setField(classUnderTest, "url", "/fakePath/rest");
+//        ReflectionTestUtils.setField(classUnderTest, "url", "/fakePath/rest");
         ReflectionTestUtils.setField(classUnderTest, "username", "userName");
         ReflectionTestUtils.setField(classUnderTest, "password", "password");
     }

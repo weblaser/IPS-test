@@ -44,6 +44,11 @@
             <version>${clc.client.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.ctl.security.clc.client</groupId>
+            <artifactId>CLC-client-test</artifactId>
+            <version>${clc.client.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.ctl.security.data</groupId>
             <artifactId>security-data-client</artifactId>
             <version>${security.data.version}</version>
