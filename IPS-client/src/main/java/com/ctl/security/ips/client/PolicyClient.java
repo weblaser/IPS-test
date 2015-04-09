@@ -110,6 +110,7 @@ public class PolicyClient {
 
 
     private void fail(RestClientException rce) {
+        logger.error(rce.getMessage(), rce);
         String message = rce.getMessage();
         int statusCode = Integer.parseInt(message.split("[\\s]")[0]);
         if (statusCode >= Status.FORBIDDEN.getStatusCode()) {

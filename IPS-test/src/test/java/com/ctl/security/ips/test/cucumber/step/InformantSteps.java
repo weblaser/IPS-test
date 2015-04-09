@@ -98,7 +98,7 @@ public class InformantSteps {
         //TODO Create Test for TS,QA,PROD
         String activeProfiles = environment.getActiveProfiles()[0];
 
-        if(activeProfiles.equalsIgnoreCase("local")){//||activeProfiles.equalsIgnoreCase("dev")) {
+        if(activeProfiles.equalsIgnoreCase("local")||activeProfiles.equalsIgnoreCase("dev")) {
             wireMockServer.verify(postRequestedFor(urlEqualTo(urlPath)));
         }
 

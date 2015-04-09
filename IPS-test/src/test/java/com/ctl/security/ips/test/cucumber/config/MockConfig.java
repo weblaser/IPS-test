@@ -24,7 +24,7 @@ public class MockConfig {
     private MockDsmRest mockDsmRest;
     
     @Bean
-    EventAdapter eventAdapter(){
+    public EventAdapter eventAdapter(){
         return new MockEventAdapterImpl();
     }
 
