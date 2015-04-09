@@ -92,14 +92,14 @@ public class DsmTenantClientTest {
 
     @Before
     public void before() {
-        ReflectionTestUtils.setField(classUnderTest, "url", "/fakePath/rest");
+
         ReflectionTestUtils.setField(classUnderTest, "username", USERNAME);
         ReflectionTestUtils.setField(classUnderTest, "password", PASSWORD);
         ReflectionTestUtils.setField(classUnderTest, "protocol", protocol);
         ReflectionTestUtils.setField(classUnderTest, "host", host);
         ReflectionTestUtils.setField(classUnderTest, "port", port);
         ReflectionTestUtils.setField(classUnderTest, "path", path);
-
+        
     }
 
     @Test
