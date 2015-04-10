@@ -3,6 +3,9 @@ package com.ctl.security.ips.informant;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
+import com.ctl.security.data.client.cmdb.UserClient;
+import com.ctl.security.data.client.domain.user.UserResource;
+import com.ctl.security.data.client.domain.user.UserResources;
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
@@ -11,8 +14,6 @@ import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import com.ctl.security.ips.informant.service.Informant;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -54,6 +54,9 @@ public class InformantTest {
     @Mock
     private File file;
 
+    @Mock
+    private UserClient userClient;
+
     private String bearerToken;
 
     private final String lastExecutionDateString = String.valueOf(DateTime.now().minus(100).toDate().getTime());
@@ -65,25 +68,28 @@ public class InformantTest {
     }
 
     @Test
-    public void run_gathersEvents() throws Exception {
-        FirewallEvent firewallEvent = createFirewallEvent("hostName1");
+    public void run_gathersEventsForDifferentAccounts() throws Exception {
+        List<String> accountIds = getAccountIds(5);
+        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
 
-        List<FirewallEvent> firewallEvents = Arrays.asList(firewallEvent);
-
-        setUpMocksForInform(firewallEvents);
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
-        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+        verifyEventsGatheredFor(accountIds);
     }
 
     @Test
     public void inform_gathersEventsAndSendsOneEvent() throws Exception {
-        List<FirewallEvent> firewallEvents = CreateFirewallEvents(1);
+        List<FirewallEvent> firewallEvents = createFirewallEvents(1);
         List<EventBean> eventBeans = createEventBeans(firewallEvents);
+        List<String> accountIds = getAccountIds(1);
 
-        setUpMocksForInform(firewallEvents);
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
@@ -93,10 +99,14 @@ public class InformantTest {
 
     @Test
     public void inform_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
-        List<FirewallEvent> firewallEvents = CreateFirewallEvents(5);
+        List<String> accountIds = getAccountIds(5);
+        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
         List<EventBean> eventBeans = createEventBeans(firewallEvents);
 
-        setUpMocksForInform(firewallEvents);
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
+
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
@@ -106,7 +116,12 @@ public class InformantTest {
 
     @Test
     public void inform_writesExecutionTimeToAFile() throws Exception {
-        setUpMocksForInform(null);
+        List<String> accountIds = getAccountIds(5);
+        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
@@ -117,45 +132,64 @@ public class InformantTest {
         Date fromDate = new Date();
         fromDate.setTime(Long.parseLong(dateReadString));
 
-        verify(dsmEventClient).gatherEvents(any(Date.class), eq(fromDate));
+        verifyEventsGatheredFor(accountIds);
     }
 
     @Test
     public void inform_readsExecutionTimeToAFile() throws Exception {
-        setUpMocksForInform(null);
+        List<String> accountIds = getAccountIds(5);
+        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
         Date lastExecutionDate = new Date();
         lastExecutionDate.setTime(Long.parseLong(lastExecutionDateString));
-        verify(dsmEventClient).gatherEvents(eq(lastExecutionDate), any(Date.class));
+        verifyEventsGatheredFor(accountIds);
     }
 
     @Test
     public void inform_nullEventsAreGathered() throws Exception {
-        setUpMocksForInform(null);
+        List<String> accountIds = getAccountIds(5);
+        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+        List<EventBean> eventBeans = createEventBeans(firewallEvents);
+
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
-        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+        verifyEventsGatheredFor(accountIds);
     }
 
     @Test
     public void inform_noEventsAreGathered() throws Exception {
         List<FirewallEvent> firewallEvents = new ArrayList<>();
-        setUpMocksForInform(firewallEvents);
+        List<String> accountIds = getAccountIds(1);
+
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
         classUnderTest.inform();
 
-        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+        verifyEventsGatheredFor(accountIds);
     }
 
     @Test
     public void inform_couldNotWriteLastExecutionDate() throws Exception {
-        setUpMocksForInform(null);
+        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<String> accountIds = getAccountIds(1);
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
         setupWritingLastExecutionDateNoFileFailure();
 
@@ -166,30 +200,41 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotReadLastExecutionDateParseFailure() throws Exception {
-        setUpMocksForInform(null);
+        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<String> accountIds = getAccountIds(1);
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDateParseFailure();
 
         classUnderTest.inform();
-        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+        verifyEventsGatheredFor(accountIds);
     }
 
     @Test
     public void inform_couldNotReadLastExecutionDateNoFileFailure() throws Exception {
-        setUpMocksForInform(null);
+        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<String> accountIds = getAccountIds(1);
+        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
+        setUpMocksForInform();
         setupReadingLastExecutionDateNoFileFailure();
 
         classUnderTest.inform();
-        verify(dsmEventClient).gatherEvents(any(Date.class), any(Date.class));
+        verifyEventsGatheredFor(accountIds);
     }
 
-    private void setUpMocksForInform(List<FirewallEvent> firewallEvents) throws DsmEventClientException, IOException {
-        when(dsmEventClient.gatherEvents(any(Date.class), any(Date.class)))
-                .thenReturn(firewallEvents);
+    private void setUpMocksForInform() throws DsmEventClientException, IOException {
         when(authenticationClient.authenticateV2Api(any(ClcAuthenticationRequest.class)))
                 .thenReturn(clcAuthenticationResponse);
         when(clcAuthenticationResponse.getBearerToken())
                 .thenReturn(bearerToken);
         ReflectionTestUtils.setField(classUnderTest, "defaultGatheringLength", "1");
+    }
+
+    private void setEventsForAccountId(String accountId, List<FirewallEvent> firewallEvents) throws DsmEventClientException {
+        when(dsmEventClient.gatherEvents(accountId, any(Date.class), any(Date.class)))
+                .thenReturn(firewallEvents);
     }
 
     private void setupReadingLastExecutionDate(String lastExecutionDateString) throws IOException {
@@ -208,12 +253,6 @@ public class InformantTest {
         FileUtils.forceDelete(file);
     }
 
-    private FirewallEvent createFirewallEvent(String hostName) {
-        FirewallEvent firewallEvent = new FirewallEvent();
-        firewallEvent.setHostName(hostName);
-        return firewallEvent;
-    }
-
     private EventBean createEventBean(FirewallEvent firewallEvent) {
         EventBean eventBean = new EventBean(firewallEvent.getHostName(), Informant.ACCOUNT, firewallEvent);
         return eventBean;
@@ -225,11 +264,13 @@ public class InformantTest {
         }
     }
 
-    private List<FirewallEvent> CreateFirewallEvents(int count) {
+    private List<FirewallEvent> createFirewallEvents(int count) {
         List<FirewallEvent> firewallEvents = new ArrayList<>();
         List<EventBean> eventBeans = new ArrayList<>();
         for (int eventCount = 0; eventCount < count; eventCount++) {
-            FirewallEvent firewallEvent = createFirewallEvent("Host Name " + eventCount);
+            FirewallEvent firewallEvent = new FirewallEvent();
+            firewallEvent.setHostName("Hostname" + eventCount);
+            firewallEvent.setReason("Reason" + eventCount);
             firewallEvents.add(firewallEvent);
 
             EventBean eventBean = createEventBean(firewallEvent);
@@ -246,6 +287,41 @@ public class InformantTest {
             eventBeans.add(eventBean);
         }
         return eventBeans;
+    }
+
+    private List<String> getAccountIds(int amount) {
+        List<String> accountIds = new ArrayList<>();
+        for (int index = 0; index < amount; index++) {
+            accountIds.add("Account" + index);
+        }
+        return accountIds;
+    }
+
+    private void verifyEventsGatheredFor(List<String> accountIds) throws DsmEventClientException {
+        for (String currentAccountId : accountIds) {
+            verify(dsmEventClient).gatherEvents(currentAccountId, any(Date.class), any(Date.class));
+        }
+    }
+
+    private void setUpMocksForFirewallEvents(List<String> accountIds, List<FirewallEvent> firewallEvents) throws DsmEventClientException {
+        for (String currentAccount : accountIds) {
+            setEventsForAccountId(currentAccount, firewallEvents);
+        }
+    }
+
+    private void setUpMocksForUsers(List<String> accountIds) {
+        List<UserResource> userResourcesList = new ArrayList<>();
+
+        for (String currentAccountId : accountIds) {
+            UserResource newUserResource = new UserResource();
+            newUserResource.getContent().setAccountId(currentAccountId);
+            userResourcesList.add(newUserResource);
+        }
+
+        UserResources userResources = new UserResources();
+        userResources.wrap(userResources);
+
+        when(userClient.getAllUsers()).thenReturn(userResources);
     }
 
 }

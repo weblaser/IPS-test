@@ -21,4 +21,8 @@ public class DsmLogInClient {
     public void endSession(String sessionId) {
         manager.endSession(sessionId);
     }
+
+    public String connectTenantToDSMClient(String tenantName,String username,String password) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
+        return manager.authenticateTenant(tenantName,username,password);
+    }
 }
