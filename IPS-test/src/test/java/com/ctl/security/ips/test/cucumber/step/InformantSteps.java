@@ -51,7 +51,7 @@ public class InformantSteps {
 
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
-    int destinationPort;
+    private int destinationPort;
 
     @Value("${${spring.profiles.active:local}.ips.test.host}")
     private String destinationHostName;

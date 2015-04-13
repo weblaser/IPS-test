@@ -11,7 +11,6 @@ import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
-import manager.UserSave;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +27,7 @@ import java.util.List;
 
 /**
  * Created by Sean Robb on 3/24/2015.
+ *
  */
 
 @Component
@@ -103,7 +104,7 @@ public class Informant {
             }
         }
 
-        if (events.isEmpty()) {
+        if (!events.isEmpty()) {
             String bearerToken = authenticate();
             sendEvents(events, bearerToken);
         }

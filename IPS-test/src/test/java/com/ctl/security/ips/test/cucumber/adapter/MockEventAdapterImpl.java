@@ -43,8 +43,6 @@ public class MockEventAdapterImpl implements EventAdapter {
 
         wireMockServer.stubFor(get(urlEqualTo(host))
                 .willReturn(aResponse().like(responseDefinition)));
-        wireMockServer.stubFor(get(urlEqualTo("/hello"))
-                .willReturn(aResponse().withHeader("Content-Type", "test/plain").withBody("Hello")));
 
     }
 }

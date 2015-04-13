@@ -68,7 +68,7 @@ public class InformantTest {
     }
 
     @Test
-    public void run_gathersEventsForDifferentAccounts() throws Exception {
+    public void inform_gathersEventsForDifferentAccounts() throws Exception {
         List<String> accountIds = getAccountIds(5);
         List<FirewallEvent> firewallEvents = createFirewallEvents(5);
 
@@ -85,10 +85,11 @@ public class InformantTest {
     @Test
     public void inform_gathersEventsAndSendsOneEvent() throws Exception {
         List<FirewallEvent> firewallEvents = createFirewallEvents(1);
-        List<EventBean> eventBeans = createEventBeans(firewallEvents);
         List<String> accountIds = getAccountIds(1);
+        List<EventBean> eventBeans = createEventBeans(accountIds.get(0), firewallEvents);
 
         setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
 
@@ -101,7 +102,7 @@ public class InformantTest {
     public void inform_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
         List<String> accountIds = getAccountIds(5);
         List<FirewallEvent> firewallEvents = createFirewallEvents(5);
-        List<EventBean> eventBeans = createEventBeans(firewallEvents);
+        List<EventBean> eventBeans = createEventBeans(accountIds.get(0), firewallEvents);
 
         setUpMocksForFirewallEvents(accountIds, firewallEvents);
         setUpMocksForUsers(accountIds);
@@ -156,7 +157,6 @@ public class InformantTest {
     public void inform_nullEventsAreGathered() throws Exception {
         List<String> accountIds = getAccountIds(5);
         List<FirewallEvent> firewallEvents = createFirewallEvents(5);
-        List<EventBean> eventBeans = createEventBeans(firewallEvents);
 
         setUpMocksForFirewallEvents(accountIds, firewallEvents);
         setUpMocksForUsers(accountIds);
@@ -233,7 +233,7 @@ public class InformantTest {
     }
 
     private void setEventsForAccountId(String accountId, List<FirewallEvent> firewallEvents) throws DsmEventClientException {
-        when(dsmEventClient.gatherEvents(accountId, any(Date.class), any(Date.class)))
+        when(dsmEventClient.gatherEvents(eq(accountId), any(Date.class), any(Date.class)))
                 .thenReturn(firewallEvents);
     }
 
@@ -253,11 +253,6 @@ public class InformantTest {
         FileUtils.forceDelete(file);
     }
 
-    private EventBean createEventBean(FirewallEvent firewallEvent) {
-        EventBean eventBean = new EventBean(firewallEvent.getHostName(), Informant.ACCOUNT, firewallEvent);
-        return eventBean;
-    }
-
     private void verifyNotificationsOfEventBeans(List<EventBean> eventBeans) {
         for (EventBean currentEventBean : eventBeans) {
             verify(eventClient).notify(currentEventBean, bearerToken);
@@ -266,24 +261,20 @@ public class InformantTest {
 
     private List<FirewallEvent> createFirewallEvents(int count) {
         List<FirewallEvent> firewallEvents = new ArrayList<>();
-        List<EventBean> eventBeans = new ArrayList<>();
         for (int eventCount = 0; eventCount < count; eventCount++) {
             FirewallEvent firewallEvent = new FirewallEvent();
             firewallEvent.setHostName("Hostname" + eventCount);
             firewallEvent.setReason("Reason" + eventCount);
             firewallEvents.add(firewallEvent);
-
-            EventBean eventBean = createEventBean(firewallEvent);
-            eventBeans.add(eventBean);
         }
         return firewallEvents;
     }
 
-    private List<EventBean> createEventBeans(List<FirewallEvent> firewallEvents) {
+    private List<EventBean> createEventBeans(String accountId, List<FirewallEvent> firewallEvents) {
         List<EventBean> eventBeans = new ArrayList<>();
 
         for (FirewallEvent currentFirewallEvent : firewallEvents) {
-            EventBean eventBean = createEventBean(currentFirewallEvent);
+            EventBean eventBean = new EventBean(currentFirewallEvent.getHostName(), accountId, currentFirewallEvent);
             eventBeans.add(eventBean);
         }
         return eventBeans;
@@ -299,7 +290,7 @@ public class InformantTest {
 
     private void verifyEventsGatheredFor(List<String> accountIds) throws DsmEventClientException {
         for (String currentAccountId : accountIds) {
-            verify(dsmEventClient).gatherEvents(currentAccountId, any(Date.class), any(Date.class));
+            verify(dsmEventClient).gatherEvents(eq(currentAccountId), any(Date.class), any(Date.class));
         }
     }
 
@@ -318,10 +309,7 @@ public class InformantTest {
             userResourcesList.add(newUserResource);
         }
 
-        UserResources userResources = new UserResources();
-        userResources.wrap(userResources);
-
-        when(userClient.getAllUsers()).thenReturn(userResources);
+        when(userClient.getAllUsers()).thenReturn(new UserResources(userResourcesList));
     }
 
 }
