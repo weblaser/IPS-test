@@ -1,7 +1,7 @@
 @REGRESSION
 Feature:  Security - policy
 
-  @WIP
+
   Scenario: Get valid response when creating a policy for an account
     Given I have a valid account
     When I POST a policy
