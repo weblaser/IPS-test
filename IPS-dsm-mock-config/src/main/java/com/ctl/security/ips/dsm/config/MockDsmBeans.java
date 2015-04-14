@@ -110,28 +110,7 @@ public class MockDsmBeans extends BaseDsmBeans {
                 .thenThrow(ManagerAuthenticationException_Exception.class);
     }
 
-    private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
-        for (Map.Entry<String, String> loginTenantEntry : loginTenantMap.entrySet()) {
-            when(manager.authenticateTenant(
-                    loginTenantEntry.getKey(),
-                    BaseDsmBeans.APIUSER,
-                    BaseDsmBeans.PASSWORD_CORRECT
-            ))
-                    .thenReturn(loginTenantEntry.getValue());
-            when(manager.authenticateTenant(
-                    loginTenantEntry.getKey(),
-                    BaseDsmBeans.APIUSER,
-                    BaseDsmBeans.PASSWORD_WRONG
-            ))
-                    .thenThrow(ManagerAuthenticationException_Exception.class);
-            when(manager.authenticateTenant(
-                    loginTenantEntry.getKey(),
-                    BaseDsmBeans.APIUSER_WRONG,
-                    BaseDsmBeans.PASSWORD_CORRECT
-            ))
-                    .thenThrow(ManagerAuthenticationException_Exception.class);
-        }
-    }
+
 
     private void setupPolicyRetrieve(final Map<String, String> policyKeys, final Map<String, SecurityProfileTransport> expectedPolicies, SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
         Integer validDsmPolicyId = Integer.valueOf(BaseDsmBeans.VALID_DSM_POLICY_ID);
@@ -178,37 +157,57 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
 
-
-        for (Map.Entry<String, String> loginTenantEntry : loginTenantMap.entrySet())
-            when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                    any(HostFilterTransport.class),
-                    any(IDFilterTransport.class),
-                    eq(loginTenantEntry.getValue()))).thenAnswer(new Answer<FirewallEventListTransport>() {
-                @Override
-                public FirewallEventListTransport answer(InvocationOnMock invocationOnMock) {
-                    List<FirewallEvent> response = null;
-                    try {
-                        String address = "http://" + destinationHostName + ":" + destinationPort
-                                + host + "/" + loginTenantEntry.getKey();
-                        response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
-                                null, FirewallEvent[].class).getBody());
-                    } catch (RestClientException rce) {
-                        //do nothing
-                    }
-                    return convertAllToFirewallEventListTransport(response);
-                }
-            });
+        for (Map.Entry<String, String> loginTenantEntry : loginTenantMap.entrySet()) {
+            createFirewallEventRetrieveMock(loginTenantEntry.getKey(), loginTenantEntry.getValue());
+        }
     }
 
-    private void foo() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
+    private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
+            when(manager.authenticateTenant(
+                    anyString(),
+                    BaseDsmBeans.APIUSER,
+                    BaseDsmBeans.PASSWORD_CORRECT
+            ))
+                    .thenAnswer(new Answer<String>(){
+
+                        @Override
+                        public String answer(InvocationOnMock invocationOnMock) throws Throwable {
+                            createSessionId();
+                            return null;
+                        }
+                    });
+//                    .thenReturn(loginTenantEntry.getValue());
+            when(manager.authenticateTenant(
+                    anyString(),
+                    BaseDsmBeans.APIUSER,
+                    BaseDsmBeans.PASSWORD_WRONG
+            ))
+                    .thenThrow(ManagerAuthenticationException_Exception.class);
+            when(manager.authenticateTenant(
+                    anyString(),
+                    BaseDsmBeans.APIUSER_WRONG,
+                    BaseDsmBeans.PASSWORD_CORRECT
+            ))
+                    .thenThrow(ManagerAuthenticationException_Exception.class);
+    }
+
+    private void createFirewallEventRetrieveMock(String sessionId,String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
-                anyString())).thenAnswer(new Answer<Boolean>() {
+                eq(sessionId))).thenAnswer(new Answer<FirewallEventListTransport>() {
             @Override
-            public Boolean answer(InvocationOnMock invocationOnMock) throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
-                setupFirewallEventRetrieve();
-                return true;
+            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock) {
+                List<FirewallEvent> response = null;
+                try {
+                    String address = "http://" + destinationHostName + ":" + destinationPort
+                            + host + "/" + accountId;
+                    response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
+                            null, FirewallEvent[].class).getBody());
+                } catch (RestClientException rce) {
+                    //do nothing
+                }
+                return convertAllToFirewallEventListTransport(response);
             }
         });
     }
@@ -228,6 +227,10 @@ public class MockDsmBeans extends BaseDsmBeans {
             }
         }
         return firewallEventListTransport;
+    }
+
+    private String createSessionId(String accountId){
+        return "Session ID For: "+accountId;
     }
 
 }
