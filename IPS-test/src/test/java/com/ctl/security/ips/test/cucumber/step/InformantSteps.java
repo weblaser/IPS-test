@@ -1,6 +1,8 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.UserClient;
+import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
@@ -49,6 +51,9 @@ public class InformantSteps {
     @Autowired
     private WireMockComponent wireMockComponent;
 
+    @Autowired
+    private UserClient userClient;
+
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     private int destinationPort;
@@ -59,12 +64,15 @@ public class InformantSteps {
     @Value("${${spring.profiles.active:local}.ips.test.retryWaitTime}")
     private Integer retryWaitTime;
 
-    private String urlPath ="/someAddress";
+    private String customerNotificationDestinationUrl = "/someAddress";
 
     private String bearerToken;
 
-    String accountId = ClcAuthenticationComponent.VALID_AA;
-    String hostName = "server.host.name." + System.currentTimeMillis();
+    private String accountId = ClcAuthenticationComponent.VALID_AA;
+    private String hostName = "server.host.name." + System.currentTimeMillis();
+
+    private User newUser;
+    private ConfigurationItem configurationItem;
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
     private Integer maxRetryAttempts;
@@ -72,12 +80,21 @@ public class InformantSteps {
 
     @Given("^a DSM agent is running on configuration item$")
     public void a_DSM_agent_is_running_on_configuration_item() throws Throwable {
-        ConfigurationItem configurationItem = createAndConfigureConfigurationItem(accountId, hostName);
-        String destinationURL="http://" + destinationHostName + ":" + destinationPort + urlPath;
+        newUser = createNewUser("User1",accountId);
+        configurationItem = createAndConfigureConfigurationItem(accountId, hostName);
+        String destinationURL = "http://" + destinationHostName + ":" + destinationPort + customerNotificationDestinationUrl;
         createAndSetNotificationDestination(destinationURL, configurationItem);
 
         wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
-        wireMockComponent.createWireMockServerStub(urlPath, HttpStatus.SC_OK);
+        wireMockComponent.createWireMockServerStub(customerNotificationDestinationUrl, HttpStatus.SC_OK);
+    }
+
+    private User createNewUser(String userName,String accountId) {
+        User user = new User();
+        user.setAccountId(accountId);
+        user.setUsername(userName);
+        userClient.createUser(user);
+        return user;
     }
 
     @When("^events are posted to DSM$")
@@ -87,21 +104,22 @@ public class InformantSteps {
         firewallEvent.setReason("An FirewallEvent Reason");
         firewallEvent.setHostName(hostName);
 
-        eventAdapter.triggerEvent(Arrays.asList(firewallEvent));
+        eventAdapter.triggerEvent(configurationItem, Arrays.asList(firewallEvent));
     }
 
     @Then("^the events are posted to the correct notification destination$")
     public void the_events_are_posted_to_the_correct_notification_destination() throws Throwable {
 
-        waitForPostRequests(1, urlPath);
+        waitForPostRequests(1, customerNotificationDestinationUrl);
 
         //TODO Create Test for TS,QA,PROD
         String activeProfiles = environment.getActiveProfiles()[0];
 
-        if(activeProfiles.equalsIgnoreCase("local")||activeProfiles.equalsIgnoreCase("dev")) {
-            wireMockServer.verify(postRequestedFor(urlEqualTo(urlPath)));
+        if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+            wireMockServer.verify(postRequestedFor(urlEqualTo(customerNotificationDestinationUrl)));
         }
-
+        UserResource user = userClient.getUser(newUser.getUsername(), newUser.getAccountId());
+        userClient.deleteUser(user.getContent().getId());
         wireMockServer.stop();
 
     }
@@ -165,6 +183,5 @@ public class InformantSteps {
             currentAttempts++;
         }
     }
-
 
 }

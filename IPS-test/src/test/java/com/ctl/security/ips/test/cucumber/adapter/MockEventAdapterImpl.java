@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.adapter;
 
+import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
@@ -31,17 +32,19 @@ public class MockEventAdapterImpl implements EventAdapter {
 
     @PostConstruct
     public void init() {
-        wireMockServer=new WireMockServer(destinationPort);
+        wireMockServer = new WireMockServer(destinationPort);
         configureFor(destinationHostName, destinationPort);
         wireMockServer.start();
     }
 
     @Override
-    public void triggerEvent(List<FirewallEvent> firewallEvents) {
+    public void triggerEvent(ConfigurationItem configurationItem, List<FirewallEvent> firewallEvents) {
 
         ResponseDefinition responseDefinition = jsonResponse(firewallEvents);
 
-        wireMockServer.stubFor(get(urlEqualTo(host))
+        String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
+
+        wireMockServer.stubFor(get(urlEqualTo(url))
                 .willReturn(aResponse().like(responseDefinition)));
 
     }

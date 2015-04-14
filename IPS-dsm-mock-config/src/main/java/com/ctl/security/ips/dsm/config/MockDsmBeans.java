@@ -97,7 +97,7 @@ public class MockDsmBeans extends BaseDsmBeans {
         setupPolicyRetrieve(policyKeys, expectedPolicies, expectedSecurityProfileTransport);
         setupPolicySave(expectedSecurityProfileTransport);
         setupPolicyDelete(policyKeys, expectedPolicies);
-        setupFirewallEventRetrieve();
+//        setupFirewallEventRetrieve();
     }
 
     private void setupDSMAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
@@ -109,7 +109,6 @@ public class MockDsmBeans extends BaseDsmBeans {
         when(manager.authenticate(BaseDsmBeans.APIUSER_WRONG, BaseDsmBeans.PASSWORD_CORRECT))
                 .thenThrow(ManagerAuthenticationException_Exception.class);
     }
-
 
 
     private void setupPolicyRetrieve(final Map<String, String> policyKeys, final Map<String, SecurityProfileTransport> expectedPolicies, SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
@@ -137,7 +136,9 @@ public class MockDsmBeans extends BaseDsmBeans {
                 return securityProfileTransport;
             }
         });
-    }    private void setupPolicySave(SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception {
+    }
+
+    private void setupPolicySave(SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception {
         when(manager.securityProfileSave(Matchers.any(SecurityProfileTransport.class), anyString()))
                 .thenReturn(expectedSecurityProfileTransport);
     }
@@ -155,43 +156,32 @@ public class MockDsmBeans extends BaseDsmBeans {
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
 
-    private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
-
-        for (Map.Entry<String, String> loginTenantEntry : loginTenantMap.entrySet()) {
-            createFirewallEventRetrieveMock(loginTenantEntry.getKey(), loginTenantEntry.getValue());
-        }
-    }
+//    private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
+//
+//        for (Map.Entry<String, String> loginTenantEntry : loginTenantMap.entrySet()) {
+//            createFirewallEventRetrieveMock(loginTenantEntry.getKey(), loginTenantEntry.getValue());
+//        }
+//    }
 
     private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
-            when(manager.authenticateTenant(
-                    anyString(),
-                    BaseDsmBeans.APIUSER,
-                    BaseDsmBeans.PASSWORD_CORRECT
-            ))
-                    .thenAnswer(new Answer<String>(){
-
-                        @Override
-                        public String answer(InvocationOnMock invocationOnMock) throws Throwable {
-                            createSessionId();
-                            return null;
-                        }
-                    });
-//                    .thenReturn(loginTenantEntry.getValue());
-            when(manager.authenticateTenant(
-                    anyString(),
-                    BaseDsmBeans.APIUSER,
-                    BaseDsmBeans.PASSWORD_WRONG
-            ))
-                    .thenThrow(ManagerAuthenticationException_Exception.class);
-            when(manager.authenticateTenant(
-                    anyString(),
-                    BaseDsmBeans.APIUSER_WRONG,
-                    BaseDsmBeans.PASSWORD_CORRECT
-            ))
-                    .thenThrow(ManagerAuthenticationException_Exception.class);
+        when(manager.authenticateTenant(
+                anyString(),
+                eq(BaseDsmBeans.APIUSER),
+                eq(BaseDsmBeans.PASSWORD_CORRECT)
+        )).thenAnswer(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Integer argumentAccountId = 0;
+                Object[] arguments = invocationOnMock.getArguments();
+                String accountId = arguments[argumentAccountId].toString();
+                String sessionId = createSessionId(accountId);
+                createFirewallEventRetrieveMock(sessionId,accountId);
+                return sessionId;
+            }
+        });
     }
 
-    private void createFirewallEventRetrieveMock(String sessionId,String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
+    private void createFirewallEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
@@ -229,8 +219,8 @@ public class MockDsmBeans extends BaseDsmBeans {
         return firewallEventListTransport;
     }
 
-    private String createSessionId(String accountId){
-        return "Session ID For: "+accountId;
+    private String createSessionId(String accountId) {
+        return "Session ID For: " + accountId;
     }
 
 }
