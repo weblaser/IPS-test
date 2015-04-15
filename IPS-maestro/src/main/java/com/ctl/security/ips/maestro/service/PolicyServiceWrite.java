@@ -20,7 +20,6 @@ import java.util.Arrays;
 @Service
 public class PolicyServiceWrite extends PolicyService {
 
-
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
 
@@ -37,7 +36,7 @@ public class PolicyServiceWrite extends PolicyService {
     private ServerClient serverClient;
 
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException {
-        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean.getPolicy());
+        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean);
         InstallationBean installationBean = buildInstallationBean(policyBean);
         cmdbService.installProduct(installationBean);
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());

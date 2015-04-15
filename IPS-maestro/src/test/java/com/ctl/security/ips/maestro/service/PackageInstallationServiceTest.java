@@ -3,8 +3,6 @@ package com.ctl.security.ips.maestro.service;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageResponse;
 import com.ctl.security.clc.client.common.domain.Link;
-import com.ctl.security.clc.client.common.exception.PackageExecutionException;
-import com.ctl.security.clc.client.common.exception.PackageStatusException;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestClientException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -61,20 +60,20 @@ public class PackageInstallationServiceTest {
         assertEquals("succeeded", result);
     }
 
-    @Test(expected = PackageExecutionException.class)
+    @Test(expected = RestClientException.class)
     public void testInstallClcPackage_failureToExecutePackage() {
         //arrange
-        when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenThrow(new PackageExecutionException());
+        when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenThrow(new RestClientException("whatever"));
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
 
         //act
         classUnderTest.installClcPackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
     }
 
-    @Test(expected = PackageStatusException.class)
+    @Test(expected = RestClientException.class)
     public void testInstallClcPackage_failureToGetPackageStatus() {
         //arrange
-        when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenThrow(new PackageStatusException());
+        when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenThrow(new RestClientException("whatever"));
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
 
         //act
