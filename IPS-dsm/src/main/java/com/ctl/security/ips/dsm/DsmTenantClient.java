@@ -34,9 +34,6 @@ public class DsmTenantClient {
     public static final String PATH_TENANTS_ID = "/tenants/id/";
     public static final String QUERY_PARAM_SESSION_ID = "sID=";
 
-    @Value("${${spring.profiles.active:local}.dsm.restUrl}")
-    private String url;
-
     @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String protocol;
     @Value("${${spring.profiles.active:local}.dsm.rest.host}")

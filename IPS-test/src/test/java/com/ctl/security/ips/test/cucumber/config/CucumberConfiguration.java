@@ -1,5 +1,7 @@
 package com.ctl.security.ips.test.cucumber.config;
 
+import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
+import com.ctl.security.clc.client.test.config.ClcMockConfig;
 import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -11,13 +13,14 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  */
 @Configuration
 //TODO fix this component scan
-@ComponentScan("com.ctl.security")
-@Import({SecurityDataClientAppConfig.class,MockConfig.class,RealConfig.class})
+@ComponentScan("com.ctl.security.ips")
+@Import({SecurityDataClientAppConfig.class,ClcClientCoreAppConfig.class,MockConfig.class,RealConfig.class, ClcMockConfig.class})
 @PropertySources({
         @PropertySource("classpath:properties/security.data.client.properties"),
         @PropertySource("classpath:properties/ips.service.properties"),
         @PropertySource("classpath:properties/ips.test.properties"),
-        @PropertySource("classpath:properties/dsm.client.properties")
+        @PropertySource("classpath:properties/dsm.client.properties"),
+        @PropertySource("classpath:properties/clc.client.test.properties")
 })
 public class CucumberConfiguration {
 
@@ -29,12 +32,9 @@ public class CucumberConfiguration {
     @Bean
     public VelocityEngine velocityEngine(){
         VelocityEngine velocityEngine = new VelocityEngine();
-//        velocityEngine.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM, this);
-//        velocityEngine.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, "vm");
         velocityEngine.setProperty("resource.loader", "class");
         velocityEngine.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         velocityEngine.init();
-
         return velocityEngine;
     }
 }
