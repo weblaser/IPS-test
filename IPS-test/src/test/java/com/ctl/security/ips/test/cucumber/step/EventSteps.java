@@ -8,6 +8,7 @@ import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -58,6 +59,7 @@ public class EventSteps {
     private String bearerToken;
 
     private WireMockServer wireMockServer;
+    private WireMock wireMockClient;
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     private int destinationPort;
@@ -83,10 +85,14 @@ public class EventSteps {
         }
 
         wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
+//        wireMockServer = wireMockComponent.createWireMockServer(destinationPort);
+//        wireMockClient = wireMockComponent.createWireMockClient(destinationHostName, destinationPort);
 
-        wireMockComponent.createWireMockServerStub(wireMockServer, SOME_VALID_ADDRESS, HttpStatus.SC_OK);
+        wireMockComponent.createWireMockServerPostStub(wireMockServer, SOME_VALID_ADDRESS, HttpStatus.SC_OK);
+//        wireMockComponent.createWireMockServerPostStub(wireMockClient, SOME_VALID_ADDRESS, HttpStatus.SC_OK);
+        wireMockComponent.createWireMockServerPostStub(wireMockServer, SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
+//        wireMockComponent.createWireMockServerPostStub(wireMockClient, SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
 
-        wireMockComponent.createWireMockServerStub(wireMockServer, SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
     }
 
     @When("^the event notification is posted to the events endpoint$")

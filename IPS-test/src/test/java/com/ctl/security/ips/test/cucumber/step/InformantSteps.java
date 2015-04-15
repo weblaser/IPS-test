@@ -8,6 +8,7 @@ import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -88,12 +89,13 @@ public class InformantSteps {
     @And("^the notification destination is set for all configuration items$")
     public void the_notification_destination_is_set_for_all_configuration_items() throws Throwable {
         wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
+//        wireMockClient = wireMockComponent.createWireMockClient(destinationHostName, destinationPort);
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
             String notificationDestinationUrl = entry.getKey().getHostName() + "destinationUrl";
             String destinationURL = "http://" + destinationHostName + ":" + destinationPort
                     + "/" + notificationDestinationUrl;
             createAndSetNotificationDestination(destinationURL, entry.getKey());
-            wireMockComponent.createWireMockServerStub(wireMockServer, notificationDestinationUrl, HttpStatus.SC_OK);
+            wireMockComponent.createWireMockServerPostStub(wireMockServer, notificationDestinationUrl, HttpStatus.SC_OK);
         }
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
             waitForNotificationDestinationUpdate(entry.getKey());

@@ -4,12 +4,16 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.maestro.config.MaestroConfig;
+import com.ctl.security.library.common.httpclient.CtlSecurityClient;
+import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
+import org.springframework.http.HttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,6 +31,9 @@ public class EventNotifyService {
     @Autowired
     @Qualifier(MaestroConfig.IPS_MAESTRO_REST_TEMPLATE)
     private RestTemplate restTemplate;
+
+    @Autowired
+    private CtlSecurityClient ctlSecurityClient;
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
     private Integer maxRetryAttempts;
@@ -46,41 +53,20 @@ public class EventNotifyService {
                     .getNotificationDestinations();
 
             for (NotificationDestination notificationDestination : notificationDestinations) {
-
-//                ResponseEntity<String> responseEntity=new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
                 Integer retryAttempts=0;
-
                 Boolean responseEntityIsSuccessful=false;
-                Boolean attemptsHaveNotExceeded=true;
-                while(!responseEntityIsSuccessful && attemptsHaveNotExceeded)
+
+                while(!responseEntityIsSuccessful && (retryAttempts < maxRetryAttempts))
                 {
-
-
                     try {
-//                        responseEntity = restTemplate.exchange(
-//                                notificationDestination.getUrl(),
-//                                HttpMethod.POST,
-//                                new HttpEntity<>(eventBean.getEvent()),
-//                                String.class
-//                        );
+                        CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
+                                .body(eventBean.getEvent())
+                                .execute();
 
-                        restTemplate.exchange(
-                                notificationDestination.getUrl(),
-                                HttpMethod.POST,
-                                new HttpEntity<>(eventBean.getEvent()),
-                                Void.class
-                        );
+                        if(ctlSecurityResponse.isSuccessful()){
+                            responseEntityIsSuccessful = true;
+                        }
 
-
-
-//                        restTemplate.postForLocation(
-//                                notificationDestination.getUrl(),
-//                                new HttpEntity<>(eventBean.getEvent())
-//                        );
-                        responseEntityIsSuccessful = true;
-//                        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-//                            logger.info("Failed to Send Notification to " + notificationDestination.getUrl());
-//                        }
                     }catch(Exception e)
                     {
                         logger.info("Exception in Send Notification to " + notificationDestination.getUrl(), e);
@@ -88,10 +74,7 @@ public class EventNotifyService {
                     retryAttempts++;
 
                     try {Thread.sleep(retryWaitTime);}catch(Exception e){}
-//                    responseEntityIsSuccessful=(!responseEntity.getStatusCode().is2xxSuccessful());
-                    attemptsHaveNotExceeded= (retryAttempts < maxRetryAttempts);
                 }
-//                if (!responseEntity.getStatusCode().is2xxSuccessful()) {
                 if (!responseEntityIsSuccessful) {
                     logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
                 }

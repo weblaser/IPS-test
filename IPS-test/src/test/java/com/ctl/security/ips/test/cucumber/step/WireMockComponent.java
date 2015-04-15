@@ -14,20 +14,34 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 @Component
 public class WireMockComponent {
 
-    WireMockServer createWireMockServer(String destinationHostName, int destinationPort) {
-        WireMockServer wireMockServer = new WireMockServer(destinationPort);
-//        WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(destinationPort).bindAddress(destinationHostName));
-        WireMock wireMock = new WireMock(destinationHostName, destinationPort);
+//    public WireMockServer createWireMockServer(int port) {
+//        WireMockServer wireMockServer = new WireMockServer(wireMockConfig().port(port));
+//        wireMockServer.start();
+//        return wireMockServer;
+//    }
 
-//        configureFor(destinationHostName, destinationPort);
+
+//    public WireMock createWireMockClient(String destinationHostName, int destinationPort) {
+//        WireMock wireMock = new WireMock(destinationHostName, destinationPort);
+//        return wireMock;
+//    }
+
+//    public void createWireMockServerPostStub(WireMock wireMock, String notificationUrlPath, int httpStatus) {
+//        wireMock.register(post(urlPathEqualTo(notificationUrlPath))
+//                .willReturn(aResponse()
+//                        .withStatus(httpStatus)));
+//    }
+
+    public WireMockServer createWireMockServer(String destinationHostName, int destinationPort) {
+        WireMockServer wireMockServer = new WireMockServer(destinationPort);
+        configureFor(destinationHostName, destinationPort);
         wireMockServer.start();
         return wireMockServer;
     }
 
-    void createWireMockServerStub(WireMockServer wireMockServer, String notificationUrlPath, int httpStatus) {
+    public void createWireMockServerPostStub(WireMockServer wireMockServer, String notificationUrlPath, int httpStatus) {
         wireMockServer.stubFor(post(urlPathEqualTo(notificationUrlPath))
                 .willReturn(aResponse()
-                        .withStatus(httpStatus)
-                        .withBody("")));
+                        .withStatus(httpStatus)));
     }
 }
