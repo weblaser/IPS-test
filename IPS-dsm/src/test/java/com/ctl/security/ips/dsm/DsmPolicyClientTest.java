@@ -5,7 +5,7 @@ import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
-import com.ctl.security.ips.dsm.util.Os;
+import com.ctl.security.ips.dsm.util.OsType;
 import manager.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
@@ -82,9 +82,9 @@ public class DsmPolicyClientTest {
         createdPolicyProfileTransport.setParentSecurityProfileID(NumberUtils.createInteger(parentPolicy.getVendorPolicyId()));
 
         if(os.equals(WINDOWS)) {
-            when(manager.securityProfileRetrieveByName(Os.CLC_WINDOWS.getVaule(), sessionId)).thenReturn(parentProfileTransport);
+            when(manager.securityProfileRetrieveByName(OsType.CLC_WINDOWS.getValue(), sessionId)).thenReturn(parentProfileTransport);
         } else {
-            when(manager.securityProfileRetrieveByName(Os.CLC_LINUX.getVaule(), sessionId)).thenReturn(parentProfileTransport);
+            when(manager.securityProfileRetrieveByName(OsType.CLC_LINUX.getValue(), sessionId)).thenReturn(parentProfileTransport);
         }
         when(manager.securityProfileSave(securityProfileTransportToBeCreated, sessionId)).thenReturn(expectedSecurityProfileTransport, createdPolicyProfileTransport);
         when(securityProfileTransportMarshaller.convert(policyToBeCreated)).thenReturn(securityProfileTransportToBeCreated);

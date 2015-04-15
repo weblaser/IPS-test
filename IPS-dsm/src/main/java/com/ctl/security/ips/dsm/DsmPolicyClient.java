@@ -5,7 +5,7 @@ import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
-import com.ctl.security.ips.dsm.util.Os;
+import com.ctl.security.ips.dsm.util.OsType;
 import manager.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,9 +68,9 @@ public class DsmPolicyClient {
         String clcOs = serverClient.getOS(accountAlias, policy.getHostName(), bearerToken);
         Policy parentPolicy;
         if(clcOs.toLowerCase().contains("win")){
-            parentPolicy = retrieveSecurityProfileByName(Os.CLC_WINDOWS.getVaule());
+            parentPolicy = retrieveSecurityProfileByName(OsType.CLC_WINDOWS.getValue());
         } else {
-            parentPolicy = retrieveSecurityProfileByName(Os.CLC_LINUX.getVaule());
+            parentPolicy = retrieveSecurityProfileByName(OsType.CLC_LINUX.getValue());
         }
         policy.setParentPolicyId(parentPolicy.getVendorPolicyId());
     }
