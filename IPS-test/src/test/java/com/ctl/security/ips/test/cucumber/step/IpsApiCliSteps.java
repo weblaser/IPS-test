@@ -47,7 +47,7 @@ public class IpsApiCliSteps {
     @Given("^there is a policy to retrieve$")
     public void there_is_a_policy_to_retrieve() throws Throwable {
         bearerToken = clcAuthenticationComponent.authenticate();
-        accountId = ClcAuthenticationComponent.VALID_AA;
+        accountId = ClcAuthenticationComponent.VALID_ACCOUNT_ALIAS1;
         policyId = PolicySteps.VALID_POLICY_ID;
     }
 

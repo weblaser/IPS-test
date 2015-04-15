@@ -65,7 +65,7 @@ public class EventSteps {
     @Value("${${spring.profiles.active:local}.ips.test.host}")
     private String destinationHostName;
 
-    private String accountId = ClcAuthenticationComponent.VALID_AA;
+    private String accountId = ClcAuthenticationComponent.VALID_ACCOUNT_ALIAS1;
     private String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Given("^an event occurs for a valid configuration item$")
@@ -84,9 +84,9 @@ public class EventSteps {
 
         wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
 
-        wireMockComponent.createWireMockServerStub(SOME_VALID_ADDRESS, HttpStatus.SC_OK);
+        wireMockComponent.createWireMockServerStub(wireMockServer, SOME_VALID_ADDRESS, HttpStatus.SC_OK);
 
-        wireMockComponent.createWireMockServerStub(SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
+        wireMockComponent.createWireMockServerStub(wireMockServer, SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
     }
 
     @When("^the event notification is posted to the events endpoint$")
@@ -96,9 +96,9 @@ public class EventSteps {
 
     @Then("^the event information is sent to the correct URL$")
     public void the_event_information_is_sent_to_the_correct_URL() {
-        waitForPostRequests(1, SOME_VALID_ADDRESS);
+        waitForPostRequests(3, SOME_VALID_ADDRESS);
 
-        verify(postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
+        verify(1, postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
 
         testCleanUpAndStopWireMock();
     }
@@ -107,7 +107,7 @@ public class EventSteps {
     public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times() {
         waitForPostRequests(maxRetryAttempts, SOME_INVALID_ADDRESS);
 
-        verify(maxRetryAttempts, postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
+        wireMockServer.verify(maxRetryAttempts, postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
 
         testCleanUpAndStopWireMock();
     }
@@ -177,7 +177,7 @@ public class EventSteps {
         int currentAttempts = 0;
         List<LoggedRequest> loggedRequests;
         do {
-            loggedRequests = findAll(postRequestedFor(urlEqualTo(address)));
+            loggedRequests = wireMockServer.findAll(postRequestedFor(urlEqualTo(address)));
 
             waitComponent.sleep(retryWaitTime, currentAttempts);
             currentAttempts++;

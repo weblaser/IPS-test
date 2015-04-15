@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -47,32 +45,55 @@ public class EventNotifyService {
                     .getAccount()
                     .getNotificationDestinations();
 
-            for (NotificationDestination notification : notificationDestinations) {
+            for (NotificationDestination notificationDestination : notificationDestinations) {
 
-                ResponseEntity<String> responseEntity=new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+//                ResponseEntity<String> responseEntity=new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
                 Integer retryAttempts=0;
 
-                while((!responseEntity.getStatusCode().is2xxSuccessful()) && (retryAttempts < maxRetryAttempts))
+                Boolean responseEntityIsSuccessful=false;
+                Boolean attemptsHaveNotExceeded=true;
+                while(!responseEntityIsSuccessful && attemptsHaveNotExceeded)
                 {
+
+
                     try {
-                        responseEntity = restTemplate.exchange(
-                                notification.getUrl(),
+//                        responseEntity = restTemplate.exchange(
+//                                notificationDestination.getUrl(),
+//                                HttpMethod.POST,
+//                                new HttpEntity<>(eventBean.getEvent()),
+//                                String.class
+//                        );
+
+                        restTemplate.exchange(
+                                notificationDestination.getUrl(),
                                 HttpMethod.POST,
                                 new HttpEntity<>(eventBean.getEvent()),
-                                String.class
+                                Void.class
                         );
-                        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-                            logger.info("Failed to Send Notification to " + notification.getUrl());
-                        }
+
+
+
+//                        restTemplate.postForLocation(
+//                                notificationDestination.getUrl(),
+//                                new HttpEntity<>(eventBean.getEvent())
+//                        );
+                        responseEntityIsSuccessful = true;
+//                        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+//                            logger.info("Failed to Send Notification to " + notificationDestination.getUrl());
+//                        }
                     }catch(Exception e)
                     {
-                        logger.info("Exception in Send Notification to " + notification.getUrl(), e);
+                        logger.info("Exception in Send Notification to " + notificationDestination.getUrl(), e);
                     }
                     retryAttempts++;
+
                     try {Thread.sleep(retryWaitTime);}catch(Exception e){}
+//                    responseEntityIsSuccessful=(!responseEntity.getStatusCode().is2xxSuccessful());
+                    attemptsHaveNotExceeded= (retryAttempts < maxRetryAttempts);
                 }
-                if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-                    logger.error("Failed to Send Notification to "+ notification.getUrl());
+//                if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+                if (!responseEntityIsSuccessful) {
+                    logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
                 }
             }
     }

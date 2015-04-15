@@ -15,7 +15,7 @@ public class ClcAuthenticationComponent {
 
     private static final String VALID_USERNAME = "Bugs";
     private static final String VALID_PASSWORD = "vZb]9yKv==Bnmozn";
-    static final String VALID_AA = "TCCD";
+    static final String VALID_ACCOUNT_ALIAS1 = "TCCD";
 
     @Autowired
     private AuthenticationClient authenticationClient;

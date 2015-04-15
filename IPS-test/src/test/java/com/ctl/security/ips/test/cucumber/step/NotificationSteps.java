@@ -46,7 +46,7 @@ public class NotificationSteps {
         bearerToken = clcAuthenticationComponent.authenticate();
 
         String hostName = "server.host.name." + System.currentTimeMillis();
-        String accountId = ClcAuthenticationComponent.VALID_AA;
+        String accountId = ClcAuthenticationComponent.VALID_ACCOUNT_ALIAS1;
         NotificationDestination notificationDestination = new NotificationDestination();
 
         notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");

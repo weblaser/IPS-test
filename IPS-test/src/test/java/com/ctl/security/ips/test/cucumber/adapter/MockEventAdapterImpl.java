@@ -4,9 +4,7 @@ import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -19,22 +17,22 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
  */
 public class MockEventAdapterImpl implements EventAdapter {
 
-    private WireMockServer wireMockServer;
+    private WireMockServer wireMockForSoapDsmMocking;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.eventTriggerAddress}")
     private String host;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.port}")
-    private int destinationPort;
+    private int port;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.host}")
-    private String destinationHostName;
+    private String hostName;
 
     @PostConstruct
     public void init() {
-        wireMockServer = new WireMockServer(destinationPort);
-        configureFor(destinationHostName, destinationPort);
-        wireMockServer.start();
+        wireMockForSoapDsmMocking = new WireMockServer(port);
+        configureFor(hostName, port);
+        wireMockForSoapDsmMocking.start();
     }
 
     @Override
@@ -44,7 +42,7 @@ public class MockEventAdapterImpl implements EventAdapter {
 
         String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
 
-        wireMockServer.stubFor(get(urlEqualTo(url))
+        wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(url))
                 .willReturn(aResponse().like(responseDefinition)));
 
     }

@@ -1,8 +1,18 @@
 @REGRESSION
 Feature: Security - Informant
 
-@WIP
-  Scenario: Request one event from DSM
-    Given a DSM agent is running on configuration item
-    When events are posted to DSM
-    Then the events are posted to the correct notification destination
+
+  Scenario: An account is notified when a event is triggered on a configuration item
+    Given there is 1 configuration item running
+    And the notification destination is set for all configuration items
+    When an event are posted to DSM for 1 of the configuration items
+    Then the events are posted to the attacked notification destinations
+    And no events are posted to the safe notification destinations
+
+
+  Scenario: An account is notified when a event is triggered on a configuration item
+    Given there is 10 configuration item running
+    And the notification destination is set for all configuration items
+    When an event are posted to DSM for 8 of the configuration items
+    Then the events are posted to the attacked notification destinations
+    And no events are posted to the safe notification destinations

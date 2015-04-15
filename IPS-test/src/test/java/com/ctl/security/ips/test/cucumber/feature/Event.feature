@@ -1,7 +1,7 @@
 @REGRESSION
 Feature: Security - Event
 
-
+  @WIP
   Scenario: Send an event to a set notification destination URL
     Given an event occurs for a valid configuration item
     And the notification destination is valid
