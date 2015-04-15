@@ -44,40 +44,36 @@ public class EventNotifyService {
     //TODO: After story SECURITY-755 is completed switch to org.apache.logging.log4j.LogManager
     private static final Logger logger = Logger.getLogger(EventNotifyService.class);
 
-    public void notify(EventBean eventBean){
+    public void notify(EventBean eventBean) {
 
-            List<NotificationDestination> notificationDestinations = configurationItemClient
-                    .getConfigurationItem(eventBean.getHostName(), eventBean.getAccountId())
-                    .getContent()
-                    .getAccount()
-                    .getNotificationDestinations();
+        List<NotificationDestination> notificationDestinations = configurationItemClient
+                .getConfigurationItem(eventBean.getHostName(), eventBean.getAccountId())
+                .getContent()
+                .getAccount()
+                .getNotificationDestinations();
 
-            for (NotificationDestination notificationDestination : notificationDestinations) {
-                Integer retryAttempts=0;
-                Boolean responseEntityIsSuccessful=false;
+        for (NotificationDestination notificationDestination : notificationDestinations) {
+            Integer retryAttempts = 0;
+            Boolean responseEntityIsSuccessful = false;
 
-                while(!responseEntityIsSuccessful && (retryAttempts < maxRetryAttempts))
-                {
-                    try {
-                        CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
-                                .body(eventBean.getEvent())
-                                .execute();
+            while (!responseEntityIsSuccessful && (retryAttempts < maxRetryAttempts)) {
+                CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
+                        .body(eventBean.getEvent())
+                        .execute();
 
-                        if(ctlSecurityResponse.isSuccessful()){
-                            responseEntityIsSuccessful = true;
-                        }
-
-                    }catch(Exception e)
-                    {
-                        logger.info("Exception in Send Notification to " + notificationDestination.getUrl(), e);
-                    }
-                    retryAttempts++;
-
-                    try {Thread.sleep(retryWaitTime);}catch(Exception e){}
+                if (ctlSecurityResponse.isSuccessful()) {
+                    responseEntityIsSuccessful = true;
                 }
-                if (!responseEntityIsSuccessful) {
-                    logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
+                retryAttempts++;
+
+                try {
+                    Thread.sleep(retryWaitTime);
+                } catch (Exception e) {
                 }
             }
+            if (!responseEntityIsSuccessful) {
+                logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
+            }
+        }
     }
 }

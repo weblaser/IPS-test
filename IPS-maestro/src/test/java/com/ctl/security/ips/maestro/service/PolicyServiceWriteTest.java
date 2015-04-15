@@ -65,7 +65,7 @@ public class PolicyServiceWriteTest {
         Policy policyToBeCreated = buildPolicy();
         PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         Policy expectedNewlyCreatedPolicy = new Policy();
-        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean.getPolicy())).thenReturn(expectedNewlyCreatedPolicy);
         Product product = buildProduct();
         PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         SecurityTenant securityTenant = new SecurityTenant();
@@ -76,7 +76,7 @@ public class PolicyServiceWriteTest {
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
 
         //assert
-        verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreatedBean);
+        verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreatedBean.getPolicy());
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
         verify(cmdbService).installProduct(new InstallationBean(policyBean.getPolicy().getUsername(), VALID_ACCOUNT, policyBean.getPolicy().getHostName(), product));
@@ -89,7 +89,7 @@ public class PolicyServiceWriteTest {
         Policy policyToBeCreated = new Policy();
         PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         Policy expectedNewlyCreatedPolicy = new Policy();
-        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean.getPolicy())).thenReturn(expectedNewlyCreatedPolicy);
         SecurityTenant securityTenant = new SecurityTenant();
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
         when(dsmTenantClient.createDsmTenant(securityTenant)).thenReturn(createdSecurityTenant);
@@ -109,7 +109,7 @@ public class PolicyServiceWriteTest {
         Policy policyToBeCreated = new Policy();
         PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         Policy expectedNewlyCreatedPolicy = new Policy();
-        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean.getPolicy())).thenReturn(expectedNewlyCreatedPolicy);
         SecurityTenant securityTenant = new SecurityTenant();
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
         when(dsmTenantClient.createDsmTenant(securityTenant)).thenReturn(createdSecurityTenant);
