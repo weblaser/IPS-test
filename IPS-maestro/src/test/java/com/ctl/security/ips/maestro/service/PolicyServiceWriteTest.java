@@ -61,9 +61,11 @@ public class PolicyServiceWriteTest {
     @Test
     public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException {
         //arrange
+
         Policy policyToBeCreated = buildPolicy();
+        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         Policy expectedNewlyCreatedPolicy = new Policy();
-        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
         Product product = buildProduct();
         PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         SecurityTenant securityTenant = new SecurityTenant();
@@ -74,7 +76,7 @@ public class PolicyServiceWriteTest {
         Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
 
         //assert
-        verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreated);
+        verify(dsmPolicyClient).createCtlSecurityProfile(policyToBeCreatedBean);
         assertNotNull(actualNewlyPersistedPolicy);
         assertEquals(expectedNewlyCreatedPolicy, actualNewlyPersistedPolicy);
         verify(cmdbService).installProduct(new InstallationBean(policyBean.getPolicy().getUsername(), VALID_ACCOUNT, policyBean.getPolicy().getHostName(), product));
@@ -85,15 +87,15 @@ public class PolicyServiceWriteTest {
 
         //arrange
         Policy policyToBeCreated = new Policy();
+        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         Policy expectedNewlyCreatedPolicy = new Policy();
-        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
-        PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
         SecurityTenant securityTenant = new SecurityTenant();
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
         when(dsmTenantClient.createDsmTenant(securityTenant)).thenReturn(createdSecurityTenant);
 
         //act
-        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyBean);
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
 
         //assert
         verify(dsmTenantClient).createDsmTenant(securityTenant);
@@ -105,15 +107,15 @@ public class PolicyServiceWriteTest {
 
         //arrange
         Policy policyToBeCreated = new Policy();
+        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         Policy expectedNewlyCreatedPolicy = new Policy();
-        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreated)).thenReturn(expectedNewlyCreatedPolicy);
-        PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        when(dsmPolicyClient.createCtlSecurityProfile(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
         SecurityTenant securityTenant = new SecurityTenant();
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
         when(dsmTenantClient.createDsmTenant(securityTenant)).thenReturn(createdSecurityTenant);
 
         //act
-        classUnderTest.createPolicyForAccount(policyBean);
+        classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
 
         //assert
         verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
