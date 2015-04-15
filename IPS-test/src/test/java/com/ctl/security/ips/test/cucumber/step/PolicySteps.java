@@ -50,7 +50,7 @@ public class PolicySteps {
     private List<Policy> policyList;
     private Policy policy;
 
-    private String accountId;
+    private String accountAlias;
     private String bearerToken;
     private String hostName;
     private String username;
@@ -81,11 +81,11 @@ public class PolicySteps {
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
-            accountId = ClcAuthenticationComponent.VALID_AA;
+            accountAlias = ClcAuthenticationComponent.VALID_AA;
 
             bearerToken = clcAuthenticationComponent.authenticate();
         } else {
-            accountId = INVALID_AA;
+            accountAlias = INVALID_AA;
             bearerToken = INVALID_TOKEN;
         }
     }
@@ -102,7 +102,7 @@ public class PolicySteps {
                     setHostName(hostName).
                     setUsername(userName);
 
-            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
+            policyClient.createPolicyForAccount(accountAlias, policy, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -118,9 +118,9 @@ public class PolicySteps {
         }
         try {
             if ("GET".equals(method)) {
-                policy = policyClient.getPolicyForAccount(accountId, id, bearerToken);
+                policy = policyClient.getPolicyForAccount(accountAlias, id, bearerToken);
             } else if ("PUT".equals(method)) {
-                policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
+                policyClient.updatePolicyForAccount(accountAlias, id, new Policy(), bearerToken);
             } else {
 
 
@@ -135,7 +135,7 @@ public class PolicySteps {
 
                 username = policy.getUsername();
 
-                policyClient.deletePolicyForAccount(accountId, id, username, hostName, bearerToken);
+                policyClient.deletePolicyForAccount(accountAlias, id, username, hostName, bearerToken);
 
             }
         } catch (Exception e) {
@@ -147,7 +147,7 @@ public class PolicySteps {
     @When("^I GET the policies$")
     public void i_GET_the_policies() {
         try {
-            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
+            policyList = policyClient.getPoliciesForAccount(accountAlias, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -176,7 +176,6 @@ public class PolicySteps {
     }
 
 
-
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
     }
@@ -192,7 +191,7 @@ public class PolicySteps {
         int i = 0;
         int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && !products.toString().contains("status=INACTIVE")){
-            configurationItemResource = configurationItemClient.getConfigurationItem(hostName, accountId);
+            configurationItemResource = configurationItemClient.getConfigurationItem(hostName, accountAlias);
             products = configurationItemResource.getContent().getProducts();
             Thread.sleep(1000);
             i++;
@@ -262,7 +261,8 @@ public class PolicySteps {
         int i = 0;
         int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && (user == null || user.getId() == null)){
-            user = userClient.getUser(policy.getUsername(), accountId);
+            user = userClient.getUser(policy.getUsername(), accountAlias);
+            policy.getHostName();
             Thread.sleep(1000);
             i++;
         }
@@ -279,7 +279,7 @@ public class PolicySteps {
         List<ProductUserActivity> productUserActivities = productUserActivityResources.unwrap();
         assertTrue(productUserActivities.size() > 0);
 
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getHostName(), accountId);
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getHostName(), accountAlias);
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent().getId());
 

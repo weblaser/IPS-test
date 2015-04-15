@@ -1,8 +1,11 @@
 package com.ctl.security.ips.dsm;
 
+import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
+import com.ctl.security.ips.dsm.util.Os;
 import manager.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +33,9 @@ public class DsmPolicyClient {
     private DsmLogInClient dsmLogInClient;
 
     @Autowired
+    private ServerClient serverClient;
+
+    @Autowired
     private SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
 
     private SecurityProfileTransport createPolicyOnDSMClient(SecurityProfileTransport securityProfileTransport) throws DsmClientException {
@@ -43,18 +49,31 @@ public class DsmPolicyClient {
         }
     }
 
-    public Policy createCtlSecurityProfile(Policy policy) throws DsmClientException {
+    public Policy createCtlSecurityProfile(PolicyBean policyBean) throws DsmClientException {
+        Policy newPolicy = policyBean.getPolicy();
+        setParentPolicy(newPolicy, policyBean.getAccountId(), policyBean.getBearerToken());
 
         try {
-          SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(policy));
+            SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(newPolicy));
             return securityProfileTransportMarshaller.convert(securityProfileTransport)
-                    .setHostName(policy.getHostName())
-                    .setUsername(policy.getUsername());
+                    .setHostName(newPolicy.getHostName())
+                    .setUsername(newPolicy.getUsername())
+                    .setParentPolicyId(newPolicy.getParentPolicyId());
         } catch (DsmClientException e) {
             throw new DsmClientException(e);
         }
     }
 
+    private void setParentPolicy(Policy policy, String accountAlias, String bearerToken) throws DsmClientException {
+        String clcOs = serverClient.getOS(accountAlias, policy.getHostName(), bearerToken);
+        Policy parentPolicy;
+        if(clcOs.toLowerCase().contains("win")){
+            parentPolicy = retrieveSecurityProfileByName(Os.CLC_WINDOWS.getVaule());
+        } else {
+            parentPolicy = retrieveSecurityProfileByName(Os.CLC_LINUX.getVaule());
+        }
+        policy.setParentPolicyId(parentPolicy.getVendorPolicyId());
+    }
 
     public Policy retrieveSecurityProfileById(int id) throws DsmClientException {
         try {
@@ -72,7 +91,8 @@ public class DsmPolicyClient {
             String sessionId = dsmLogInClient.connectToDSMClient(username, password);
             SecurityProfileTransport securityProfileTransport = manager.securityProfileRetrieveByName(name, sessionId);
             dsmLogInClient.endSession(sessionId);
-            return securityProfileTransportMarshaller.convert(securityProfileTransport);
+            Policy policy = securityProfileTransportMarshaller.convert(securityProfileTransport);
+            return policy;
         } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerCommunicationException_Exception | ManagerMaxSessionsException_Exception | ManagerException_Exception | ManagerAuthenticationException_Exception | ManagerTimeoutException_Exception e) {
             throw new DsmClientException(e);
         }
