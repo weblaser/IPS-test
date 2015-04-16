@@ -1,9 +1,13 @@
 package com.ctl.security.ips.dsm;
 
+import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
+import com.ctl.security.ips.dsm.util.OsType;
 import manager.*;
+import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +22,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
@@ -39,35 +43,80 @@ public class DsmPolicyClientTest {
     private DsmLogInClient dsmLogInClient;
 
     @Mock
+    private ServerClient serverClient;
+
+    @Mock
     private SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
+
+    private String LINUX = "rhel_64bit";
+    private String WINDOWS = "Windows_2008";
 
     private String username = "joe";
     private String password = "password";
     private String sessionId = "12345";
+    private PolicyBean policyBean;
+    private Policy expectedPolicy;
+    private Policy parentPolicy;
 
     @Before
-    public void setup() throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
+    public void setup() throws Exception {
         setupUsernamePasswordWhen(username, password, sessionId);
+        expectedPolicy = null;
+        policyBean = null;
+        parentPolicy = null;
+    }
+
+    private void setupMocks(String os) throws Exception {
+        Policy policyToBeCreated = new Policy();
+        policyBean = new PolicyBean("mockAlias", policyToBeCreated, "mockToken");
+
+        parentPolicy = new Policy();
+        parentPolicy.setVendorPolicyId("123938274");
+
+        expectedPolicy = new Policy();
+
+        SecurityProfileTransport securityProfileTransportToBeCreated = new SecurityProfileTransport();
+        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
+        SecurityProfileTransport parentProfileTransport = new SecurityProfileTransport();
+        SecurityProfileTransport createdPolicyProfileTransport = new SecurityProfileTransport();
+        createdPolicyProfileTransport.setParentSecurityProfileID(NumberUtils.createInteger(parentPolicy.getVendorPolicyId()));
+
+        if(os.equals(WINDOWS)) {
+            when(manager.securityProfileRetrieveByName(OsType.CLC_WINDOWS.getValue(), sessionId)).thenReturn(parentProfileTransport);
+        } else {
+            when(manager.securityProfileRetrieveByName(OsType.CLC_LINUX.getValue(), sessionId)).thenReturn(parentProfileTransport);
+        }
+        when(manager.securityProfileSave(securityProfileTransportToBeCreated, sessionId)).thenReturn(expectedSecurityProfileTransport, createdPolicyProfileTransport);
+        when(securityProfileTransportMarshaller.convert(policyToBeCreated)).thenReturn(securityProfileTransportToBeCreated);
+        when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedPolicy);
+        when(securityProfileTransportMarshaller.convert(parentProfileTransport)).thenReturn(parentPolicy);
+        when(serverClient.getOS(anyString(), anyString(), anyString())).thenReturn(os);
     }
 
     @Test
-    public void createCtlSecurityProfile_createsCtlSecurityProfile() throws Exception {
-        //arrange
-        Policy policyToBeCreated = new Policy();
-        SecurityProfileTransport securityProfileTransportToBeCreated = new SecurityProfileTransport();
-        SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
-        Policy expectedPolicy = new Policy();
-
-        when(securityProfileTransportMarshaller.convert(policyToBeCreated)).thenReturn(securityProfileTransportToBeCreated);
-        when(manager.securityProfileSave(securityProfileTransportToBeCreated, sessionId)).thenReturn(expectedSecurityProfileTransport);
-        when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedPolicy);
+    public void createCtlSecurityProfile_createsCtlSecurityProfileWindows() throws Exception {
+        setupMocks(WINDOWS);
 
         //act
-        Policy actualPolicy = classUnderTest.createCtlSecurityProfile(policyToBeCreated);
+        Policy actualPolicy = classUnderTest.createCtlSecurityProfile(policyBean);
 
         //assert
         assertEquals(expectedPolicy, actualPolicy);
-        verify(dsmLogInClient).endSession(sessionId);
+        assertEquals(parentPolicy.getVendorPolicyId(), actualPolicy.getParentPolicyId());
+        verify(dsmLogInClient, times(2)).endSession(sessionId);
+    }
+
+    @Test
+    public void createCtlSecurityProfile_createsCtlSecurityProfileLinux() throws Exception {
+        setupMocks(LINUX);
+
+        //act
+        Policy actualPolicy = classUnderTest.createCtlSecurityProfile(policyBean);
+
+        //assert
+        assertEquals(expectedPolicy, actualPolicy);
+        assertEquals(parentPolicy.getVendorPolicyId(), actualPolicy.getParentPolicyId());
+        verify(dsmLogInClient, times(2)).endSession(sessionId);
     }
 
     private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {
@@ -77,12 +126,14 @@ public class DsmPolicyClientTest {
     }
 
     @Test (expected = DsmClientException.class)
-    public void createPolicyOnDSMClientTestFail() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, DsmClientException {
+    public void createPolicyOnDSMClientTestFail() throws Exception {
         //arrange
+        setupMocks("rhel_64bit");
+
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq(sessionId))).thenThrow(ManagerLockoutException_Exception.class);
 
         //act
-        classUnderTest.createCtlSecurityProfile(new Policy());
+        classUnderTest.createCtlSecurityProfile(policyBean);
     }
 
 

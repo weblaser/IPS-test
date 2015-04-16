@@ -23,9 +23,11 @@ public class SecurityProfileTransportMarshallerTest {
     @Test
     public void convertPolicyToSecurityProfileTransport_marshallsCtlSecurityProfileToSecurityProfileTransport(){
         Integer id = new Integer(0);
+        Integer parentId = new Integer(7);
         String name = "name" + System.currentTimeMillis();
         Policy policy = new Policy();
         policy.setVendorPolicyId(id.toString());
+        policy.setParentPolicyId(parentId.toString());
         policy.setName(name);
 
         SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
@@ -33,6 +35,7 @@ public class SecurityProfileTransportMarshallerTest {
         assertNotNull(securityProfileTransport);
         assertEquals(securityProfileTransport.getName(), name);
         assertEquals(securityProfileTransport.getID(), id);
+        assertEquals(securityProfileTransport.getParentSecurityProfileID(), parentId);
     }
 
     @Test
@@ -41,6 +44,7 @@ public class SecurityProfileTransportMarshallerTest {
         String name = null;
         Policy policy = new Policy();
         policy.setVendorPolicyId(id);
+        policy.setParentPolicyId(id);
         policy.setName(name);
 
         SecurityProfileTransport securityProfileTransport = securityProfileTransportMarshaller.convert(policy);
@@ -48,21 +52,25 @@ public class SecurityProfileTransportMarshallerTest {
         assertNotNull(securityProfileTransport);
         assertEquals(securityProfileTransport.getName(), name);
         assertEquals(securityProfileTransport.getID(), id);
+        assertEquals(securityProfileTransport.getParentSecurityProfileID(), id);
     }
 
     @Test
     public void convertSecurityProfileTransportToPolicy_marshallsSecurityProfileTransportToCtlSecurityProfile(){
         Integer id = new Integer(0);
+        int parentId = 7;
         String name = "name" + System.currentTimeMillis();
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
         securityProfileTransport.setID(id);
         securityProfileTransport.setName(name);
+        securityProfileTransport.setParentSecurityProfileID(parentId);
 
         Policy policy = securityProfileTransportMarshaller.convert(securityProfileTransport);
 
         assertNotNull(policy);
         assertEquals(policy.getName(), name);
         assertEquals(policy.getVendorPolicyId(), id.toString());
+        assertEquals(policy.getParentPolicyId(), Integer.toString(parentId));
     }
 
 
@@ -73,12 +81,14 @@ public class SecurityProfileTransportMarshallerTest {
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();
         securityProfileTransport.setID(id);
         securityProfileTransport.setName(name);
+        securityProfileTransport.setParentSecurityProfileID(id);
 
         Policy policy = securityProfileTransportMarshaller.convert(securityProfileTransport);
 
         assertNotNull(policy);
         assertEquals(policy.getName(), name);
         assertNull(policy.getVendorPolicyId());
+        assertNull(policy.getParentPolicyId());
     }
 
 }

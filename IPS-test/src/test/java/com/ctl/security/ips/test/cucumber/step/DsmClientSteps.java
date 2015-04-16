@@ -1,7 +1,11 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
+import com.ctl.security.clc.client.core.bean.AuthenticationClient;
+import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.SecurityTenant;
+import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.DsmTenantClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
@@ -32,11 +36,14 @@ public class DsmClientSteps {
     private DsmTenantClient dsmTenantClient;
     @Autowired
     private Manager manager;
+    @Autowired
+    private ClcAuthenticationComponent clcAuthenticationComponent;
 
     @Autowired
     private DsmClientComponent dsmClientComponent;
 
     private Policy policy;
+    private PolicyBean policyBean;
 
     private Policy newlyCreatedCtlPolicy;
 
@@ -54,8 +61,11 @@ public class DsmClientSteps {
 
     @Given("^I have a policy that I want to create in DSM$")
     public void i_have_a_policy_that_I_want_to_create_in_DSM() throws Throwable {
+        String bearerToken = clcAuthenticationComponent.authenticate();
+        String accountAlias = ClcAuthenticationComponent.VALID_AA;
 
         policy = new Policy();
+        policyBean = new PolicyBean(accountAlias, policy, bearerToken);
 
         String name = "name" + System.currentTimeMillis();
         policy.setName(name);
@@ -93,7 +103,7 @@ public class DsmClientSteps {
 
     @When("^I execute the \"(.*?)\" operation against the DSM API$")
     public void i_execute_the_operation_against_the_DSM_API(String arg1) throws Throwable {
-        newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policy);
+        newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean);
     }
 
 

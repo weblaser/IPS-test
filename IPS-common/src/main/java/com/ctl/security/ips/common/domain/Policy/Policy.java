@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class Policy implements Serializable {
 
     private String vendorPolicyId;
+    private String parentPolicyId;
     private String name;
     private PolicyStatus status;
 

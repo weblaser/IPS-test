@@ -3,8 +3,6 @@ package com.ctl.security.ips.common.jms.bean;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -14,9 +12,7 @@ import java.io.Serializable;
  *
  */
 
-@ToString
 @AllArgsConstructor
-@EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
 public class PolicyBean implements Serializable {
