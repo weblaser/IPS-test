@@ -9,7 +9,7 @@ Feature: Security - Informant
     Then the events are posted to the attacked notification destinations
     And no events are posted to the safe notification destinations
 
-  @WIP
+
   Scenario: An account is notified when a event is triggered on a configuration item
     Given there is 10 configuration item running
     And the notification destination is set for all configuration items

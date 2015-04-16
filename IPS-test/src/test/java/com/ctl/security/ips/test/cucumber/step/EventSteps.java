@@ -8,7 +8,6 @@ import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -29,7 +28,7 @@ public class EventSteps {
     public static final String SOME_VALID_ADDRESS = "/someValidAddress";
     public static final String SOME_INVALID_ADDRESS = "/someInvalidAddress";
     private static final String VALID = "valid";
-    public static final int MAX_ATTEMPTS = 30;
+    public static final int MAX_ATTEMPTS = 60;
 
     @Autowired
     private NotificationClient notificationClient;
@@ -47,7 +46,7 @@ public class EventSteps {
     private WaitComponent waitComponent;
 
     @Autowired
-    private WireMockComponent wireMockComponent;
+    private WireMockServer notificationDestinationWireMockServer;
 
     @Value("${${spring.profiles.active:local}.ips.test.retryWaitTime}")
     private Integer retryWaitTime;
@@ -57,9 +56,6 @@ public class EventSteps {
 
     private EventBean eventBean;
     private String bearerToken;
-
-    private WireMockServer wireMockServer;
-    private WireMock wireMockClient;
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     private int destinationPort;
@@ -84,15 +80,12 @@ public class EventSteps {
             createAndSetNotificationDestination(destinationHostName, destinationPort, SOME_INVALID_ADDRESS);
         }
 
-        wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
-//        wireMockServer = wireMockComponent.createWireMockServer(destinationPort);
-//        wireMockClient = wireMockComponent.createWireMockClient(destinationHostName, destinationPort);
-
-        wireMockComponent.createWireMockServerPostStub(wireMockServer, SOME_VALID_ADDRESS, HttpStatus.SC_OK);
-//        wireMockComponent.createWireMockServerPostStub(wireMockClient, SOME_VALID_ADDRESS, HttpStatus.SC_OK);
-        wireMockComponent.createWireMockServerPostStub(wireMockServer, SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
-//        wireMockComponent.createWireMockServerPostStub(wireMockClient, SOME_INVALID_ADDRESS, HttpStatus.SC_BAD_REQUEST);
-
+        notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(SOME_VALID_ADDRESS))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.SC_OK)));
+        notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(SOME_INVALID_ADDRESS))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.SC_FORBIDDEN)));
     }
 
     @When("^the event notification is posted to the events endpoint$")
@@ -102,20 +95,20 @@ public class EventSteps {
 
     @Then("^the event information is sent to the correct URL$")
     public void the_event_information_is_sent_to_the_correct_URL() {
-        waitForPostRequests(3, SOME_VALID_ADDRESS);
+        waitForPostRequests(1, SOME_VALID_ADDRESS);
 
-        verify(1, postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
+        notificationDestinationWireMockServer.verify(1, postRequestedFor(urlEqualTo(SOME_VALID_ADDRESS)));
 
-        testCleanUpAndStopWireMock();
+        testCleanUp();
     }
 
     @Then("^the event information is attempted to be sent to the URL multiple times$")
     public void the_event_information_is_attempted_to_be_sent_to_the_URL_multiple_times() {
         waitForPostRequests(maxRetryAttempts, SOME_INVALID_ADDRESS);
 
-        wireMockServer.verify(maxRetryAttempts, postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
+        notificationDestinationWireMockServer.verify(maxRetryAttempts, postRequestedFor(urlEqualTo(SOME_INVALID_ADDRESS)));
 
-        testCleanUpAndStopWireMock();
+        testCleanUp();
     }
 
     private void createAndConfigureConfigurationItem(String accountId, String hostName) {
@@ -183,7 +176,7 @@ public class EventSteps {
         int currentAttempts = 0;
         List<LoggedRequest> loggedRequests;
         do {
-            loggedRequests = wireMockServer.findAll(postRequestedFor(urlEqualTo(address)));
+            loggedRequests = notificationDestinationWireMockServer.findAll(postRequestedFor(urlEqualTo(address)));
 
             waitComponent.sleep(retryWaitTime, currentAttempts);
             currentAttempts++;
@@ -191,12 +184,12 @@ public class EventSteps {
 
     }
 
-    private void testCleanUpAndStopWireMock() {
-        wireMockServer.stop();
+    private void testCleanUp() {
         ConfigurationItem configurationItem = configurationItemClient
                 .getConfigurationItem(hostName, accountId)
                 .getContent();
-        configurationItemClient.deleteConfigurationItem(configurationItem.getId());
+        String id = configurationItem.getId();
+        configurationItemClient.deleteConfigurationItem(id);
     }
 
 }

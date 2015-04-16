@@ -6,6 +6,7 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.maestro.config.MaestroConfig;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
+import org.apache.http.HttpResponse;
 import org.springframework.http.HttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,10 +29,6 @@ public class EventNotifyService {
 
     @Autowired
     private ConfigurationItemClient configurationItemClient;
-
-    @Autowired
-    @Qualifier(MaestroConfig.IPS_MAESTRO_REST_TEMPLATE)
-    private RestTemplate restTemplate;
 
     @Autowired
     private CtlSecurityClient ctlSecurityClient;
@@ -53,26 +51,27 @@ public class EventNotifyService {
                 .getNotificationDestinations();
 
         for (NotificationDestination notificationDestination : notificationDestinations) {
-            Integer retryAttempts = 0;
-            Boolean responseEntityIsSuccessful = false;
+            try {
+                Integer retryAttempts = 0;
+                CtlSecurityResponse ctlSecurityResponse;
 
-            while (!responseEntityIsSuccessful && (retryAttempts < maxRetryAttempts)) {
-                CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
-                        .body(eventBean.getEvent())
-                        .execute();
+                do {
+                    ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
+                            .body(eventBean.getEvent())
+                            .execute();
 
-                if (ctlSecurityResponse.isSuccessful()) {
-                    responseEntityIsSuccessful = true;
+                    retryAttempts++;
+                    try {
+                        Thread.sleep(retryWaitTime);
+                    } catch (Exception e) {
+                    }
+                } while (!ctlSecurityResponse.isSuccessful() && (retryAttempts < maxRetryAttempts));
+
+                if (!ctlSecurityResponse.isSuccessful()) {
+                    logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
                 }
-                retryAttempts++;
-
-                try {
-                    Thread.sleep(retryWaitTime);
-                } catch (Exception e) {
-                }
-            }
-            if (!responseEntityIsSuccessful) {
-                logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

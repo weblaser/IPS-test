@@ -49,11 +49,10 @@ public class InformantSteps {
     private WaitComponent waitComponent;
 
     @Autowired
-    private WireMockComponent wireMockComponent;
-
-    @Autowired
     private UserClient userClient;
 
+    @Autowired
+    private WireMockServer notificationDestinationWireMockServer;
 
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     private int destinationPort;
@@ -74,7 +73,6 @@ public class InformantSteps {
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
     private Integer maxRetryAttempts;
-    private WireMockServer wireMockServer;
 
     @Given("^there is (\\d+) configuration item running$")
     public void there_is_configuration_item_running(int amountOfConfigurationItems) throws Throwable {
@@ -88,14 +86,15 @@ public class InformantSteps {
 
     @And("^the notification destination is set for all configuration items$")
     public void the_notification_destination_is_set_for_all_configuration_items() throws Throwable {
-        wireMockServer = wireMockComponent.createWireMockServer(destinationHostName, destinationPort);
-//        wireMockClient = wireMockComponent.createWireMockClient(destinationHostName, destinationPort);
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
             String notificationDestinationUrl = entry.getKey().getHostName() + "destinationUrl";
             String destinationURL = "http://" + destinationHostName + ":" + destinationPort
                     + "/" + notificationDestinationUrl;
             createAndSetNotificationDestination(destinationURL, entry.getKey());
-            wireMockComponent.createWireMockServerPostStub(wireMockServer, notificationDestinationUrl, HttpStatus.SC_OK);
+
+            notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(notificationDestinationUrl))
+                    .willReturn(aResponse()
+                            .withStatus(HttpStatus.SC_OK)));
         }
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
             waitForNotificationDestinationUpdate(entry.getKey());
@@ -139,8 +138,6 @@ public class InformantSteps {
     @And("^no events are posted to the safe notification destinations$")
     public void no_events_are_posted_to_the_safe_notification_destinations() throws Throwable {
         verifyAllConfigurationItemPosts(safeConfigurationItemUsers, 0);
-
-        wireMockServer.stop();
     }
 
     private void verifyAllConfigurationItemPosts(Map<ConfigurationItem, User> configurationItemUserMap, Integer postTimes) {
@@ -165,7 +162,7 @@ public class InformantSteps {
         for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
             waitForPostRequests(postTimes, notificationDestination.getUrl());
             if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
-                wireMockServer.verify(postTimes, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
+                notificationDestinationWireMockServer.verify(postTimes, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
             }
         }
 
@@ -191,7 +188,7 @@ public class InformantSteps {
         List<LoggedRequest> loggedRequests;
         do {
             waitComponent.sleep(retryWaitTime, currentAttempts);
-            loggedRequests = wireMockServer.findAll(postRequestedFor(urlEqualTo(getWireMockUrl(fullAddress))));
+            loggedRequests = notificationDestinationWireMockServer.findAll(postRequestedFor(urlEqualTo(getWireMockUrl(fullAddress))));
             currentAttempts++;
         } while (loggedRequests.size() < requests && currentAttempts < MAX_ATTEMPTS);
     }

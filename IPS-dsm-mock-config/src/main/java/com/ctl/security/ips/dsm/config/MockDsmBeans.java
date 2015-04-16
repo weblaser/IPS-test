@@ -97,7 +97,6 @@ public class MockDsmBeans extends BaseDsmBeans {
         setupPolicyRetrieve(policyKeys, expectedPolicies, expectedSecurityProfileTransport);
         setupPolicySave(expectedSecurityProfileTransport);
         setupPolicyDelete(policyKeys, expectedPolicies);
-//        setupFirewallEventRetrieve();
     }
 
     private void setupDSMAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
@@ -155,13 +154,6 @@ public class MockDsmBeans extends BaseDsmBeans {
             }
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
-
-//    private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
-//
-//        for (Map.Entry<String, String> loginTenantEntry : loginTenantMap.entrySet()) {
-//            createFirewallEventRetrieveMock(loginTenantEntry.getKey(), loginTenantEntry.getValue());
-//        }
-//    }
 
     private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
         when(manager.authenticateTenant(
