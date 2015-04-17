@@ -34,6 +34,11 @@ public class MockEventAdapterImpl implements EventAdapter {
         wireMockForSoapDsmMocking = new WireMockServer(port);
         configureFor(hostName, port);
         wireMockForSoapDsmMocking.start();
+
+        //If no stub is made for an account no firewall events will be returned
+        wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(host + "/.*"))
+                .atPriority(5)
+                .willReturn(aResponse().withBody("")));
     }
 
     @Override
@@ -42,6 +47,7 @@ public class MockEventAdapterImpl implements EventAdapter {
         String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
 
         wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(url))
+                .atPriority(1)
                 .willReturn(aResponse().like(jsonResponse(firewallEvents))));
     }
 

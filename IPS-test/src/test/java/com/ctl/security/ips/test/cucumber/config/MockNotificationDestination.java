@@ -26,6 +26,8 @@ public class MockNotificationDestination {
         wireMockServer = new WireMockServer(destinationPort);
         configureFor(destinationHostName,destinationPort);
         wireMockServer.start();
+
+
     }
 
     @Bean
