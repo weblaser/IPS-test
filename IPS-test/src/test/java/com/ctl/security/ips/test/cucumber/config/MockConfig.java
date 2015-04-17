@@ -13,7 +13,6 @@ import org.springframework.context.annotation.*;
 
 /**
  * Created by Sean Robb on 3/30/2015.
- *
  */
 @Configuration
 @PropertySource("classpath:properties/ips.dsm.mock.test.properties")
@@ -22,15 +21,24 @@ public class MockConfig {
 
     @Autowired
     private MockDsmRest mockDsmRest;
-    
+
+    @Autowired
+    private MockNotificationDestination mockNotificationDestination;
+
     @Bean
-    public EventAdapter eventAdapter(){
+    public EventAdapter eventAdapter() {
         return new MockEventAdapterImpl();
     }
 
     @PostConstruct
-    public void mockDsmRest(){
+    public void mockDsmRest() {
         mockDsmRest.init();
+    }
+
+
+    @PostConstruct
+    public void mockNotificationDestination() {
+        mockNotificationDestination.init();
     }
 
 }
