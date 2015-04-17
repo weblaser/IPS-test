@@ -136,7 +136,7 @@ public class EventSteps {
                 accountId,
                 Arrays.asList(notificationDestination));
 
-        bearerToken = clcAuthenticationComponent.authenticate();
+        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
 
         notificationClient.updateNotificationDestination(notificationDestinationBean, bearerToken);
 

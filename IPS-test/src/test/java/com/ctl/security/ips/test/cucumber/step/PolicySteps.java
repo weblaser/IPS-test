@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
@@ -81,9 +82,10 @@ public class PolicySteps {
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
-            accountAlias = ClcAuthenticationComponent.VALID_AA;
 
-            bearerToken = clcAuthenticationComponent.authenticate();
+            ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
+            bearerToken = clcAuthenticationResponse.getBearerToken();
+            accountAlias = clcAuthenticationResponse.getAccountAlias();
         } else {
             accountAlias = INVALID_AA;
             bearerToken = INVALID_TOKEN;
@@ -262,7 +264,6 @@ public class PolicySteps {
         int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && (user == null || user.getId() == null)){
             user = userClient.getUser(policy.getUsername(), accountAlias);
-            policy.getHostName();
             Thread.sleep(1000);
             i++;
         }

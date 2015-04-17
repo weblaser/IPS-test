@@ -1,6 +1,7 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.clc.client.core.bean.AuthenticationClient;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
@@ -14,7 +15,6 @@ import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import manager.Manager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -35,8 +35,6 @@ public class DsmClientSteps {
     @Autowired
     private DsmTenantClient dsmTenantClient;
     @Autowired
-    private Manager manager;
-    @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
     @Autowired
@@ -46,7 +44,6 @@ public class DsmClientSteps {
     private PolicyBean policyBean;
 
     private Policy newlyCreatedCtlPolicy;
-
 
     private SecurityTenant securityTenant;
     private SecurityTenant newlyCreateSecurityTenant;
@@ -61,14 +58,16 @@ public class DsmClientSteps {
 
     @Given("^I have a policy that I want to create in DSM$")
     public void i_have_a_policy_that_I_want_to_create_in_DSM() throws Throwable {
-        String bearerToken = clcAuthenticationComponent.authenticate();
-        String accountAlias = ClcAuthenticationComponent.VALID_AA;
+        ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
+        String bearerToken = clcAuthenticationResponse.getBearerToken();
+        String accountAlias = clcAuthenticationResponse.getAccountAlias();
 
         policy = new Policy();
-        policyBean = new PolicyBean(accountAlias, policy, bearerToken);
 
         String name = "name" + System.currentTimeMillis();
         policy.setName(name);
+        policy.setHostName("VA1SCDVV2TEST01");
+        policyBean = new PolicyBean(accountAlias, policy, bearerToken);
 
     }
 

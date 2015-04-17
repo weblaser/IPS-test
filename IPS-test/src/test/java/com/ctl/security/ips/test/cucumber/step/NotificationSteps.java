@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.*;
@@ -43,10 +44,11 @@ public class NotificationSteps {
     @Given("^the customer wants to update a notification for a server$")
     public void the_customer_wants_to_update_a_notification_for_a_server(){
 
-        bearerToken = clcAuthenticationComponent.authenticate();
+        ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
+        String accountAlias = clcAuthenticationResponse.getAccountAlias();
+        bearerToken = clcAuthenticationResponse.getBearerToken();
 
         String hostName = "server.host.name." + System.currentTimeMillis();
-        String accountId = ClcAuthenticationComponent.VALID_AA;
         NotificationDestination notificationDestination = new NotificationDestination();
 
         notificationDestination.setEmailAddress("My.Test.Email@Testing.Test");
@@ -55,7 +57,7 @@ public class NotificationSteps {
         notificationDestination.setUrl("my.test.url/testing");
 
         Account account = new Account()
-                .setCustomerAccountId(accountId);
+                .setCustomerAccountId(accountAlias);
 
         ConfigurationItem configurationItem = new ConfigurationItem()
                 .setAccount(account)
@@ -64,7 +66,7 @@ public class NotificationSteps {
         configurationItemClient.createConfigurationItem(configurationItem);
 
         List<NotificationDestination> notificationDestinations = Arrays.asList(notificationDestination);
-        notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, notificationDestinations);
+        notificationDestinationBean = new NotificationDestinationBean(hostName, accountAlias, notificationDestinations);
     }
 
     @When("^the notification destination is updated via the notification resource$")
