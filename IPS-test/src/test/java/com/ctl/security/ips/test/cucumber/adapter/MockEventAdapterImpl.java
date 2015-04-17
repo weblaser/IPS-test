@@ -1,14 +1,14 @@
 package com.ctl.security.ips.test.cucumber.adapter;
 
+import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
+import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -18,33 +18,31 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
  */
 public class MockEventAdapterImpl implements EventAdapter {
 
-    private WireMockServer wireMockServer;
+    private WireMockServer wireMockForSoapDsmMocking;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.eventTriggerAddress}")
     private String host;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.port}")
-    private int destinationPort;
+    private int port;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.host}")
-    private String destinationHostName;
+    private String hostName;
 
     @PostConstruct
     public void init() {
-        wireMockServer=new WireMockServer(destinationPort);
-        configureFor(destinationHostName, destinationPort);
-        wireMockServer.start();
+        wireMockForSoapDsmMocking = new WireMockServer(port);
+        configureFor(hostName, port);
+        wireMockForSoapDsmMocking.start();
     }
 
     @Override
-    public void triggerEvent(List<FirewallEvent> firewallEvents) {
+    public void triggerEvent(ConfigurationItem configurationItem, List<FirewallEvent> firewallEvents) {
 
-        ResponseDefinition responseDefinition = jsonResponse(firewallEvents);
+        String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
 
-        wireMockServer.stubFor(get(urlEqualTo(host))
-                .willReturn(aResponse().like(responseDefinition)));
-        wireMockServer.stubFor(get(urlEqualTo("/hello"))
-                .willReturn(aResponse().withHeader("Content-Type", "test/plain").withBody("Hello")));
-
+        wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(url))
+                .willReturn(aResponse().like(jsonResponse(firewallEvents))));
     }
+
 }

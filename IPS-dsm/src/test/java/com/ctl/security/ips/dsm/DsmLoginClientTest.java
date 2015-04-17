@@ -16,6 +16,13 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class DsmLoginClientTest {
 
+    private final String validUsername = "username";
+    private final String validPassword = "password";
+    private final String validSessionId = "123";
+    private final String tenantName = "tenantName";
+    private final String invalidUsername = "wrongUsername";
+    private final String invalidPassword = "wrongPassword";
+
     @Mock
     private Manager manager;
 
@@ -25,27 +32,36 @@ public class DsmLoginClientTest {
     @Test
     public void loginSuccess() throws Exception {
         // Arrange
-        when(manager.authenticate(eq("username"), eq("password"))).thenReturn("123");
+        when(manager.authenticate(eq(validUsername), eq(validPassword))).thenReturn(validSessionId);
         // Act
-        String sessionId = underTest.connectToDSMClient("username", "password");
+        String sessionId = underTest.connectToDSMClient(validUsername, validPassword);
         // Assert
-        assertEquals("123", sessionId);
+        assertEquals(validSessionId, sessionId);
     }
 
     @Test(expected = ManagerAuthenticationException_Exception.class)
     public void loginFail() throws Exception{
         //Arrange
-        when(manager.authenticate(eq("wrongUsername"), eq("wrongPassword"))).thenThrow(ManagerAuthenticationException_Exception.class);
+        when(manager.authenticate(eq(invalidUsername), eq(invalidPassword))).thenThrow(ManagerAuthenticationException_Exception.class);
         //Act
-        underTest.connectToDSMClient("wrongUsername","wrongPassword");
+        underTest.connectToDSMClient(invalidUsername, invalidPassword);
     }
 
     @Test
     public void endSession_endsSession(){
-        String sessionId = "sessionId";
+        underTest.endSession(validSessionId);
 
-        underTest.endSession(sessionId);
+        verify(manager).endSession(validSessionId);
+    }
 
-        verify(manager).endSession(sessionId);
+    @Test
+    public void connectTenantToDSMClient_connectsToDSM() throws Exception {
+        // Arrange
+        when(manager.authenticateTenant(eq(tenantName), eq(validUsername), eq(validPassword)))
+                .thenReturn(validSessionId);
+        // Act
+        String sessionId = underTest.connectTenantToDSMClient(tenantName, validUsername, validPassword);
+        // Assert
+        assertEquals(validSessionId, sessionId);
     }
 }
