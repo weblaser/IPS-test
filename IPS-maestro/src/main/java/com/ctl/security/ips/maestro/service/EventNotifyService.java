@@ -1,7 +1,9 @@
 package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
+import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.maestro.config.MaestroConfig;
 import org.apache.log4j.Logger;
@@ -25,6 +27,9 @@ public class EventNotifyService {
 
     @Autowired
     private ConfigurationItemClient configurationItemClient;
+
+    @Autowired
+    private ProductUserActivityClient productUserActivityClient;
 
     @Autowired
     @Qualifier(MaestroConfig.IPS_MAESTRO_REST_TEMPLATE)
@@ -55,6 +60,7 @@ public class EventNotifyService {
                 while((!responseEntity.getStatusCode().is2xxSuccessful()) && (retryAttempts < maxRetryAttempts))
                 {
                     try {
+                        System.out.println("hello retryAttempts: " + retryAttempts);
                         responseEntity = restTemplate.exchange(
                                 notification.getUrl(),
                                 HttpMethod.POST,
@@ -74,6 +80,11 @@ public class EventNotifyService {
                 if (!responseEntity.getStatusCode().is2xxSuccessful()) {
                     logger.error("Failed to Send Notification to "+ notification.getUrl());
                 }
+
+                ProductUserActivity productUserActivity = new ProductUserActivity();
+
+//                productUserActivity.setConfigurationItem(eventBean.)
+                productUserActivityClient.createProductUserActivity(productUserActivity);
             }
     }
 }

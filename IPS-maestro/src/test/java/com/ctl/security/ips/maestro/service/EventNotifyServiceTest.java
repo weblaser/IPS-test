@@ -1,6 +1,7 @@
 package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
@@ -55,6 +56,9 @@ public class EventNotifyServiceTest {
 
     @Mock
     private ResponseEntity<String> responseEntity;
+
+    @Mock
+    private ProductUserActivityClient productUserActivityClient;
 
     private HttpStatus httpStatus;
 
@@ -166,6 +170,24 @@ public class EventNotifyServiceTest {
         }
         assertEquals(Level.ERROR,log.get(maxRetryAttempts).getLevel());
         assertEquals((Integer)(maxRetryAttempts + 1),(Integer)log.size());
+    }
+
+    @Test
+    public void notify_persistsNotification(){
+        EventBean eventBean = createEventBean(hostName, accountId);
+        List<NotificationDestination> notificationDestinations = createNotificationDestinations();
+
+        basicMockitoSetup(notificationDestinations);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+                .thenReturn(responseEntity);
+        when(responseEntity.getStatusCode())
+                .thenReturn(HttpStatus.ACCEPTED);
+
+        classUnderTest.notify(eventBean);
+
+        ProductUserActivity productUserActivity = new ProductUserActivity();
+        verify(productUserActivityClient).createProductUserActivity(productUserActivity);
     }
 
     private void verifyRestTemplateExchange(Integer amountOfTimes, EventBean eventBean, List<NotificationDestination> notificationDestinations) {

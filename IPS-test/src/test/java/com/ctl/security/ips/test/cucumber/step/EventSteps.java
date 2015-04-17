@@ -112,6 +112,22 @@ public class EventSteps {
         testCleanUpAndStopWireMock();
     }
 
+
+    @Given("^an event has occurred$")
+    public void an_event_has_occurred() throws Throwable {
+
+    }
+
+    @When("^the notification executes$")
+    public void the_notification_executes() throws Throwable {
+
+    }
+
+    @Then("^the notification is persisted in the product user activity document$")
+    public void the_notification_is_persisted_in_the_product_user_activity_document() throws Throwable {
+
+    }
+
     private void createAndConfigureConfigurationItem(String accountId, String hostName) {
         Account account = new Account()
                 .setCustomerAccountId(accountId);

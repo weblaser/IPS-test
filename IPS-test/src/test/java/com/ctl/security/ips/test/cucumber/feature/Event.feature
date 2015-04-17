@@ -14,3 +14,9 @@ Feature: Security - Event
     And the notification destination is invalid
     When the event notification is posted to the events endpoint
     Then the event information is attempted to be sent to the URL multiple times
+
+@WIP
+Scenario: Persist event notifications in product user activity document
+    Given an event has occurred
+    When the notification executes
+    Then the notification is persisted in the product user activity document
