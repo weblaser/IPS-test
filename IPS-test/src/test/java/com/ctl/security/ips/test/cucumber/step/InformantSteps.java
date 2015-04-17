@@ -66,7 +66,7 @@ public class InformantSteps {
 
     private String bearerToken;
 
-    private String validAccountAlias1 = ClcAuthenticationComponent.VALID_ACCOUNT_ALIAS1;
+    private String validAccountAlias1 = ClcAuthenticationComponent.VALID_AA;
     String accountId = "TCCD";
     String hostName = "server.host.name." + System.currentTimeMillis();
 
@@ -122,9 +122,6 @@ public class InformantSteps {
         }
 
     }
-
-    @Then("^the events are posted to the correct notification destination$")
-    public void the_events_are_posted_to_the_correct_notification_destination() throws Throwable {
 
     @Then("^the events are posted to the attacked notification destinations$")
     public void the_events_are_posted_to_the_attacked_notification_destinations() throws Throwable {

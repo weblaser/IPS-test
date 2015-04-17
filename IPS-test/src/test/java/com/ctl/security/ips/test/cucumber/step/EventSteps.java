@@ -63,7 +63,7 @@ public class EventSteps {
     @Value("${${spring.profiles.active:local}.ips.test.host}")
     private String destinationHostName;
 
-    private String accountId = ClcAuthenticationComponent.VALID_ACCOUNT_ALIAS1;
+    private String accountId = ClcAuthenticationComponent.VALID_AA;
     private String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Given("^an event occurs for a valid configuration item$")

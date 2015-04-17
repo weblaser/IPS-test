@@ -81,9 +81,9 @@ public class PolicySteps {
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
-            accountId = ClcAuthenticationComponent.VALID_ACCOUNT_ALIAS1;
+            accountId = ClcAuthenticationComponent.VALID_AA;
 
-            bearerToken = clcAuthenticationComponent.authenticate();
+            bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
         } else {
             accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
