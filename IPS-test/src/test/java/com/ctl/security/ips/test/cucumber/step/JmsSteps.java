@@ -21,7 +21,6 @@ public class JmsSteps {
 
     private String message;
 
-
     @Autowired
     private JmsTemplate jmsTemplate;
 

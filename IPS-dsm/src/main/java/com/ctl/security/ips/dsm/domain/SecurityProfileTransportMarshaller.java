@@ -26,6 +26,8 @@ public class SecurityProfileTransportMarshaller {
         Policy policy = new Policy();
         if(securityProfileTransport.getID() != null){
             policy.setVendorPolicyId(securityProfileTransport.getID().toString());
+        }
+        if(securityProfileTransport.getParentSecurityProfileID() != null) {
             policy.setParentPolicyId(securityProfileTransport.getParentSecurityProfileID().toString());
         }
         policy.setName(securityProfileTransport.getName());

@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
@@ -63,7 +64,7 @@ public class InformantSteps {
 
     private String bearerToken;
 
-    String accountId = ClcAuthenticationComponent.VALID_AA;
+    String accountId = "TCCD";
     String hostName = "server.host.name." + System.currentTimeMillis();
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
@@ -132,7 +133,8 @@ public class InformantSteps {
         NotificationDestinationBean notificationDestinationBean;
         notificationDestinationBean = getNotificationDestinationBean(destinationURL, configurationItem);
 
-        bearerToken = clcAuthenticationComponent.authenticate();
+        ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
+        bearerToken = clcAuthenticationResponse.getBearerToken();
 
         notificationClient.updateNotificationDestination(notificationDestinationBean, bearerToken);
 
