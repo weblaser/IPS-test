@@ -4,10 +4,11 @@ import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.http.ResponseDefinition;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
+import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -38,12 +39,10 @@ public class MockEventAdapterImpl implements EventAdapter {
     @Override
     public void triggerEvent(ConfigurationItem configurationItem, List<FirewallEvent> firewallEvents) {
 
-        ResponseDefinition responseDefinition = jsonResponse(firewallEvents);
-
         String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
 
         wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(url))
-                .willReturn(aResponse().like(responseDefinition)));
-
+                .willReturn(aResponse().like(jsonResponse(firewallEvents))));
     }
+
 }

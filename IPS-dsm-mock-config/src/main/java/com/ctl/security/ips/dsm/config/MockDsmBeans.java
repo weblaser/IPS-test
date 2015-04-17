@@ -186,9 +186,7 @@ public class MockDsmBeans extends BaseDsmBeans {
                             + host + "/" + accountId;
                     response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
                             null, FirewallEvent[].class).getBody());
-                } catch (RestClientException rce) {
-                    //do nothing
-                }
+                } catch (RestClientException rce) {}
                 return convertAllToFirewallEventListTransport(response);
             }
         });

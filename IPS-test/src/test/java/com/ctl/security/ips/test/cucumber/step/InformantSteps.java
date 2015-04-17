@@ -28,7 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
  */
 public class InformantSteps {
 
-    public static final int MAX_ATTEMPTS = 30;
+    public static final int MAX_ATTEMPTS = 1000;
 
     @Autowired
     EventAdapter eventAdapter;
@@ -103,7 +103,6 @@ public class InformantSteps {
 
     @When("^an event are posted to DSM for (\\d+) of the configuration items$")
     public void an_event_are_posted_to_DSM_for_of_the_configuration_items(int amountOfAttackedConfigurationItems) throws Throwable {
-
         for (int index = 0; index < amountOfAttackedConfigurationItems; index++) {
             ConfigurationItem attackedConfigItem = randomSafeConfigItem();
             User attackedUser = safeConfigurationItemUsers.get(attackedConfigItem);
@@ -116,10 +115,72 @@ public class InformantSteps {
             eventAdapter.triggerEvent(attackedConfigItem, Arrays.asList(firewallEvent));
 
             attackedConfigurationItemsUsers.put(attackedConfigItem, attackedUser);
-
             safeConfigurationItemUsers.remove(attackedConfigItem);
         }
 
+    }
+
+
+    @Then("^the events are posted to the attacked notification destinations$")
+    public void the_events_are_posted_to_the_attacked_notification_destinations() throws Throwable {
+        for (Map.Entry<ConfigurationItem, User> entry : attackedConfigurationItemsUsers.entrySet()) {
+            ConfigurationItem currentConfigurationItem = entry.getKey();
+            User currentUser = entry.getValue();
+            ConfigurationItem retrievedConfigurationItem = configurationItemClient
+                    .getConfigurationItem(
+                            currentConfigurationItem.getHostName(),
+                            currentConfigurationItem.getAccount().getCustomerAccountId()
+                    )
+                    .getContent();
+
+            //TODO Create Test for TS,QA,PROD
+            String activeProfiles = environment.getActiveProfiles()[0];
+
+            for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
+                waitForPostRequests(1, notificationDestination.getUrl());
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                    notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
+                }
+            }
+
+            cleanUpUser(currentUser);
+            cleanUpConfigurationItems(currentConfigurationItem);
+        }
+    }
+
+    private void cleanUpConfigurationItems(ConfigurationItem currentConfigurationItem) {
+        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(
+                currentConfigurationItem.getHostName(),
+                currentConfigurationItem.getAccount().getCustomerAccountId()
+        ).getContent();
+
+        configurationItemClient.deleteConfigurationItem(configurationItem.getId());
+    }
+
+    @And("^no events are posted to the safe notification destinations$")
+    public void no_events_are_posted_to_the_safe_notification_destinations() throws Throwable {
+        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
+            ConfigurationItem currentConfigurationItem = entry.getKey();
+            User currentUser = entry.getValue();
+            ConfigurationItem retrievedConfigurationItem = configurationItemClient
+                    .getConfigurationItem(
+                            currentConfigurationItem.getHostName(),
+                            currentConfigurationItem.getAccount().getCustomerAccountId()
+                    )
+                    .getContent();
+
+            //TODO Create Test for TS,QA,PROD
+            String activeProfiles = environment.getActiveProfiles()[0];
+
+            for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                    notificationDestinationWireMockServer.verify(0, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
+                }
+            }
+
+            cleanUpUser(currentUser);
+            cleanUpConfigurationItems(currentConfigurationItem);
+        }
     }
 
     private ConfigurationItem randomSafeConfigItem() {
@@ -128,45 +189,6 @@ public class InformantSteps {
         ConfigurationItem randomSafeConfigItem = (ConfigurationItem) safeConfigurationItemUsers.keySet().toArray()[selectedConfigItemIndex];
 
         return randomSafeConfigItem;
-    }
-
-    @Then("^the events are posted to the attacked notification destinations$")
-    public void the_events_are_posted_to_the_attacked_notification_destinations() throws Throwable {
-        verifyAllConfigurationItemPosts(attackedConfigurationItemsUsers, 1);
-    }
-
-    @And("^no events are posted to the safe notification destinations$")
-    public void no_events_are_posted_to_the_safe_notification_destinations() throws Throwable {
-        verifyAllConfigurationItemPosts(safeConfigurationItemUsers, 0);
-    }
-
-    private void verifyAllConfigurationItemPosts(Map<ConfigurationItem, User> configurationItemUserMap, Integer postTimes) {
-        for (Map.Entry<ConfigurationItem, User> entry : configurationItemUserMap.entrySet()) {
-            ConfigurationItem currentConfigurationItem = entry.getKey();
-            User currentUser = entry.getValue();
-            verifyPosts(postTimes, currentConfigurationItem, currentUser);
-        }
-    }
-
-    private void verifyPosts(int postTimes, ConfigurationItem currentConfigurationItem, User currentUser) {
-        ConfigurationItem retrievedConfigurationItem = configurationItemClient
-                .getConfigurationItem(
-                        currentConfigurationItem.getHostName(),
-                        currentConfigurationItem.getAccount().getCustomerAccountId()
-                )
-                .getContent();
-
-        //TODO Create Test for TS,QA,PROD
-        String activeProfiles = environment.getActiveProfiles()[0];
-
-        for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
-            waitForPostRequests(postTimes, notificationDestination.getUrl());
-            if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
-                notificationDestinationWireMockServer.verify(postTimes, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
-            }
-        }
-
-        cleanUpUser(currentUser);
     }
 
     private void cleanUpUser(User entry) {

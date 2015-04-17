@@ -17,4 +17,5 @@ public class EventAdapterImpl implements EventAdapter {
     public void triggerEvent(ConfigurationItem configurationItem, List<FirewallEvent> firewallEvents) {
 
     }
+
 }

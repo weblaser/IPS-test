@@ -8,7 +8,7 @@ Feature: Security - Event
     When the event notification is posted to the events endpoint
     Then the event information is sent to the correct URL
 
-  @WIP
+
   Scenario: Send an event to a invalid notification destination URL
     Given an event occurs for a valid configuration item
     And the notification destination is invalid
