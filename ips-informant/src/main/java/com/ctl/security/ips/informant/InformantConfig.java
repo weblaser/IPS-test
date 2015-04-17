@@ -1,6 +1,7 @@
 package com.ctl.security.ips.informant;
 
 import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
+import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
 import com.ctl.security.ips.dsm.config.DsmConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -16,8 +17,8 @@ import java.io.*;
 @Configuration
 @EnableAsync
 @EnableScheduling
-@Import({DsmConfig.class, ClcClientCoreAppConfig.class})
-@PropertySource("classpath:properties/informant.properties")
+@Import({DsmConfig.class, ClcClientCoreAppConfig.class, SecurityDataClientAppConfig.class})
+@PropertySources({@PropertySource("classpath:properties/informant.properties"), @PropertySource("classpath:properties/security.data.client.properties")})
 @ComponentScan(basePackages = {"com.ctl.security.ips.informant"})
 public class InformantConfig {
     @Bean
