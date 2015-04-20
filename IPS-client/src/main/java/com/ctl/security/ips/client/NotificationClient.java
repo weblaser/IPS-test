@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by sean.robb on 3/5/2015.
+ *
  */
 
 @Component
@@ -32,11 +33,15 @@ public class NotificationClient {
     private RestTemplate restTemplate;
 
     public void updateNotificationDestination(NotificationDestinationBean notificationDestinationBean, String bearerToken) {
-            String address = hostUrl + NOTIFICATIONS +"/"+ notificationDestinationBean.getAccountId()+"/"+notificationDestinationBean.getHostName();
-            logger.info("updatePolicyForAccount: " + address);
+        String address = hostUrl + NOTIFICATIONS + "/" + notificationDestinationBean.getAccountId() + "/" + notificationDestinationBean.getHostName();
+        logger.info("updatePolicyForAccount: " + address);
 
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
-        restTemplate.exchange(address,
-                    HttpMethod.PUT, new HttpEntity<>(notificationDestinationBean.getNotificationDestinations(), httpHeaders), String.class);
+        restTemplate.exchange(
+                address,
+                HttpMethod.PUT,
+                new HttpEntity<>(notificationDestinationBean.getNotificationDestinations(), httpHeaders),
+                String.class
+        );
     }
 }
