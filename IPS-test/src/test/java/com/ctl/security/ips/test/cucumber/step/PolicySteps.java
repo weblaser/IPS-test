@@ -6,6 +6,7 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
+import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.client.PolicyClient;
@@ -23,6 +24,8 @@ import manager.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
@@ -56,7 +59,6 @@ public class PolicySteps {
     private String username;
 
 
-
     @Autowired
     private PolicyClient policyClient;
 
@@ -78,6 +80,13 @@ public class PolicySteps {
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
+    @Autowired
+    private Environment environment;
+
+
+    @Value("${clc.client.test.package.server}")
+    private String clcServerName;
+
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
@@ -96,7 +105,20 @@ public class PolicySteps {
         try {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
-            hostName = "server.host.name." + System.currentTimeMillis();
+
+
+
+
+            String activeProfiles = environment.getActiveProfiles()[0];
+
+            if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                hostName = "server.host.name." + System.currentTimeMillis();
+            }
+            else{
+                hostName = clcServerName;
+            }
+
+
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
                     setHostName(hostName).
