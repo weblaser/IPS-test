@@ -3,7 +3,6 @@ package com.ctl.security.ips.test.cucumber.step;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.UserClient;
-import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
@@ -63,6 +62,9 @@ public class InformantSteps {
 
     @Value("${${spring.profiles.active:local}.ips.test.retryWaitTime}")
     private Integer retryWaitTime;
+
+    @Value("#{SecurityLibraryPropertySplitter.map('${${spring.profiles.active:local}.ips.test.validHostAccountInfo}')}")
+    private HashMap<String, Object> accountOptions;
 
     private String bearerToken;
 

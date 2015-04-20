@@ -1,4 +1,4 @@
-@REGRESSION
+@REGRESSION @WIP
 Feature: Security - Informant
 
 
