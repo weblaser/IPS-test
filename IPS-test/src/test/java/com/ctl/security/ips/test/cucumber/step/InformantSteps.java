@@ -124,7 +124,6 @@ public class InformantSteps {
             String destinationURL = "http://" + destinationHostName + ":" + destinationPort
                     + "/" + notificationDestinationUrl;
 
-
             createAndSetNotificationDestination(destinationURL, entry.getKey());
 
             notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(notificationDestinationUrl))
@@ -308,7 +307,7 @@ public class InformantSteps {
 
     private User createNewUser(String userName, String accountId) {
         User user = new User();
-        user.setAccountId(accountId);// + System.currentTimeMillis());
+        user.setAccountId(accountId+ System.currentTimeMillis());
         user.setUsername(userName + System.currentTimeMillis());
         userClient.createUser(user);
         return user;
