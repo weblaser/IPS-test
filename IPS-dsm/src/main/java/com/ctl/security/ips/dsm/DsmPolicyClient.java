@@ -51,7 +51,7 @@ public class DsmPolicyClient {
 
     public Policy createCtlSecurityProfile(PolicyBean policyBean) throws DsmClientException {
         Policy newPolicy = policyBean.getPolicy();
-        setParentPolicy(newPolicy, policyBean.getAccountId(), policyBean.getBearerToken());
+        setParentPolicy(newPolicy, policyBean.getAccountAlias(), policyBean.getBearerToken());
 
         try {
             SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(newPolicy));

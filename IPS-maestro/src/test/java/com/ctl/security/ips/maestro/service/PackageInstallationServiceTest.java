@@ -43,7 +43,7 @@ public class PackageInstallationServiceTest {
     }
 
     @Test
-    public void testInstallClcPackage_InsallationClcPackageExecuted() throws Exception {
+    public void testInstallClcPackage_InstallationClcPackageExecuted() throws Exception {
         //arrange
         List<Link> links = Arrays.asList(new Link().setHref("/fakePath").setId(TEST_ID).setRel("status"));
         List<ClcExecutePackageResponse> executePackageResponses = Arrays.asList(new ClcExecutePackageResponse()

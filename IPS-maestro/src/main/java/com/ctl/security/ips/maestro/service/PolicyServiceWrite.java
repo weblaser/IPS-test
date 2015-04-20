@@ -13,6 +13,7 @@ import com.ctl.security.ips.dsm.DsmTenantClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -35,8 +36,11 @@ public class PolicyServiceWrite extends PolicyService {
     @Autowired
     private ServerClient serverClient;
 
+    @Value("${${spring.profiles.active:local}.dsm.rest.host}")
+    private String dsmMothership;
+
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException {
-        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean.getPolicy());
+        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean);
         InstallationBean installationBean = buildInstallationBean(policyBean);
         cmdbService.installProduct(installationBean);
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());
@@ -57,7 +61,7 @@ public class PolicyServiceWrite extends PolicyService {
                 .addParameter("DSM.Tenant.ID", createdSecurityTenant.getGuid())
                 .addParameter("DSM.Agent.Activation.Password", createdSecurityTenant.getAgentInitiatedActivationPassword())
                 .addParameter("DSM.Policy.ID", newlyCreatedPolicy.getVendorPolicyId())
-                .addParameter("DSM.Name", "")
+                .addParameter("DSM.Name", dsmMothership)
                 .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
                 .addParameter("T3.Account.Alias", policyBean.getAccountAlias());
         return clcExecutePackageRequest;
@@ -65,8 +69,6 @@ public class PolicyServiceWrite extends PolicyService {
 
     private String configurePackageId (PolicyBean policyBean){
         String hostOs = serverClient.getOS(policyBean.getAccountAlias(), policyBean.getPolicy().getHostName(), policyBean.getBearerToken());
-        String packageId = "LinuxUUID";//TODO find this value
-        if (hostOs.toLowerCase().contains("win"))packageId = "WindowsUUID";//TODO replace this value
-        return packageId;
+        return System.getProperty("ips.packageExecution.UUID." + hostOs);
     }
 }

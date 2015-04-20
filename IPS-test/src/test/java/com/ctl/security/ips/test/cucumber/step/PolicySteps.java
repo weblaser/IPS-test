@@ -16,6 +16,7 @@ import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -77,6 +78,7 @@ public class PolicySteps {
 
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
+
 
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
@@ -175,12 +177,6 @@ public class PolicySteps {
         verifyCmdbCreation(true);
     }
 
-
-
-    @Then("^I receive a response that does not contain an error message$")
-    public void I_receive_a_response_that_does_not_contain_an_error_message() {
-    }
-
     @Then("^I see that the policy has been deleted$")
     public void i_see_that_the_policy_has_been_deleted() throws Throwable {
 
@@ -219,21 +215,7 @@ public class PolicySteps {
 //        assertTrue(isDeleted);
     }
 
-    @Then("^I receive a response with error message (.*)$")
-    public void I_receive_a_response_with_error_message(String message) throws Throwable {
-        if (exception instanceof PolicyNotFoundException) {
-            assertNotNull(message, exception.getMessage());
-        } else if (exception instanceof NotAuthorizedException) {
-            assertNotNull(message, exception.getMessage());
-        } else {
-            if(exception != null){
-                exception.printStackTrace();
-            }
-            fail();
-        }
-    }
-
-//    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+    //    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
 //        Policy retrievedPolicy = null;
 //        int i = 0;
 //        int maxTries = MAX_WAIT_TIME;
@@ -249,6 +231,24 @@ public class PolicySteps {
 //        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
 //
 //        return retrievedPolicy;
+
+    @Then("^I receive a response that does not contain an error message$")
+    public void I_receive_a_response_that_does_not_contain_an_error_message() {    }
+
+    @Then("^I receive a response with error message (.*)$")
+    public void I_receive_a_response_with_error_message(String message) throws Throwable {
+        if (exception instanceof PolicyNotFoundException) {
+            assertNotNull(message, exception.getMessage());
+        } else if (exception instanceof NotAuthorizedException) {
+            assertNotNull(message, exception.getMessage());
+        } else {
+            if(exception != null){
+                exception.printStackTrace();
+            }
+            fail();
+        }
+    }
+
 //    }
 
     private Policy buildPolicy() {
@@ -293,5 +293,6 @@ public class PolicySteps {
         productUserActivities.stream().forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
+
 }
 
