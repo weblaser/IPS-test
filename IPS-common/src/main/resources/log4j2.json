@@ -23,16 +23,16 @@
             "modulate":"true"
           }
         }
-      },
-      "loggers":{
-        "root":{
-          "level":"info",
-          "appender-ref":{
-            "ref":"STDOUT"
-          },
-          "appender-ref":{
-            "ref":"dailylog"
-          }
+      }
+    },
+    "loggers":{
+      "root":{
+        "level":"info",
+        "appender-ref":{
+          "ref":"STDOUT"
+        },
+        "appender-ref":{
+          "ref":"dailylog"
         }
       }
     }
