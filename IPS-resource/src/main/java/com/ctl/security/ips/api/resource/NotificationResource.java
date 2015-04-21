@@ -23,12 +23,14 @@ public interface NotificationResource {
     @PUT
     @Path("/{" + ResourceConstants.ACCT_PARAM + "}/{" + ResourceConstants.HOST_NAME_PARAM + "}")
     @ApiOperation(value = "Update Notification Destination for a Server")
-    @ApiResponses(value = {@ApiResponse(code = HttpStatus.SC_NO_CONTENT, message = "Notification Destination Updated"),
-    @ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = ResourceConstants.BAD_REQUEST),
-    @ApiResponse(code = HttpStatus.SC_FORBIDDEN, message = ResourceConstants.UNAUTHORIZED)})
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpStatus.SC_NO_CONTENT, message = "Notification Destination Updated"),
+            @ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = ResourceConstants.BAD_REQUEST),
+            @ApiResponse(code = HttpStatus.SC_FORBIDDEN, message = ResourceConstants.UNAUTHORIZED)
+    })
     void updateNotificationDestination(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
-                                @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String hostName,
-                                @ApiParam(value = ResourceConstants.NOTIFICATION_DESTINATION_LABEL, required = true) List<NotificationDestination> notificationDestinations);
+                                       @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String hostName,
+                                       @ApiParam(value = ResourceConstants.NOTIFICATION_DESTINATION_LABEL, required = true) List<NotificationDestination> notificationDestinations);
 
 
 }

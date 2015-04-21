@@ -6,6 +6,7 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
+import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.client.PolicyClient;
@@ -16,7 +17,6 @@ import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -24,6 +24,8 @@ import manager.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
@@ -57,7 +59,6 @@ public class PolicySteps {
     private String username;
 
 
-
     @Autowired
     private PolicyClient policyClient;
 
@@ -79,6 +80,12 @@ public class PolicySteps {
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
+    @Autowired
+    private Environment environment;
+
+
+    @Value("${clc.client.test.package.server}")
+    private String clcServerName;
 
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
@@ -98,7 +105,20 @@ public class PolicySteps {
         try {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
-            hostName = "server.host.name." + System.currentTimeMillis();
+
+
+
+
+            String activeProfiles = environment.getActiveProfiles()[0];
+
+            if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                hostName = "server.host.name." + System.currentTimeMillis();
+            }
+            else{
+                hostName = clcServerName;
+            }
+
+
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
                     setHostName(hostName).
@@ -177,6 +197,12 @@ public class PolicySteps {
         verifyCmdbCreation(true);
     }
 
+
+
+    @Then("^I receive a response that does not contain an error message$")
+    public void I_receive_a_response_that_does_not_contain_an_error_message() {
+    }
+
     @Then("^I see that the policy has been deleted$")
     public void i_see_that_the_policy_has_been_deleted() throws Throwable {
 
@@ -215,7 +241,21 @@ public class PolicySteps {
 //        assertTrue(isDeleted);
     }
 
-    //    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+    @Then("^I receive a response with error message (.*)$")
+    public void I_receive_a_response_with_error_message(String message) throws Throwable {
+        if (exception instanceof PolicyNotFoundException) {
+            assertNotNull(message, exception.getMessage());
+        } else if (exception instanceof NotAuthorizedException) {
+            assertNotNull(message, exception.getMessage());
+        } else {
+            if(exception != null){
+                exception.printStackTrace();
+            }
+            fail();
+        }
+    }
+
+//    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
 //        Policy retrievedPolicy = null;
 //        int i = 0;
 //        int maxTries = MAX_WAIT_TIME;
@@ -231,24 +271,6 @@ public class PolicySteps {
 //        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
 //
 //        return retrievedPolicy;
-
-    @Then("^I receive a response that does not contain an error message$")
-    public void I_receive_a_response_that_does_not_contain_an_error_message() {    }
-
-    @Then("^I receive a response with error message (.*)$")
-    public void I_receive_a_response_with_error_message(String message) throws Throwable {
-        if (exception instanceof PolicyNotFoundException) {
-            assertNotNull(message, exception.getMessage());
-        } else if (exception instanceof NotAuthorizedException) {
-            assertNotNull(message, exception.getMessage());
-        } else {
-            if(exception != null){
-                exception.printStackTrace();
-            }
-            fail();
-        }
-    }
-
 //    }
 
     private Policy buildPolicy() {
@@ -293,6 +315,5 @@ public class PolicySteps {
         productUserActivities.stream().forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
-
 }
 

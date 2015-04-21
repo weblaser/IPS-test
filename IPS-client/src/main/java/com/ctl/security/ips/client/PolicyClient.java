@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 public class PolicyClient {
 
-    private static final Logger logger = LogManager.getLogger(PolicyClient.class);
+    private static final Logger logger = LogManager.getLogger();
 
     public static final String POLICIES = "policies/";
     public static final String USERNAME = "username";

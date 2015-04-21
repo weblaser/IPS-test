@@ -29,7 +29,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
  */
 public class InformantSteps {
 
-    public static final int MAX_ATTEMPTS = 1000;
+    public static final int MAX_ATTEMPTS = 100;
 
     @Autowired
     EventAdapter eventAdapter;
@@ -67,8 +67,6 @@ public class InformantSteps {
     private String bearerToken;
 
     private String validAccountAlias = ClcAuthenticationComponent.VALID_AA;
-    String accountId = "TCCD";
-    String hostName = "server.host.name." + System.currentTimeMillis();
 
     private Map<ConfigurationItem, User> safeConfigurationItemUsers = new HashMap<>();
 
@@ -79,40 +77,34 @@ public class InformantSteps {
 
     @Given("^there is (\\d+) configuration item running$")
     public void there_is_configuration_item_running(int amountOfConfigurationItems) throws Throwable {
+
         for (int index = 0; index < amountOfConfigurationItems; index++) {
+            //TODO pull a unique account Alias's from a pool
             User user = createNewUser("User", validAccountAlias);
+
+            //TODO pull a unique host name from a pool
             ConfigurationItem configurationItem = createAndConfigureConfigurationItem(user.getAccountId(),
                     getUniqueHostName());
             safeConfigurationItemUsers.put(configurationItem, user);
         }
-        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
-            ConfigurationItem currentConfigurationItem = entry.getKey();
-            User currentUser = entry.getValue();
-
-            waitForUserCreation(currentUser.getUsername(), currentUser.getAccountId());
-            waitForConfigurationItemCreation(
-                    currentConfigurationItem.getHostName(),
-                    currentConfigurationItem.getAccount().getCustomerAccountId()
-            );
-        }
     }
 
     private void waitForConfigurationItemCreation(String hostName, String customerAccountId) {
-        ConfigurationItem configurationItem=null;
+        ConfigurationItem configurationItem = null;
         int currentAttempts = 0;
         while (currentAttempts < MAX_ATTEMPTS && configurationItem == null) {
             waitComponent.sleep(retryWaitTime, currentAttempts);
-            configurationItem = configurationItemClient.getConfigurationItem(hostName,customerAccountId).getContent();
+            configurationItem = configurationItemClient.getConfigurationItem(hostName, customerAccountId).getContent();
             currentAttempts++;
         }
     }
 
-    private void waitForUserCreation(String userName,String AccountId) {
-        User userRetrieved=null;
+    private void waitForUserCreation(String userName, String AccountId) {
+        User userRetrieved = null;
         int currentAttempts = 0;
         while (currentAttempts < MAX_ATTEMPTS && userRetrieved == null) {
             waitComponent.sleep(retryWaitTime, currentAttempts);
-            userRetrieved = userClient.getUser(userName,AccountId).getContent();
+            userRetrieved = userClient.getUser(userName, AccountId).getContent();
             currentAttempts++;
         }
     }
@@ -123,7 +115,6 @@ public class InformantSteps {
             String notificationDestinationUrl = entry.getKey().getHostName() + "destinationUrl";
             String destinationURL = "http://" + destinationHostName + ":" + destinationPort
                     + "/" + notificationDestinationUrl;
-
 
             createAndSetNotificationDestination(destinationURL, entry.getKey());
 
@@ -308,7 +299,7 @@ public class InformantSteps {
 
     private User createNewUser(String userName, String accountId) {
         User user = new User();
-        user.setAccountId(accountId);// + System.currentTimeMillis());
+        user.setAccountId(accountId);
         user.setUsername(userName + System.currentTimeMillis());
         userClient.createUser(user);
         return user;

@@ -1,0 +1,40 @@
+{
+  "configuration":{
+    "status":"warn",
+    "name":"ips-api-default",
+    "appenders":{
+      "Console": {
+        "name":"STDOUT",
+        "target":"SYSTEM_OUT",
+        "PatternLayout": {
+          "pattern": "%d{ISO8601} IPS Api(CONSOLE) %-5p %c [%t]: %m%n%n"
+        }
+      },
+      "RollingFile":{
+        "name":"dailyLog",
+        "filename":"${sys:catalina.base}/logs/ips-api.log",
+        "filePattern":"${sys:catalina.base}/logs/$${date:yyyy-MM}/ips-api-%d{MM-dd-yyyy}-%i.log.gz",
+        "PatternLayout":{
+          "pattern":"%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZZ} llevel=%-5p, lthread_id='%t', lcat=%c{1}, %m%n"
+        },
+        "Policies":{
+          "TimeBasedTriggeringPolicy":{
+            "interval":"1",
+            "modulate":"true"
+          }
+        }
+      }
+    },
+    "loggers":{
+      "root":{
+        "level":"info",
+        "appender-ref":{
+          "ref":"STDOUT"
+        },
+        "appender-ref":{
+          "ref":"dailylog"
+        }
+      }
+    }
+  }
+}
