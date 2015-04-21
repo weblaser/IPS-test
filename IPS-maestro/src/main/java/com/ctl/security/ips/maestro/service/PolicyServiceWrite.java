@@ -1,8 +1,6 @@
 package com.ctl.security.ips.maestro.service;
 
 
-import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
-import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy.Policy;
@@ -10,10 +8,11 @@ import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.DsmTenantClient;
+import com.ctl.security.ips.dsm.exception.AgentInstallException;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
+import com.ctl.security.ips.dsm.factory.DsmAgentInstallPackageFactory;
 import com.ctl.security.ips.service.PolicyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -34,18 +33,19 @@ public class PolicyServiceWrite extends PolicyService {
     private PackageInstallationService packageInstallationService;
 
     @Autowired
-    private ServerClient serverClient;
+    private DsmAgentInstallPackageFactory dsmAgentInstallPackageFactory;
 
-    @Value("${${spring.profiles.active:local}.dsm.rest.host}")
-    private String dsmMothership;
-
-    public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException {
-        Policy newlyCreatedPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean);
-        InstallationBean installationBean = buildInstallationBean(policyBean);
+    public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException {
+        PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
+        InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
         cmdbService.installProduct(installationBean);
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());
-        packageInstallationService.installClcPackage(configurePackageRequest(policyBean, createdSecurityTenant, newlyCreatedPolicy), policyBean.getAccountAlias(), policyBean.getBearerToken());
-        return newlyCreatedPolicy.setTenantId(createdSecurityTenant.getTenantId().toString());
+        packageInstallationService.installClcPackage(
+                dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
+                newlyCreatedPolicyBean.getAccountAlias(),
+                newlyCreatedPolicyBean.getBearerToken());
+
+        return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
     }
 
     public void deletePolicyForAccount(PolicyBean policyBean) throws DsmClientException {
@@ -53,22 +53,4 @@ public class PolicyServiceWrite extends PolicyService {
         cmdbService.uninstallProduct(buildInstallationBean(policyBean));
     }
 
-    private ClcExecutePackageRequest configurePackageRequest(PolicyBean policyBean, SecurityTenant createdSecurityTenant, Policy newlyCreatedPolicy){
-        ClcExecutePackageRequest clcExecutePackageRequest = new ClcExecutePackageRequest()
-                .addServer(policyBean.getPolicy().getHostName());
-        clcExecutePackageRequest.getSoftwarePackage()
-                .setPackageId(configurePackageId(policyBean))
-                .addParameter("DSM.Tenant.ID", createdSecurityTenant.getGuid())
-                .addParameter("DSM.Agent.Activation.Password", createdSecurityTenant.getAgentInitiatedActivationPassword())
-                .addParameter("DSM.Policy.ID", newlyCreatedPolicy.getVendorPolicyId())
-                .addParameter("DSM.Name", dsmMothership)
-                .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
-                .addParameter("T3.Account.Alias", policyBean.getAccountAlias());
-        return clcExecutePackageRequest;
-    }
-
-    private String configurePackageId (PolicyBean policyBean){
-        String hostOs = serverClient.getOS(policyBean.getAccountAlias(), policyBean.getPolicy().getHostName(), policyBean.getBearerToken());
-        return System.getProperty("ips.packageExecution.UUID." + hostOs);
-    }
 }

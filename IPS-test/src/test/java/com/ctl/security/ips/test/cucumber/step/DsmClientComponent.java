@@ -32,7 +32,6 @@ public class DsmClientComponent {
             i++;
         }
 
-
         assertNotNull(retrievedPolicy);
         assertNotNull("expected: " + newlyCreatedCtlPolicy.getName(), retrievedPolicy.getName());
 
