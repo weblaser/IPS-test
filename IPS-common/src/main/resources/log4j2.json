@@ -18,8 +18,8 @@
           "pattern":"%d{yyyy-MM-dd'T'HH:mm:ss.SSSZZZ} llevel=%-5p, lthread_id='%t', lcat=%c{1}, %m%n"
         },
         "Policies":{
-          "TimeBasedTriggerPolicy":{
-            "interval":"24",
+          "TimeBasedTriggeringPolicy":{
+            "interval":"1",
             "modulate":"true"
           }
         }
