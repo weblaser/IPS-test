@@ -3,8 +3,7 @@ package com.ctl.security.ips.test.cucumber.adapter;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.http.ResponseDefinition;
-import org.apache.commons.collections.CollectionUtils;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
@@ -34,7 +33,6 @@ public class MockEventAdapterImpl implements EventAdapter {
         wireMockForSoapDsmMocking = new WireMockServer(port);
         configureFor(hostName, port);
         wireMockForSoapDsmMocking.start();
-
         //If no stub is made for an account no firewall events will be returned
         wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(host + "/.*"))
                 .atPriority(5)

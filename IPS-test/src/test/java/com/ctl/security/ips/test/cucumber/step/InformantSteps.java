@@ -22,6 +22,8 @@ import org.springframework.core.env.Environment;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.lessThan;
 
 /**
  * Created by Sean Robb on 3/30/2015.
@@ -64,57 +66,46 @@ public class InformantSteps {
     private Integer retryWaitTime;
 
     @Value("#{SecurityLibraryPropertySplitter.map('${${spring.profiles.active:local}.ips.test.validHostAccountInfo}')}")
-    private HashMap<String, Object> accountOptions;
+    private HashMap<String, String> accountOptions;
+
+    @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
+    private Integer maxRetryAttempts;
 
     private String bearerToken;
-
-    private String validAccountAlias = ClcAuthenticationComponent.VALID_AA;
 
     private Map<ConfigurationItem, User> safeConfigurationItemUsers = new HashMap<>();
 
     private Map<ConfigurationItem, User> attackedConfigurationItemsUsers = new HashMap<>();
 
-    @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
-    private Integer maxRetryAttempts;
-
     @Given("^there is (\\d+) configuration item running$")
     public void there_is_configuration_item_running(int amountOfConfigurationItems) throws Throwable {
 
+        assertThat("The Amount of Configuration Items to run is larger the the pool available",
+                amountOfConfigurationItems,
+                lessThan(accountOptions.size() + 1));
+
+        Iterator<Map.Entry<String, String>> iterator = accountOptions.entrySet().iterator();
+
         for (int index = 0; index < amountOfConfigurationItems; index++) {
-            //TODO pull a unique account Alias's from a pool
-            User user = createNewUser("User", validAccountAlias);
+            Map.Entry<String, String> next = iterator.next();
 
-            //TODO pull a unique host name from a pool
-            ConfigurationItem configurationItem = createAndConfigureConfigurationItem(user.getAccountId(),
-                    getUniqueHostName());
+            String knownValidAccountAlias = next.getKey();
+            String knownValidHostName = next.getValue();
+
+            User user = createNewUser("User", knownValidAccountAlias);
+
+            ConfigurationItem configurationItem = createAndConfigureConfigurationItem(knownValidAccountAlias,
+                    knownValidHostName);
             safeConfigurationItemUsers.put(configurationItem, user);
-        }
-    }
-
-    private void waitForConfigurationItemCreation(String hostName, String customerAccountId) {
-        ConfigurationItem configurationItem = null;
-        int currentAttempts = 0;
-        while (currentAttempts < MAX_ATTEMPTS && configurationItem == null) {
-            waitComponent.sleep(retryWaitTime, currentAttempts);
-            configurationItem = configurationItemClient.getConfigurationItem(hostName, customerAccountId).getContent();
-            currentAttempts++;
-        }
-    }
-
-    private void waitForUserCreation(String userName, String AccountId) {
-        User userRetrieved = null;
-        int currentAttempts = 0;
-        while (currentAttempts < MAX_ATTEMPTS && userRetrieved == null) {
-            waitComponent.sleep(retryWaitTime, currentAttempts);
-            userRetrieved = userClient.getUser(userName, AccountId).getContent();
-            currentAttempts++;
         }
     }
 
     @And("^the notification destination is set for all configuration items$")
     public void the_notification_destination_is_set_for_all_configuration_items() throws Throwable {
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
-            String notificationDestinationUrl = entry.getKey().getHostName() + "destinationUrl";
+            String notificationDestinationUrl = entry.getKey().getHostName() +
+                    "destinationUrl" +
+                    System.currentTimeMillis();
             String destinationURL = "http://" + destinationHostName + ":" + destinationPort
                     + "/" + notificationDestinationUrl;
 
@@ -131,6 +122,10 @@ public class InformantSteps {
 
     @When("^an event are posted to DSM for (\\d+) of the configuration items$")
     public void an_event_are_posted_to_DSM_for_of_the_configuration_items(int amountOfAttackedConfigurationItems) throws Throwable {
+        assertThat("The Amount of Configuration Items To attack is too large",
+                amountOfAttackedConfigurationItems,
+                lessThan(safeConfigurationItemUsers.size() + 1));
+
         for (int index = 0; index < amountOfAttackedConfigurationItems; index++) {
             ConfigurationItem attackedConfigItem = randomSafeConfigItem();
             User attackedUser = safeConfigurationItemUsers.get(attackedConfigItem);
@@ -175,15 +170,6 @@ public class InformantSteps {
         }
     }
 
-    private void cleanUpConfigurationItems(ConfigurationItem currentConfigurationItem) {
-        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(
-                currentConfigurationItem.getHostName(),
-                currentConfigurationItem.getAccount().getCustomerAccountId()
-        ).getContent();
-
-        configurationItemClient.deleteConfigurationItem(configurationItem.getId());
-    }
-
     @And("^no events are posted to the safe notification destinations$")
     public void no_events_are_posted_to_the_safe_notification_destinations() throws Throwable {
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
@@ -218,18 +204,9 @@ public class InformantSteps {
         return randomSafeConfigItem;
     }
 
-    private void cleanUpUser(User entry) {
-        User user = userClient.getUser(entry.getUsername(), entry.getAccountId()).getContent();
-        userClient.deleteUser(user.getId());
-    }
-
     private String getWireMockUrl(String notificationDestination) {
         String[] split = notificationDestination.split("/");
         return "/" + split[split.length - 1];
-    }
-
-    private String getUniqueHostName() {
-        return "server.host.name." + System.currentTimeMillis();
     }
 
     private void waitForPostRequests(int requests, String fullAddress) {
@@ -240,18 +217,6 @@ public class InformantSteps {
             loggedRequests = notificationDestinationWireMockServer.findAll(postRequestedFor(urlEqualTo(getWireMockUrl(fullAddress))));
             currentAttempts++;
         } while (loggedRequests.size() < requests && currentAttempts < MAX_ATTEMPTS);
-    }
-
-    private ConfigurationItem createAndConfigureConfigurationItem(String accountId, String hostName) {
-        Account account = new Account()
-                .setCustomerAccountId(accountId);
-
-        ConfigurationItem configurationItem = new ConfigurationItem()
-                .setAccount(account)
-                .setHostName(hostName);
-
-        configurationItemClient.createConfigurationItem(configurationItem);
-        return configurationItem;
     }
 
     private void createAndSetNotificationDestination(String destinationURL, ConfigurationItem configurationItem) {
@@ -299,12 +264,47 @@ public class InformantSteps {
         }
     }
 
+    private ConfigurationItem createAndConfigureConfigurationItem(String accountId, String hostName) {
+        //Clear out old matches to Database
+        ConfigurationItem oldConfigurationItem = configurationItemClient
+                .getConfigurationItem(hostName, accountId)
+                .getContent();
+
+        if (oldConfigurationItem.getHostName() != null && oldConfigurationItem.getAccount() != null) {
+            configurationItemClient.deleteConfigurationItem(oldConfigurationItem.getId());
+        }
+
+        Account account = new Account()
+                .setCustomerAccountId(accountId);
+
+        ConfigurationItem configurationItem = new ConfigurationItem()
+                .setAccount(account)
+                .setHostName(hostName);
+
+        configurationItemClient.createConfigurationItem(configurationItem);
+        return configurationItem;
+    }
+
     private User createNewUser(String userName, String accountId) {
         User user = new User();
         user.setAccountId(accountId);
         user.setUsername(userName + System.currentTimeMillis());
         userClient.createUser(user);
         return user;
+    }
+
+    private void cleanUpConfigurationItems(ConfigurationItem currentConfigurationItem) {
+        ConfigurationItem configurationItem = configurationItemClient.getConfigurationItem(
+                currentConfigurationItem.getHostName(),
+                currentConfigurationItem.getAccount().getCustomerAccountId()
+        ).getContent();
+
+        configurationItemClient.deleteConfigurationItem(configurationItem.getId());
+    }
+
+    private void cleanUpUser(User entry) {
+        User user = userClient.getUser(entry.getUsername(), entry.getAccountId()).getContent();
+        userClient.deleteUser(user.getId());
     }
 
 }
