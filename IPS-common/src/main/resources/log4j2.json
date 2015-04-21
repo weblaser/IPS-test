@@ -28,10 +28,10 @@
     "loggers":{
       "root":{
         "level":"info",
-        "appender-ref":{
+        "AppenderRef":{
           "ref":"STDOUT"
         },
-        "appender-ref":{
+        "AppenderRef":{
           "ref":"dailylog"
         }
       }
