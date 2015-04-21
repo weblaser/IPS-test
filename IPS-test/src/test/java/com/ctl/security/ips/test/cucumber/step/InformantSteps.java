@@ -160,7 +160,7 @@ public class InformantSteps {
 
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
                 waitForPostRequests(1, notificationDestination.getUrl());
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")|| activeProfiles.equalsIgnoreCase("ts")) {
                     notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
                 }
             }
@@ -186,7 +186,7 @@ public class InformantSteps {
             String activeProfiles = environment.getActiveProfiles()[0];
 
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")|| activeProfiles.equalsIgnoreCase("ts")) {
                     notificationDestinationWireMockServer.verify(0, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
                 }
             }
