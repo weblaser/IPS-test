@@ -8,22 +8,22 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by sean.robb on 3/5/2015.
+ *
  */
 
 @Component
 public class ClcAuthenticationComponent {
 
-    private static final String VALID_USERNAME = "Bugs";
-    private static final String VALID_PASSWORD = "vZb]9yKv==Bnmozn";
-    static final String VALID_AA = "TCCD";
+    private static final String VALID_USERNAME = "security.test.user";
+    private static final String VALID_PASSWORD = "wNeDVpD6cQBf3X";
+    public static final String VALID_AA = "SCDV";
 
     @Autowired
     private AuthenticationClient authenticationClient;
 
-    public String authenticate() {
+    public ClcAuthenticationResponse authenticate() {
         ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient.authenticateV2Api(new ClcAuthenticationRequest(VALID_USERNAME, VALID_PASSWORD));
-        String bearerToken = clcAuthenticationResponse.getBearerToken();
-        return bearerToken;
+        return clcAuthenticationResponse;
     }
 
 }

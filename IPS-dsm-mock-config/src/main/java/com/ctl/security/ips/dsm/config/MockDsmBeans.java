@@ -1,7 +1,6 @@
 package com.ctl.security.ips.dsm.config;
 
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
-import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
@@ -16,17 +15,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doAnswer;
@@ -47,6 +41,12 @@ public class MockDsmBeans extends BaseDsmBeans {
     public static final String EXPECTED_DELETED_POLICY = "expectedDeletedPolicy";
     public static final String CURRENT_EXPECTED_POLICY = "currentExpectedPolicy";
     public static final String SESSION_ID = "123";
+
+    public static final Map<String, String> loginTenantMap = new HashMap<String, String>() {{
+        for (int index = 0; index < 4; index++) {
+            put("Account" + index, "Session" + index);
+        }
+    }};
 
     @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String restProtocol;
@@ -85,7 +85,8 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     private void setupMockManagerPolicyInteraction() throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerValidationException_Exception, ManagerIntegrityConstraintException_Exception, ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerCommunicationException_Exception {
 
-        setupDsmAuthentication();
+        setupDSMAuthentication();
+        setupDsmTenantAuthentication();
 
         final Map<String, String> policyKeys = new HashMap<>();
         policyKeys.put(CURRENT_EXPECTED_POLICY, EXPECTED_POLICY);
@@ -96,15 +97,18 @@ public class MockDsmBeans extends BaseDsmBeans {
         setupPolicyRetrieve(policyKeys, expectedPolicies, expectedSecurityProfileTransport);
         setupPolicySave(expectedSecurityProfileTransport);
         setupPolicyDelete(policyKeys, expectedPolicies);
-        setupFirewallEventRetrieve();
     }
 
-    private void setupDsmAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
+    private void setupDSMAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
         String sessionId = SESSION_ID;
-        when(manager.authenticate(BaseDsmBeans.APIUSER, BaseDsmBeans.PASSWORD_CORRECT)).thenReturn(sessionId);
-        when(manager.authenticate(BaseDsmBeans.APIUSER, BaseDsmBeans.PASSWORD_WRONG)).thenThrow(ManagerAuthenticationException_Exception.class);
-        when(manager.authenticate(BaseDsmBeans.APIUSER_WRONG, BaseDsmBeans.PASSWORD_CORRECT)).thenThrow(ManagerAuthenticationException_Exception.class);
+        when(manager.authenticate(BaseDsmBeans.APIUSER, BaseDsmBeans.PASSWORD_CORRECT))
+                .thenReturn(sessionId);
+        when(manager.authenticate(BaseDsmBeans.APIUSER, BaseDsmBeans.PASSWORD_WRONG))
+                .thenThrow(ManagerAuthenticationException_Exception.class);
+        when(manager.authenticate(BaseDsmBeans.APIUSER_WRONG, BaseDsmBeans.PASSWORD_CORRECT))
+                .thenThrow(ManagerAuthenticationException_Exception.class);
     }
+
 
     private void setupPolicyRetrieve(final Map<String, String> policyKeys, final Map<String, SecurityProfileTransport> expectedPolicies, SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
         Integer validDsmPolicyId = Integer.valueOf(BaseDsmBeans.VALID_DSM_POLICY_ID);
@@ -116,7 +120,8 @@ public class MockDsmBeans extends BaseDsmBeans {
         when(manager.securityProfileRetrieve(anyInt(), anyString())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                SecurityProfileTransport securityProfileTransport = expectedPolicies.get(policyKeys.get(CURRENT_EXPECTED_POLICY));
+                SecurityProfileTransport securityProfileTransport = expectedPolicies
+                        .get(policyKeys.get(CURRENT_EXPECTED_POLICY));
                 policyKeys.put(CURRENT_EXPECTED_POLICY, EXPECTED_POLICY);
                 return securityProfileTransport;
             }
@@ -150,33 +155,62 @@ public class MockDsmBeans extends BaseDsmBeans {
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
 
-    private void setupFirewallEventRetrieve() throws ManagerException_Exception, ManagerTimeoutException_Exception, ManagerAuthenticationException_Exception, ManagerValidationException_Exception {
+    private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
+        when(manager.authenticateTenant(
+                anyString(),
+                eq(BaseDsmBeans.APIUSER),
+                eq(BaseDsmBeans.PASSWORD_CORRECT)
+        )).thenAnswer(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Integer argumentAccountId = 0;
+                Object[] arguments = invocationOnMock.getArguments();
+                String accountId = arguments[argumentAccountId].toString();
+                String sessionId = createSessionId(accountId);
+                createFirewallEventRetrieveMock(sessionId,accountId);
+                return sessionId;
+            }
+        });
+    }
+
+    private void createFirewallEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
-                anyString())).thenAnswer(new Answer<FirewallEventListTransport>() {
+                eq(sessionId))).thenAnswer(new Answer<FirewallEventListTransport>() {
             @Override
-            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock){
-
+            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock) {
                 List<FirewallEvent> response = null;
-
-                FirewallEventListTransport firewallEventListTransport = new FirewallEventListTransport();
-                firewallEventListTransport.setFirewallEvents(new ArrayOfFirewallEventTransport());
                 try {
-
-                    String address="http://" + destinationHostName+":"+ destinationPort + host;
-                    response = Arrays.asList(restTemplate.exchange(address,HttpMethod.GET,
+                    String address = "http://" + destinationHostName + ":" + destinationPort
+                            + host + "/" + accountId;
+                    response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
                             null, FirewallEvent[].class).getBody());
-                    for(FirewallEvent firewallEvent : response) {
-                        firewallEventListTransport.getFirewallEvents().getItem()
-                                .add(firewallEventTransportMarshaller.convert(firewallEvent));
-                    }
-                } catch (RestClientException rce) {
-                    //do nothing
-                }
-               return firewallEventListTransport;
+                } catch (RestClientException rce) {}
+                return convertAllToFirewallEventListTransport(response);
             }
         });
+    }
+
+    private FirewallEventListTransport getFirewallEventListTransport() {
+        FirewallEventListTransport firewallEventListTransport = new FirewallEventListTransport();
+        firewallEventListTransport.setFirewallEvents(new ArrayOfFirewallEventTransport());
+        return firewallEventListTransport;
+    }
+
+    private FirewallEventListTransport convertAllToFirewallEventListTransport(List<FirewallEvent> response) {
+        FirewallEventListTransport firewallEventListTransport = getFirewallEventListTransport();
+        if (response != null) {
+            for (FirewallEvent firewallEvent : response) {
+                firewallEventListTransport.getFirewallEvents().getItem()
+                        .add(firewallEventTransportMarshaller.convert(firewallEvent));
+            }
+        }
+        return firewallEventListTransport;
+    }
+
+    private String createSessionId(String accountId) {
+        return "Session ID For: " + accountId;
     }
 
 }

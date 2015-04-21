@@ -40,16 +40,12 @@ public class DsmEventClient {
     private DsmLogInClient dsmLogInClient;
 
     @Autowired
-    private EventClient eventClient;
-
-    @Autowired
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
-    public List<FirewallEvent> gatherEvents(Date fromTime, Date toTime) throws DsmEventClientException {
+    public List<FirewallEvent> gatherEvents(String accountId, Date fromTime, Date toTime) throws DsmEventClientException {
         String sessionId = null;
         try {
-            //TODO log in to DSM with different accounts to recover events for that single account
-            sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            sessionId = dsmLogInClient.connectTenantToDSMClient(accountId,username, password);
             logger.info("session created with id " + sessionId);
 
             List<FirewallEventTransport> firewallEventTransportList;

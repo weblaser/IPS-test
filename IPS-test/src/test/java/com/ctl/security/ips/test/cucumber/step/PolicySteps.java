@@ -6,6 +6,7 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
+import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.client.PolicyClient;
@@ -23,6 +24,8 @@ import manager.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
@@ -50,11 +53,10 @@ public class PolicySteps {
     private List<Policy> policyList;
     private Policy policy;
 
-    private String accountAlias;
+    private String accountId;
     private String bearerToken;
     private String hostName;
     private String username;
-
 
 
     @Autowired
@@ -78,14 +80,21 @@ public class PolicySteps {
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
+    @Autowired
+    private Environment environment;
+
+
+    @Value("${clc.client.test.package.server}")
+    private String clcServerName;
+
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
-            accountAlias = ClcAuthenticationComponent.VALID_AA;
+            accountId = ClcAuthenticationComponent.VALID_AA;
 
-            bearerToken = clcAuthenticationComponent.authenticate();
+            bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
         } else {
-            accountAlias = INVALID_AA;
+            accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
         }
     }
@@ -96,13 +105,26 @@ public class PolicySteps {
         try {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
-            hostName = "server.host.name." + System.currentTimeMillis();
+
+
+
+
+            String activeProfiles = environment.getActiveProfiles()[0];
+
+            if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
+                hostName = "server.host.name." + System.currentTimeMillis();
+            }
+            else{
+                hostName = clcServerName;
+            }
+
+
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
                     setHostName(hostName).
                     setUsername(userName);
 
-            policyClient.createPolicyForAccount(accountAlias, policy, bearerToken);
+            policyClient.createPolicyForAccount(accountId, policy, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -118,9 +140,9 @@ public class PolicySteps {
         }
         try {
             if ("GET".equals(method)) {
-                policy = policyClient.getPolicyForAccount(accountAlias, id, bearerToken);
+                policy = policyClient.getPolicyForAccount(accountId, id, bearerToken);
             } else if ("PUT".equals(method)) {
-                policyClient.updatePolicyForAccount(accountAlias, id, new Policy(), bearerToken);
+                policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             } else {
 
 
@@ -135,7 +157,7 @@ public class PolicySteps {
 
                 username = policy.getUsername();
 
-                policyClient.deletePolicyForAccount(accountAlias, id, username, hostName, bearerToken);
+                policyClient.deletePolicyForAccount(accountId, id, username, hostName, bearerToken);
 
             }
         } catch (Exception e) {
@@ -147,7 +169,7 @@ public class PolicySteps {
     @When("^I GET the policies$")
     public void i_GET_the_policies() {
         try {
-            policyList = policyClient.getPoliciesForAccount(accountAlias, bearerToken);
+            policyList = policyClient.getPoliciesForAccount(accountId, bearerToken);
         } catch (Exception e) {
             exception = e;
         }
@@ -176,6 +198,7 @@ public class PolicySteps {
     }
 
 
+
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
     }
@@ -191,7 +214,7 @@ public class PolicySteps {
         int i = 0;
         int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && !products.toString().contains("status=INACTIVE")){
-            configurationItemResource = configurationItemClient.getConfigurationItem(hostName, accountAlias);
+            configurationItemResource = configurationItemClient.getConfigurationItem(hostName, accountId);
             products = configurationItemResource.getContent().getProducts();
             Thread.sleep(1000);
             i++;
@@ -261,8 +284,7 @@ public class PolicySteps {
         int i = 0;
         int maxTries = MAX_WAIT_TIME;
         while(i < maxTries && (user == null || user.getId() == null)){
-            user = userClient.getUser(policy.getUsername(), accountAlias);
-            policy.getHostName();
+            user = userClient.getUser(policy.getUsername(), accountId);
             Thread.sleep(1000);
             i++;
         }
@@ -279,7 +301,7 @@ public class PolicySteps {
         List<ProductUserActivity> productUserActivities = productUserActivityResources.unwrap();
         assertTrue(productUserActivities.size() > 0);
 
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getHostName(), accountAlias);
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(policy.getHostName(), accountId);
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent().getId());
 

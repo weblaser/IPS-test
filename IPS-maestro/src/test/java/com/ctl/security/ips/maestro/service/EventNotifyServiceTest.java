@@ -6,23 +6,24 @@ import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemRe
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
+import com.ctl.security.library.common.httpclient.CtlSecurityClient;
+import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import com.ctl.security.library.test.TestAppender;
+import org.apache.http.HttpStatus;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,30 +52,28 @@ public class EventNotifyServiceTest {
     @Mock
     private Account account;
 
-    @Mock
-    private RestTemplate restTemplate;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private CtlSecurityClient ctlSecurityClient;
 
     @Mock
-    private ResponseEntity<String> responseEntity;
+    private CtlSecurityResponse ctlSecurityResponse;
 
     @Mock
     private ProductUserActivityClient productUserActivityClient;
 
-    private HttpStatus httpStatus;
-
     String hostName = null;
     String accountId = null;
 
-    private Integer maxRetryAttempts=2;
+    private Integer maxRetryAttempts = 2;
 
     @Before
-    public void setup(){
+    public void setup() {
         ReflectionTestUtils.setField(classUnderTest, "maxRetryAttempts", maxRetryAttempts);
         ReflectionTestUtils.setField(classUnderTest, "retryWaitTime", 10);
     }
 
     @Test
-    public void notify_notifiesToNotificationDestination(){
+    public void notify_notifiesToNotificationDestination() {
         final TestAppender appender = new TestAppender();
         final Logger logger = Logger.getRootLogger();
 
@@ -84,10 +83,10 @@ public class EventNotifyServiceTest {
 
         basicMockitoSetup(notificationDestinations);
 
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
-                .thenReturn(responseEntity);
-        when(responseEntity.getStatusCode())
-                .thenReturn(HttpStatus.ACCEPTED);
+        when(ctlSecurityClient.post(anyString()).body(anyString()).execute())
+                .thenReturn(ctlSecurityResponse);
+        when(ctlSecurityResponse.isSuccessful())
+                .thenReturn(true);
 
         logger.addAppender(appender);
         classUnderTest.notify(eventBean);
@@ -95,16 +94,14 @@ public class EventNotifyServiceTest {
 
         basicMockitoVerification();
 
-        verifyRestTemplateExchange(1, eventBean,notificationDestinations);
-
-         assertEquals(true,responseEntity.getStatusCode().is2xxSuccessful());
+        verifyRestTemplateExchange(1, eventBean, notificationDestinations);
 
         final List<LoggingEvent> log = appender.getLog();
-        assertEquals((Integer)0, (Integer) log.size());
+        assertEquals((Integer) 0, (Integer) log.size());
     }
 
     @Test
-    public void notify_logsFailedNotificationCausedByStatusCode(){
+    public void notify_logsFailedNotificationCausedByStatusCode() {
         final TestAppender appender = new TestAppender();
         final Logger logger = Logger.getRootLogger();
 
@@ -114,28 +111,23 @@ public class EventNotifyServiceTest {
 
         basicMockitoSetup(notificationDestinations);
 
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
-                .thenReturn(responseEntity);
-        when(responseEntity.getStatusCode())
-                .thenReturn(HttpStatus.I_AM_A_TEAPOT);
+        when(ctlSecurityClient.post(anyString()).body(anyString()).execute())
+                .thenReturn(ctlSecurityResponse);
+        when(ctlSecurityResponse.isSuccessful())
+                .thenReturn(false);
 
         logger.addAppender(appender);
         classUnderTest.notify(eventBean);
         logger.removeAppender(appender);
 
         basicMockitoVerification();
-
-        assertEquals(false,responseEntity.getStatusCode().is2xxSuccessful());
 
         verifyRestTemplateExchange(maxRetryAttempts, eventBean, notificationDestinations);
 
         final List<LoggingEvent> log = appender.getLog();
 
-        for(int i=1; i < maxRetryAttempts - 1; i++) {
-            assertEquals(Level.INFO,log.get(i).getLevel());
-        }
-        assertEquals(Level.ERROR,log.get(maxRetryAttempts).getLevel());
-        assertEquals((Integer)(maxRetryAttempts + 1), (Integer) log.size());
+        assertEquals(Level.ERROR, log.get(0).getLevel());
+        assertEquals(1, log.size());
     }
 
     @Test
@@ -191,12 +183,8 @@ public class EventNotifyServiceTest {
     }
 
     private void verifyRestTemplateExchange(Integer amountOfTimes, EventBean eventBean, List<NotificationDestination> notificationDestinations) {
-        for (NotificationDestination notification : notificationDestinations)
-        {
-            verify(restTemplate, times(amountOfTimes)).exchange(eq(notification.getUrl()),
-                    eq(HttpMethod.POST),
-                    eq(new HttpEntity<>(eventBean.getEvent())),
-                    eq(String.class));
+        for (NotificationDestination notification : notificationDestinations) {
+            verify(ctlSecurityClient.post(anyString()).body(anyString()), times(amountOfTimes)).execute();
         }
     }
 
@@ -219,21 +207,20 @@ public class EventNotifyServiceTest {
     }
 
     private EventBean createEventBean(String hostName, String accountId) {
-        FirewallEvent event=new FirewallEvent();
+        FirewallEvent event = new FirewallEvent();
         event.setReason("New Reason");
         event.setHostName("New HostName");
-        return new EventBean(hostName,accountId,event);
+        return new EventBean(hostName, accountId, event);
     }
 
     private List<NotificationDestination> createNotificationDestinations() {
-        NotificationDestination notificationDestination=new NotificationDestination();
+        NotificationDestination notificationDestination = new NotificationDestination();
         notificationDestination.setUrl("http://localhost:8080/test");
         notificationDestination.setTypeCode(NotificationDestinationType.WEBHOOK);
         notificationDestination.setIntervalCode(NotificationDestinationInterval.DAILY);
 
         return Arrays.asList(notificationDestination);
     }
-
 
 
 }

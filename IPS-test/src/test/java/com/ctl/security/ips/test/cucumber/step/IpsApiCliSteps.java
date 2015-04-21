@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.ips.cli.IpsApiCli;
 import com.ctl.security.ips.cli.IpsApiCliDelegator;
 import com.ctl.security.ips.common.domain.Policy.Policy;
@@ -33,7 +34,7 @@ public class IpsApiCliSteps {
     final Logger rootLogger = Logger.getRootLogger();
 
     private String bearerToken;
-    private String accountId;
+    private String accountAlias;
     private String policyId;
 
     private String policyJson;
@@ -46,8 +47,9 @@ public class IpsApiCliSteps {
 
     @Given("^there is a policy to retrieve$")
     public void there_is_a_policy_to_retrieve() throws Throwable {
-        bearerToken = clcAuthenticationComponent.authenticate();
-        accountId = ClcAuthenticationComponent.VALID_AA;
+        ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
+        bearerToken = clcAuthenticationResponse.getBearerToken();
+        accountAlias = clcAuthenticationResponse.getAccountAlias();
         policyId = PolicySteps.VALID_POLICY_ID;
     }
 
@@ -55,7 +57,7 @@ public class IpsApiCliSteps {
     public void the_ips_cli_is_used_to_retrieve_that_policy() throws Throwable {
         String[] args = {IpsApiCliDelegator.GET_POLICY_FOR_ACCOUNT,
                 bearerToken,
-                accountId,
+                accountAlias,
                 policyId};
 
         rootLogger.addAppender(testAppender);
