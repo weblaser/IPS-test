@@ -117,6 +117,7 @@ public class DsmTenantClient {
     private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant) {
         return new CreateOptions()
                 .setAdminAccount(securityTenant.getAdminAccount())
+                .setAdminPassword(securityTenant.getAdminPassword())
                 .setAdminEmail(securityTenant.getAdminEmail());
     }
 
