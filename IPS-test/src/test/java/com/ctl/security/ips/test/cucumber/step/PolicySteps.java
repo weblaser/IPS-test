@@ -106,9 +106,6 @@ public class PolicySteps {
             policy = new Policy();
             String name = "name" + System.currentTimeMillis();
 
-
-
-
             String activeProfiles = environment.getActiveProfiles()[0];
 
             if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
@@ -117,7 +114,6 @@ public class PolicySteps {
             else{
                 hostName = clcServerName;
             }
-
 
             String userName = "userName" + System.currentTimeMillis();
             policy.setName(name).
@@ -197,16 +193,12 @@ public class PolicySteps {
         verifyCmdbCreation(true);
     }
 
-
-
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
     }
 
     @Then("^I see that the policy has been deleted$")
     public void i_see_that_the_policy_has_been_deleted() throws Throwable {
-
-
 
         ConfigurationItemResource configurationItemResource = null;
         Set<Product> products = new HashSet<>();
