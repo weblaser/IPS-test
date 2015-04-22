@@ -1,4 +1,4 @@
-@REGRESSION @WIP
+@REGRESSION
 Feature: Security - DsmClient  To log into the DSM API and create a new policy for a customer
 
   Scenario: Successfully create a new policy for a tenant

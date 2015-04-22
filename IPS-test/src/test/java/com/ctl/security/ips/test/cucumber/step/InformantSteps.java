@@ -5,11 +5,14 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
+import com.ctl.security.ips.client.PolicyClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -34,6 +37,9 @@ public class InformantSteps {
 
     @Autowired
     EventAdapter eventAdapter;
+
+    @Autowired
+    private PolicyClient policyClient;
 
     @Autowired
     private ConfigurationItemClient configurationItemClient;
@@ -100,12 +106,31 @@ public class InformantSteps {
         }
     }
 
+    @And("^DSM agent is installed on all of the configuration items$")
+    public void DSM_agent_is_installed_on_all_of_the_configuration_items() {
+
+        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
+
+        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
+
+            ConfigurationItem configurationItem = entry.getKey();
+            User user = entry.getValue();
+
+            Policy policy = new Policy()
+                    .setName("name" + System.currentTimeMillis())
+                    .setHostName(configurationItem.getHostName())
+                    .setUsername(user.getAccountId());
+
+            policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
+        }
+    }
+
     @And("^the notification destination is set for all configuration items$")
     public void the_notification_destination_is_set_for_all_configuration_items() throws Throwable {
         for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
             String notificationDestinationUrl = entry.getKey().getHostName() +
-                    "destinationUrl" +
-                    System.currentTimeMillis();
+                    "destinationUrl" + System.currentTimeMillis();
+
             String destinationURL = "http://" + destinationHostName + ":" + destinationPort
                     + "/" + notificationDestinationUrl;
 
@@ -160,7 +185,7 @@ public class InformantSteps {
 
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
                 waitForPostRequests(1, notificationDestination.getUrl());
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")|| activeProfiles.equalsIgnoreCase("ts")) {
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev") || activeProfiles.equalsIgnoreCase("ts")) {
                     notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
                 }
             }
@@ -186,7 +211,7 @@ public class InformantSteps {
             String activeProfiles = environment.getActiveProfiles()[0];
 
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")|| activeProfiles.equalsIgnoreCase("ts")) {
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev") || activeProfiles.equalsIgnoreCase("ts")) {
                     notificationDestinationWireMockServer.verify(0, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
                 }
             }
@@ -302,8 +327,8 @@ public class InformantSteps {
         configurationItemClient.deleteConfigurationItem(configurationItem.getId());
     }
 
-    private void cleanUpUser(User entry) {
-        User user = userClient.getUser(entry.getUsername(), entry.getAccountId()).getContent();
+    private void cleanUpUser(User userToDelete) {
+        User user = userClient.getUser(userToDelete.getUsername(), userToDelete.getAccountId()).getContent();
         userClient.deleteUser(user.getId());
     }
 
