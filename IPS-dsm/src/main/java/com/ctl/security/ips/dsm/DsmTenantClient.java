@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -161,6 +162,7 @@ public class DsmTenantClient {
         return new SecurityTenant()
                 .setAgentInitiatedActivationPassword(dsmTenant.getAgentInitiatedActivationPassword())
                 .setTenantId(dsmTenant.getTenantID())
+                .setGuid(dsmTenant.getGuid())
                 .setState(dsmTenant.getState());
 
     }

@@ -2,6 +2,7 @@ package com.ctl.security.ips.maestro.jms;
 
 import com.ctl.security.ips.common.jms.PolicyOperation;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
+import com.ctl.security.ips.dsm.exception.AgentInstallException;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.maestro.service.PolicyServiceWrite;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class PolicyListener {
     private PolicyServiceWrite policyServiceWrite;
 
     @JmsListener(destination = PolicyOperation.CREATE_POLICY_FOR_ACCOUNT)
-    public void createPolicyForAccount(PolicyBean policyBean) throws DsmClientException {
+    public void createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException {
         policyServiceWrite.createPolicyForAccount(policyBean);
     }
 

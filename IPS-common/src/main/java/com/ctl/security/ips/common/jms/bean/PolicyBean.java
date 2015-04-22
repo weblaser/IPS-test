@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @Data
 public class PolicyBean implements Serializable {
-    private String accountId;
+    private String accountAlias;
     private Policy policy;
     private String bearerToken;
 }

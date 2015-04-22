@@ -27,14 +27,14 @@ public class NotificationResourceImpl implements NotificationResource {
     @Override
     public void updateNotificationDestination(String account, String hostName, List<NotificationDestination> notificationDestinations) {
 
-        logger.error("updateNotificationDestination begin");
-        logger.error("account: " + account );
-        logger.error("hostName: " + hostName);
-        logger.error("notificationDestinations: " + notificationDestinations);
+        logger.info("updateNotificationDestination begin");
+        logger.info("account: " + account );
+        logger.info("hostName: " + hostName);
+        logger.info("notificationDestinations: " + notificationDestinations);
 
         NotificationDestinationBean notificationDestinationBean = new NotificationDestinationBean(hostName, account, notificationDestinations);
         notificationMessageSender.updateNotificationDestination(notificationDestinationBean);
 
-        logger.error("updateNotificationDestination end");
+        logger.info("updateNotificationDestination end");
     }
 }

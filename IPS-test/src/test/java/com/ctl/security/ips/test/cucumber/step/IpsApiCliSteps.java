@@ -73,7 +73,7 @@ public class IpsApiCliSteps {
 
         assertNotNull(policyJson);
         assertNotNull(policy);
-        assertNotNull(policy.getVendorPolicyId());
+        assertNotNull(policy);
 
     }
 

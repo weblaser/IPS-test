@@ -74,6 +74,7 @@ public class DsmPolicyClientTest {
         parentPolicy.setVendorPolicyId("123938274");
 
         expectedPolicy = new Policy();
+        expectedPolicy.setParentPolicyId(parentPolicy.getVendorPolicyId());
 
         SecurityProfileTransport securityProfileTransportToBeCreated = new SecurityProfileTransport();
         SecurityProfileTransport expectedSecurityProfileTransport = new SecurityProfileTransport();
@@ -98,11 +99,11 @@ public class DsmPolicyClientTest {
         setupMocks(WINDOWS);
 
         //act
-        Policy actualPolicy = classUnderTest.createCtlSecurityProfile(policyBean);
+        PolicyBean actualPolicyBean = classUnderTest.createPolicyWithParentPolicy(policyBean);
 
         //assert
-        assertEquals(expectedPolicy, actualPolicy);
-        assertEquals(parentPolicy.getVendorPolicyId(), actualPolicy.getParentPolicyId());
+        assertEquals(expectedPolicy, actualPolicyBean.getPolicy());
+        assertEquals(parentPolicy.getVendorPolicyId(), actualPolicyBean.getPolicy().getParentPolicyId());
         verify(dsmLogInClient, times(2)).endSession(sessionId);
     }
 
@@ -111,11 +112,11 @@ public class DsmPolicyClientTest {
         setupMocks(LINUX);
 
         //act
-        Policy actualPolicy = classUnderTest.createCtlSecurityProfile(policyBean);
+        PolicyBean actualPolicyBean = classUnderTest.createPolicyWithParentPolicy(policyBean);
 
         //assert
-        assertEquals(expectedPolicy, actualPolicy);
-        assertEquals(parentPolicy.getVendorPolicyId(), actualPolicy.getParentPolicyId());
+        assertEquals(expectedPolicy, actualPolicyBean.getPolicy());
+        assertEquals(parentPolicy.getVendorPolicyId(), actualPolicyBean.getPolicy().getParentPolicyId());
         verify(dsmLogInClient, times(2)).endSession(sessionId);
     }
 
@@ -133,7 +134,7 @@ public class DsmPolicyClientTest {
         when(manager.securityProfileSave(any(SecurityProfileTransport.class), eq(sessionId))).thenThrow(ManagerLockoutException_Exception.class);
 
         //act
-        classUnderTest.createCtlSecurityProfile(policyBean);
+        classUnderTest.createPolicyWithParentPolicy(policyBean);
     }
 
 
