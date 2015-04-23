@@ -38,12 +38,13 @@ public class PolicyServiceWrite extends PolicyService {
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException {
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
-        cmdbService.installProduct(installationBean);
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());
         packageInstallationService.installClcPackage(
                 dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
                 newlyCreatedPolicyBean.getAccountAlias(),
                 newlyCreatedPolicyBean.getBearerToken());
+
+        cmdbService.installProduct(installationBean);
 
         return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
     }
