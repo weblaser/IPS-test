@@ -14,10 +14,10 @@ import static org.mockito.Mockito.verify;
 public class EventListenerTest {
 
     @InjectMocks
-    EventListener classUnderTest;
+    private EventListener classUnderTest;
 
     @Mock
-    EventNotifyService eventNotifyService;
+    private EventNotifyService eventNotifyService;
 
     @Test
     public void testNotify() throws Exception {

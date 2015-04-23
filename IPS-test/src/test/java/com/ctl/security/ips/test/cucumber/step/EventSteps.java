@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by sean.robb on 3/10/2015.
@@ -38,6 +39,9 @@ public class EventSteps {
 
     @Autowired
     private ConfigurationItemClient configurationItemClient;
+
+    @Autowired
+    private ProductUserActivity productUserActivityClient;
 
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
@@ -112,19 +116,11 @@ public class EventSteps {
     }
 
 
-    @Given("^an event has occurred$")
-    public void an_event_has_occurred() throws Throwable {
-
-    }
-
-    @When("^the notification executes$")
-    public void the_notification_executes() throws Throwable {
-
-    }
-
     @Then("^the notification is persisted in the product user activity document$")
     public void the_notification_is_persisted_in_the_product_user_activity_document() throws Throwable {
-
+//        ProductUserActivity retrievedProductUserActivity = productUserActivityClient.getProductUserActivity(productUserActivityResource.getContent().getId());
+//        assertNotNull(retrievedProductUserActivity);
+//        assertNotNull(retrievedProductUserActivity.getId());
     }
 
     private void createAndConfigureConfigurationItem(String accountId, String hostName) {

@@ -2,6 +2,8 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
+import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
+import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.common.jms.bean.EventBean;
@@ -29,12 +31,15 @@ import java.util.List;
 @Component
 public class EventNotifyService {
 
+    public static final String SUCCESSFULLY_SENT_NOTIFICATION_TO = "Successfully Sent Notification to ";
+    public static final String FAILED_TO_SEND_NOTIFICATION_TO = "Failed to Send Notification to ";
+
     @Autowired
     private ConfigurationItemClient configurationItemClient;
 
     @Autowired
     private ProductUserActivityClient productUserActivityClient;
-    
+
     private CtlSecurityClient ctlSecurityClient;
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
@@ -48,40 +53,57 @@ public class EventNotifyService {
 
     public void notify(EventBean eventBean) {
 
-        List<NotificationDestination> notificationDestinations = configurationItemClient
-                .getConfigurationItem(eventBean.getHostName(), eventBean.getAccountId())
-                .getContent()
+        ConfigurationItemResource configurationItemResource = configurationItemClient
+                .getConfigurationItem(eventBean.getHostName(), eventBean.getAccountId());
+        ConfigurationItem configurationItem = configurationItemResource.getContent();
+
+        List<NotificationDestination> notificationDestinations = configurationItem
                 .getAccount()
                 .getNotificationDestinations();
 
-        for (NotificationDestination notificationDestination : notificationDestinations) {
-            try {
-                Integer retryAttempts = 0;
-                CtlSecurityResponse ctlSecurityResponse;
+        String productUserActivityDescription = null;
 
-                do {
+        for (NotificationDestination notificationDestination : notificationDestinations) {
+
+            Integer retryAttempts = 0;
+            CtlSecurityResponse ctlSecurityResponse = null;
+
+            do {
+                try {
                     ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
                             .body(eventBean.getEvent())
                             .execute();
-
-                    retryAttempts++;
-                    try {
-                        Thread.sleep(retryWaitTime);
-                    } catch (Exception e) {
-                    }
-                } while (!ctlSecurityResponse.isSuccessful() && (retryAttempts < maxRetryAttempts));
-
-                if (!ctlSecurityResponse.isSuccessful()) {
-                    logger.error("Failed to Send Notification to " + notificationDestination.getUrl());
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                retryAttempts++;
+                try {
+                    Thread.sleep(retryWaitTime);
+                } catch (Exception e) {
+                }
+            }
+            while (postToNotifcationDestinationNotSuccessful(ctlSecurityResponse) && (retryAttempts < maxRetryAttempts));
+
+            if (postToNotifcationDestinationNotSuccessful(ctlSecurityResponse)) {
+                productUserActivityDescription = FAILED_TO_SEND_NOTIFICATION_TO + notificationDestination.getUrl();
+                logger.error(productUserActivityDescription);
+            }
+            else{
+                productUserActivityDescription = SUCCESSFULLY_SENT_NOTIFICATION_TO + notificationDestination.getUrl();
+                logger.info(productUserActivityDescription);
             }
 
             ProductUserActivity productUserActivity = new ProductUserActivity();
 
-//                productUserActivity.setConfigurationItem(eventBean.)
+            productUserActivity.setConfigurationItem(configurationItem);
+            productUserActivity.setDescription(productUserActivityDescription);
+
             productUserActivityClient.createProductUserActivity(productUserActivity);
         }
+    }
+
+    private boolean postToNotifcationDestinationNotSuccessful(CtlSecurityResponse ctlSecurityResponse) {
+        return (ctlSecurityResponse == null || !ctlSecurityResponse.isSuccessful());
     }
 }

@@ -97,7 +97,8 @@ public class EventNotifyServiceTest {
         verifyRestTemplateExchange(1, eventBean, notificationDestinations);
 
         final List<LoggingEvent> log = appender.getLog();
-        assertEquals((Integer) 0, (Integer) log.size());
+        assertEquals(Level.INFO, log.get(0).getLevel());
+        assertEquals((Integer) 1, (Integer) log.size());
     }
 
     @Test
@@ -141,19 +142,13 @@ public class EventNotifyServiceTest {
 
         basicMockitoSetup(notificationDestinations);
 
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
-                .thenThrow(new RestClientException("test"));
+        when(ctlSecurityClient.post(anyString())).thenThrow(new RestClientException("test"));
 
         logger.addAppender(appender);
         classUnderTest.notify(eventBean);
         logger.removeAppender(appender);
 
         basicMockitoVerification();
-
-        verifyRestTemplateExchange(maxRetryAttempts, eventBean, notificationDestinations);
-
-        assertNotNull(responseEntity);
-        assertNull(responseEntity.getStatusCode());
 
         final List<LoggingEvent> log = appender.getLog();
 
@@ -165,20 +160,44 @@ public class EventNotifyServiceTest {
     }
 
     @Test
-    public void notify_persistsNotification(){
+    public void notify_persistsSuccessfulNotification(){
         EventBean eventBean = createEventBean(hostName, accountId);
         List<NotificationDestination> notificationDestinations = createNotificationDestinations();
 
         basicMockitoSetup(notificationDestinations);
 
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
-                .thenReturn(responseEntity);
-        when(responseEntity.getStatusCode())
-                .thenReturn(HttpStatus.ACCEPTED);
+        when(ctlSecurityClient.post(anyString()).body(anyString()).execute()).thenReturn(ctlSecurityResponse);
+        when(ctlSecurityResponse.isSuccessful())
+                .thenReturn(true);
 
         classUnderTest.notify(eventBean);
 
         ProductUserActivity productUserActivity = new ProductUserActivity();
+
+        productUserActivity.setConfigurationItem(configurationItem);
+        productUserActivity.setDescription(EventNotifyService.SUCCESSFULLY_SENT_NOTIFICATION_TO + notificationDestinations.get(0).getUrl());
+
+        verify(productUserActivityClient).createProductUserActivity(productUserActivity);
+    }
+
+    @Test
+    public void notify_persistsFailedNotification(){
+        EventBean eventBean = createEventBean(hostName, accountId);
+        List<NotificationDestination> notificationDestinations = createNotificationDestinations();
+
+        basicMockitoSetup(notificationDestinations);
+
+        when(ctlSecurityClient.post(anyString()).body(anyString()).execute()).thenReturn(ctlSecurityResponse);
+        when(ctlSecurityResponse.isSuccessful())
+                .thenReturn(false);
+
+        classUnderTest.notify(eventBean);
+
+        ProductUserActivity productUserActivity = new ProductUserActivity();
+
+        productUserActivity.setConfigurationItem(configurationItem);
+        productUserActivity.setDescription(EventNotifyService.FAILED_TO_SEND_NOTIFICATION_TO + notificationDestinations.get(0).getUrl());
+
         verify(productUserActivityClient).createProductUserActivity(productUserActivity);
     }
 
