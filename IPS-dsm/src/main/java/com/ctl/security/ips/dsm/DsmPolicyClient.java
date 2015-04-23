@@ -15,7 +15,6 @@ import java.util.List;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
- *
  */
 @Component
 public class DsmPolicyClient {
@@ -49,16 +48,20 @@ public class DsmPolicyClient {
         }
     }
 
-    public Policy createCtlSecurityProfile(PolicyBean policyBean) throws DsmClientException {
-        Policy newPolicy = policyBean.getPolicy();
-        setParentPolicy(newPolicy, policyBean.getAccountId(), policyBean.getBearerToken());
+
+    public PolicyBean createPolicyWithParentPolicy(PolicyBean policyBean) throws DsmClientException {
+        setParentPolicy(policyBean.getPolicy(), policyBean.getAccountAlias(), policyBean.getBearerToken());
 
         try {
-            SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(securityProfileTransportMarshaller.convert(newPolicy));
-            return securityProfileTransportMarshaller.convert(securityProfileTransport)
-                    .setHostName(newPolicy.getHostName())
-                    .setUsername(newPolicy.getUsername())
-                    .setParentPolicyId(newPolicy.getParentPolicyId());
+            SecurityProfileTransport securityProfileTransport = createPolicyOnDSMClient(
+                    securityProfileTransportMarshaller
+                            .convert(policyBean.getPolicy()));
+            return new PolicyBean(policyBean.getAccountAlias(),
+                    securityProfileTransportMarshaller
+                            .convert(securityProfileTransport)
+                            .setHostName(policyBean.getPolicy().getHostName())
+                            .setUsername(policyBean.getPolicy().getUsername()),
+                    policyBean.getBearerToken());
         } catch (DsmClientException e) {
             throw new DsmClientException(e);
         }
@@ -67,7 +70,7 @@ public class DsmPolicyClient {
     private void setParentPolicy(Policy policy, String accountAlias, String bearerToken) throws DsmClientException {
         String clcOs = serverClient.getOS(accountAlias, policy.getHostName(), bearerToken);
         Policy parentPolicy;
-        if(clcOs.toLowerCase().contains("win")){
+        if (clcOs.toLowerCase().contains("win")) {
             parentPolicy = retrieveSecurityProfileByName(OsType.CLC_WINDOWS.getValue());
         } else {
             parentPolicy = retrieveSecurityProfileByName(OsType.CLC_LINUX.getValue());

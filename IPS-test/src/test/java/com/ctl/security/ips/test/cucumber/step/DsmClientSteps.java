@@ -1,9 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
-import com.ctl.security.clc.client.common.domain.ClcAuthenticationRequest;
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
-import com.ctl.security.clc.client.core.bean.AuthenticationClient;
-import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.SecurityTenant;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
@@ -11,7 +8,6 @@ import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.DsmTenantClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -102,7 +98,7 @@ public class DsmClientSteps {
 
     @When("^I execute the \"(.*?)\" operation against the DSM API$")
     public void i_execute_the_operation_against_the_DSM_API(String arg1) throws Throwable {
-        newlyCreatedCtlPolicy = dsmPolicyClient.createCtlSecurityProfile(policyBean);
+        newlyCreatedCtlPolicy = dsmPolicyClient.createPolicyWithParentPolicy(policyBean).getPolicy();
     }
 
 

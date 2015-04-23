@@ -29,7 +29,7 @@ public class DsmBeans extends BaseDsmBeans {
     @Bean
     public Manager manager() {
 
-        logger.error("loading real dsm manager!!!!!");
+        logger.info("loading dsm manager...");
 
         try {
             // Create a trust manager that does not validate certificate chains

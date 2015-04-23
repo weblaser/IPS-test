@@ -11,7 +11,7 @@ import com.ctl.security.ips.common.jms.bean.PolicyBean;
 public abstract class PolicyService {
     public InstallationBean buildInstallationBean(PolicyBean policyBean) {
         return new InstallationBean(policyBean.getPolicy().getUsername(),
-                policyBean.getAccountId(),
+                policyBean.getAccountAlias(),
                 policyBean.getPolicy().getHostName(),
                 new Product()
                         .setName(PolicyServiceRead.TREND_MICRO_IPS)

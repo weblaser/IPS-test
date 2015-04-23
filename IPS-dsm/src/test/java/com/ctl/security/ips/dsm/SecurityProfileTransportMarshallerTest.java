@@ -22,8 +22,8 @@ public class SecurityProfileTransportMarshallerTest {
 
     @Test
     public void convertPolicyToSecurityProfileTransport_marshallsCtlSecurityProfileToSecurityProfileTransport(){
-        Integer id = new Integer(0);
-        Integer parentId = new Integer(7);
+        Integer id = 0;
+        Integer parentId = 7;
         String name = "name" + System.currentTimeMillis();
         Policy policy = new Policy();
         policy.setVendorPolicyId(id.toString());
@@ -57,7 +57,7 @@ public class SecurityProfileTransportMarshallerTest {
 
     @Test
     public void convertSecurityProfileTransportToPolicy_marshallsSecurityProfileTransportToCtlSecurityProfile(){
-        Integer id = new Integer(0);
+        Integer id = 0;
         int parentId = 7;
         String name = "name" + System.currentTimeMillis();
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();

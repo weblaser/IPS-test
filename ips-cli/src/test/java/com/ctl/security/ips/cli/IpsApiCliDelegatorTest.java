@@ -33,7 +33,7 @@ public class IpsApiCliDelegatorTest {
     public void executeGetPolicyForAccount_executesGetPolicyForAccount(){
 
         String bearerToken = "bearerToken";
-        String accountId = "accountId";
+        String accountId = "accountAlias";
         String id = "id";
 
         String[] args = {IpsApiCliDelegator.GET_POLICY_FOR_ACCOUNT, bearerToken, accountId, id};

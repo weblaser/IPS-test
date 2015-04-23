@@ -1,15 +1,17 @@
 package com.ctl.security.ips.dsm.config;
 
 import com.ctl.security.ips.client.config.ClientConfig;
+import com.ctl.security.library.common.config.SecurityLibraryCommonAppConfig;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.context.annotation.*;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-@PropertySources({@PropertySource("classpath:properties/dsm.client.properties")})
+@PropertySources({  @PropertySource("classpath:properties/dsm.client.properties"),
+                    @PropertySource("classpath:properties/clc.data.properties")})
 @Configuration
 @ComponentScan(basePackages = {"com.ctl.security.ips.dsm"})
-@Import({DsmBeans.class, ClientConfig.class})
+@Import({DsmBeans.class, ClientConfig.class, SecurityLibraryCommonAppConfig.class})
 public class DsmConfig {
 
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmConfig.class);
