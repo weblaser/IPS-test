@@ -1,6 +1,9 @@
 package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
+import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
+import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.client.NotificationClient;
@@ -42,7 +45,7 @@ public class EventSteps {
     private ConfigurationItemClient configurationItemClient;
 
     @Autowired
-    private ProductUserActivity productUserActivityClient;
+    private ProductUserActivityClient productUserActivityClient;
 
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
@@ -70,6 +73,8 @@ public class EventSteps {
 
     private String accountId = ClcAuthenticationComponent.VALID_AA;
     private String hostName = "server.host.name." + System.currentTimeMillis();
+
+    private ConfigurationItemResource configurationItemResource;
 
     @Given("^an event occurs for a valid configuration item$")
     public void an_event_occurs() {
@@ -119,9 +124,9 @@ public class EventSteps {
 
     @Then("^the notification is persisted in the product user activity document$")
     public void the_notification_is_persisted_in_the_product_user_activity_document() throws Throwable {
-//        ProductUserActivity retrievedProductUserActivity = productUserActivityClient.getProductUserActivity(productUserActivityResource.getContent().getId());
-//        assertNotNull(retrievedProductUserActivity);
-//        assertNotNull(retrievedProductUserActivity.getId());
+        ProductUserActivityResource retrievedProductUserActivity = productUserActivityClient.getProductUserActivityByConfigurationItemId(configurationItemResource.getContent().getId());
+        assertNotNull(retrievedProductUserActivity);
+        assertNotNull(retrievedProductUserActivity.getId());
     }
 
     private void createAndConfigureConfigurationItem(String accountId, String hostName) {
@@ -132,7 +137,7 @@ public class EventSteps {
                 .setAccount(account)
                 .setHostName(hostName);
 
-        configurationItemClient.createConfigurationItem(configurationItem);
+        configurationItemResource = configurationItemClient.createConfigurationItem(configurationItem);
     }
 
     private void createAndSetNotificationDestination(String destinationHostName, Integer destinationPort, String path) {

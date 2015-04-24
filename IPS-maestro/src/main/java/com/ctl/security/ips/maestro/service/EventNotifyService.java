@@ -1,28 +1,17 @@
 package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
-import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
-import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.ips.maestro.config.MaestroConfig;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
-import org.apache.http.HttpResponse;
-import org.springframework.http.HttpStatus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,9 +26,11 @@ public class EventNotifyService {
     @Autowired
     private ConfigurationItemClient configurationItemClient;
 
-    @Autowired
-    private ProductUserActivityClient productUserActivityClient;
 
+    @Autowired
+    private ProductUserActivityService productUserActivityService;
+
+    @Autowired
     private CtlSecurityClient ctlSecurityClient;
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
@@ -61,8 +52,6 @@ public class EventNotifyService {
                 .getAccount()
                 .getNotificationDestinations();
 
-        String productUserActivityDescription = null;
-
         for (NotificationDestination notificationDestination : notificationDestinations) {
 
             Integer retryAttempts = 0;
@@ -83,27 +72,13 @@ public class EventNotifyService {
                 } catch (Exception e) {
                 }
             }
-            while (postToNotifcationDestinationNotSuccessful(ctlSecurityResponse) && (retryAttempts < maxRetryAttempts));
+            while (!postToNotificationDestinationSuccessful(ctlSecurityResponse) && (retryAttempts < maxRetryAttempts));
 
-            if (postToNotifcationDestinationNotSuccessful(ctlSecurityResponse)) {
-                productUserActivityDescription = FAILED_TO_SEND_NOTIFICATION_TO + notificationDestination.getUrl();
-                logger.error(productUserActivityDescription);
-            }
-            else{
-                productUserActivityDescription = SUCCESSFULLY_SENT_NOTIFICATION_TO + notificationDestination.getUrl();
-                logger.info(productUserActivityDescription);
-            }
-
-            ProductUserActivity productUserActivity = new ProductUserActivity();
-
-            productUserActivity.setConfigurationItem(configurationItem);
-            productUserActivity.setDescription(productUserActivityDescription);
-
-            productUserActivityClient.createProductUserActivity(productUserActivity);
+            productUserActivityService.persistNotification(postToNotificationDestinationSuccessful(ctlSecurityResponse), configurationItem, notificationDestination);
         }
     }
 
-    private boolean postToNotifcationDestinationNotSuccessful(CtlSecurityResponse ctlSecurityResponse) {
-        return (ctlSecurityResponse == null || !ctlSecurityResponse.isSuccessful());
+    private boolean postToNotificationDestinationSuccessful(CtlSecurityResponse ctlSecurityResponse) {
+        return (ctlSecurityResponse != null && ctlSecurityResponse.isSuccessful());
     }
 }

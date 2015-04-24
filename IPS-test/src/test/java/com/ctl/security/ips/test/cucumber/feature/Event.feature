@@ -1,7 +1,7 @@
 @REGRESSION
 Feature: Security - Event
 
-
+  @WIP
   Scenario: Send an event to a set notification destination URL
     Given an event occurs for a valid configuration item
     And the notification destination is valid
@@ -15,7 +15,7 @@ Feature: Security - Event
     When the event notification is posted to the events endpoint
     Then the event information is attempted to be sent to the URL multiple times
 
-  @WIP
+
   Scenario: Persist successful event notifications in product user activity document
     Given an event occurs for a valid configuration item
     And the notification destination is valid
