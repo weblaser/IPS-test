@@ -43,9 +43,8 @@ public class PolicyServiceWrite extends PolicyService {
         logger.info("Creating policy for account " + policyBean.getPolicy().getName());
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
-        System.out.println("got here");
-        cmdbService.installProduct(installationBean);
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant());
+        cmdbService.installProduct(installationBean);
         packageInstallationService.installClcPackage(
                 dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
                 newlyCreatedPolicyBean.getAccountAlias(),
