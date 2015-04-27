@@ -1,0 +1,23 @@
+{
+  "configuration":{
+    "status":"warn",
+    "name":"ips-api-test",
+    "appenders":{
+      "Console": {
+        "name":"STDOUT",
+        "target":"SYSTEM_OUT",
+        "PatternLayout": {
+          "pattern": "LEVEL [%p] %d{MM-dd-yyyy HH:mm:ss,SSS} %c %M - %m%n"
+        }
+      },
+    },
+    "loggers":{
+      "root":{
+        "level":"info",
+        "AppenderRef":{
+          "ref":"STDOUT"
+        }
+      }
+    }
+  }
+}
