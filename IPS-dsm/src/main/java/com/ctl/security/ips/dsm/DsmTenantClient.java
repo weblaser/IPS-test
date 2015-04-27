@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -78,7 +77,7 @@ public class DsmTenantClient {
             String address = protocol + host + ":" + port + path + PATH_TENANTS;
 
             logger.info("Sending Create Request for DSM Tenant to: " + address);
-            logger.info("Request Sent: " + createTenantRequestMap.toString());
+            logger.info("Request Sent: " + createTenantRequestMap);
             CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
                     .post(address)
                     .addHeader("Content-Type", "application/json")
@@ -97,7 +96,7 @@ public class DsmTenantClient {
             createTenantResponse = (CreateTenantResponse) unmarshaller.unmarshal(inputStream);
 
             createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
-            logger.info("Successfully Created Tenant...");
+            logger.info("Successfully created Tenant...");
         } catch (JAXBException | UnsupportedEncodingException e) {
             logger.error(e);
             return null;
@@ -120,11 +119,10 @@ public class DsmTenantClient {
     }
 
     private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant) {
-        String uuid = UUID.randomUUID().toString();
         return new CreateOptions()
-                .setAdminAccount(uuid)
-                .setAdminPassword(uuid)
-                .setAdminEmail(uuid + "@blah.com");
+                .setAdminAccount(securityTenant.getAdminAccount())
+                .setAdminPassword(securityTenant.getAdminPassword())
+                .setAdminEmail(securityTenant.getAdminEmail());
     }
 
     private DsmTenant createDsmTenantElement(SecurityTenant securityTenant) {

@@ -45,8 +45,7 @@ public class PolicyServiceWrite extends PolicyService {
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
 
-        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(
-                new SecurityTenant().setTenantName(policyBean.getPolicy().getUsername()));
+        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
 
         logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
 
@@ -58,6 +57,11 @@ public class PolicyServiceWrite extends PolicyService {
         cmdbService.installProduct(installationBean);
 
         return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
+    }
+
+    private SecurityTenant buildSecurityTenant(PolicyBean policyBean) {
+        return new SecurityTenant().setTenantName(policyBean.getPolicy().getUsername()).setAdminEmail("test@test.com")
+                .setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
     }
 
     public void deletePolicyForAccount(PolicyBean policyBean) throws DsmClientException {
