@@ -114,9 +114,10 @@ public class PolicySteps {
                 hostName = clcServerName;
             }
 
+            String userName = "userName" + System.currentTimeMillis();
             policy.setName("name" + System.currentTimeMillis()).
                     setHostName(hostName).
-                    setUsername("userName" + System.currentTimeMillis());
+                    setUsername(userName);
 
             policyClient.createPolicyForAccount(accountId, policy, bearerToken);
         } catch (Exception e) {
