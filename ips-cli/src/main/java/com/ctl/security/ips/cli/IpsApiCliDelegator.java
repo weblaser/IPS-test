@@ -4,7 +4,8 @@ import com.ctl.security.ips.client.PolicyClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ import java.util.Arrays;
 public class IpsApiCliDelegator {
 
     //TODO: After story SECURITY-755 is completed switch to org.apache.logging.log4j.LogManager
-    private static final Logger logger = Logger.getLogger(IpsApiCliDelegator.class);
+    private static final Logger logger = LoggerFactory.getLogger(IpsApiCliDelegator.class);
 
     public static final String GET_POLICY_FOR_ACCOUNT = "getPolicyForAccount";
 

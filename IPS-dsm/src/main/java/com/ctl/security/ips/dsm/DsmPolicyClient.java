@@ -5,14 +5,15 @@ import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
-import com.ctl.security.ips.dsm.util.OsType;
 import manager.*;
-import org.apache.logging.log4j.LogManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
@@ -20,7 +21,7 @@ import java.util.List;
 @Component
 public class DsmPolicyClient {
 
-    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmPolicyClient.class);
+    Logger logger = LoggerFactory.getLogger(DsmPolicyClient.class);
 
     @Autowired
     private Manager manager;
@@ -30,6 +31,9 @@ public class DsmPolicyClient {
 
     @Value("${${spring.profiles.active:local}.dsm.password}")
     private String password;
+
+    @Value("#{SecurityLibraryPropertySplitter.map('${ips.clc.osType.to.dsm.policy.name}')}")
+    private Map<String,String> osTypeMap;
 
     @Autowired
     private DsmLogInClient dsmLogInClient;
@@ -51,8 +55,8 @@ public class DsmPolicyClient {
         }
     }
 
-
     public PolicyBean createPolicyWithParentPolicy(PolicyBean policyBean) throws DsmClientException {
+        logger.info("creating new policy " + policyBean.getPolicy().getName() + ", hostName: " + policyBean.getPolicy().getHostName() + " accountAlias: " + policyBean.getAccountAlias());
         setParentPolicy(policyBean.getPolicy(), policyBean.getAccountAlias(), policyBean.getBearerToken());
 
         try {
@@ -72,19 +76,22 @@ public class DsmPolicyClient {
 
     private void setParentPolicy(Policy policy, String accountAlias, String bearerToken) throws DsmClientException {
         String clcOs = serverClient.getOS(accountAlias, policy.getHostName(), bearerToken);
-        Policy parentPolicy;
-        logger.info("Selecting the parent policy for "+clcOs);
-        if (clcOs.toLowerCase().contains("win")) {
-            parentPolicy = retrieveSecurityProfileByName(OsType.CLC_WINDOWS.getValue());
+        String osType = osTypeMap.get(clcOs);
+
+        if(osType != null) {
+            Policy parentPolicy = retrieveSecurityProfileByName(osType);
+            policy.setParentPolicyId(parentPolicy.getVendorPolicyId());
+            logger.info("parent policy set for " + policy.getName() + " with parent policy id: " +  policy.getParentPolicyId());
         } else {
-            parentPolicy = retrieveSecurityProfileByName(OsType.CLC_LINUX.getValue());
+            String msg = "OS type for " + clcOs + " not found";
+            logger.error(msg);
+            throw new DsmClientException(new RuntimeException(msg));
         }
-        policy.setParentPolicyId(parentPolicy.getVendorPolicyId());
-        logger.info("Parent policy set...");
     }
 
     public Policy retrieveSecurityProfileById(int id) throws DsmClientException {
         try {
+            logger.info("retrieving profile " + id);
             String sessionId = dsmLogInClient.connectToDSMClient(username, password);
             SecurityProfileTransport securityProfileTransport = manager.securityProfileRetrieve(id, sessionId);
             dsmLogInClient.endSession(sessionId);
@@ -96,6 +103,7 @@ public class DsmPolicyClient {
 
     public Policy retrieveSecurityProfileByName(String name) throws DsmClientException {
         try {
+            logger.info("retrieving profile " + name);
             String sessionId = dsmLogInClient.connectToDSMClient(username, password);
             SecurityProfileTransport securityProfileTransport = manager.securityProfileRetrieveByName(name, sessionId);
             dsmLogInClient.endSession(sessionId);
@@ -109,6 +117,7 @@ public class DsmPolicyClient {
     public void securityProfileDelete(List<Integer> ids) throws DsmClientException {
         try {
             String sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            logger.info("deleting security policies with ids: " + ids.toString());
             manager.securityProfileDelete(ids, sessionId);
             dsmLogInClient.endSession(sessionId);
         } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception | ManagerAuthenticationException_Exception | ManagerException_Exception | ManagerTimeoutException_Exception | ManagerAuthorizationException_Exception e) {
