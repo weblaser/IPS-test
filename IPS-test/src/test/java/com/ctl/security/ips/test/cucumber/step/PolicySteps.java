@@ -104,7 +104,6 @@ public class PolicySteps {
     public void I_POST_a_policy() {
         try {
             policy = new Policy();
-            String name = "name" + System.currentTimeMillis();
 
             String activeProfiles = environment.getActiveProfiles()[0];
 
@@ -115,10 +114,9 @@ public class PolicySteps {
                 hostName = clcServerName;
             }
 
-            String userName = "userName" + System.currentTimeMillis();
-            policy.setName(name).
+            policy.setName("name" + System.currentTimeMillis()).
                     setHostName(hostName).
-                    setUsername(userName);
+                    setUsername("userName" + System.currentTimeMillis());
 
             policyClient.createPolicyForAccount(accountId, policy, bearerToken);
         } catch (Exception e) {
