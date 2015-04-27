@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -118,10 +119,11 @@ public class DsmTenantClient {
     }
 
     private CreateOptions createDsmCreateTenantOptions(SecurityTenant securityTenant) {
+        String uuid = UUID.randomUUID().toString();
         return new CreateOptions()
-                .setAdminAccount(securityTenant.getAdminAccount())
-                .setAdminPassword(securityTenant.getAdminPassword())
-                .setAdminEmail(securityTenant.getAdminEmail());
+                .setAdminAccount(uuid)
+                .setAdminPassword(uuid)
+                .setAdminEmail(uuid + "@blah.com");
     }
 
     private DsmTenant createDsmTenantElement(SecurityTenant securityTenant) {
