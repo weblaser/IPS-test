@@ -77,7 +77,7 @@ public class DsmTenantClient {
 
             String address = protocol + host + ":" + port + path + PATH_TENANTS;
 
-            logger.info("Sending Create Request for DSM Tenant...");
+            logger.info("Sending Create Request for DSM Tenant to: " + address);
             CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
                     .post(address)
                     .addHeader("Content-Type", "application/json")

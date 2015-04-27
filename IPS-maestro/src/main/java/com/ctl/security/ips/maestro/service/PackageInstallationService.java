@@ -4,6 +4,8 @@ package com.ctl.security.ips.maestro.service;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageResponse;
 import com.ctl.security.clc.client.core.bean.ServerClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,11 @@ public class PackageInstallationService {
     @Value("${${spring.profiles.active:local}.ips.packageStatusCheck.retryWaitTime}")
     private Integer packageStatusCheckRetryWaitTime;
 
+
+    private static final Logger logger = LogManager.getLogger(PackageInstallationService.class);
+
     public String installClcPackage(ClcExecutePackageRequest clcExecutePackageRequest, String accountAlias, String bearerToken) {
+        logger.info("Installing CLC Package: "+clcExecutePackageRequest.getSoftwarePackage().getPackageId());
         List<ClcExecutePackageResponse> clcExecutePackageResponses = serverClient.executePackage(clcExecutePackageRequest, accountAlias, bearerToken);
         int counter = 0;
         String response;

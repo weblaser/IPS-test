@@ -41,9 +41,15 @@ public class PolicyServiceWrite extends PolicyService {
 
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException {
         logger.info("Creating policy for account " + policyBean.getPolicy().getName());
+
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
-        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(new SecurityTenant().setTenantName(policyBean.getPolicy().getUsername()));
+
+        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(
+                new SecurityTenant().setTenantName(policyBean.getPolicy().getUsername()));
+
+        logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
+
         packageInstallationService.installClcPackage(
                 dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
                 newlyCreatedPolicyBean.getAccountAlias(),
