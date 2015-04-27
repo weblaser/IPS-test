@@ -84,6 +84,10 @@ public class DsmTenantClient {
                     .body(createTenantRequestMap)
                     .execute();
 
+            logger.info(ctlSecurityResponse);
+            logger.info(ctlSecurityResponse.getStatusCode());
+            logger.info(ctlSecurityResponse.getResponseContent());
+
             String responseContent = ctlSecurityResponse.getResponseContent();
             logger.info(responseContent);
 
