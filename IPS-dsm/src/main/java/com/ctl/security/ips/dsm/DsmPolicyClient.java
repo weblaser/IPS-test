@@ -7,6 +7,7 @@ import com.ctl.security.ips.dsm.domain.SecurityProfileTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.dsm.util.OsType;
 import manager.*;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ import java.util.List;
  */
 @Component
 public class DsmPolicyClient {
+
+    private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmPolicyClient.class);
 
     @Autowired
     private Manager manager;
@@ -70,12 +73,14 @@ public class DsmPolicyClient {
     private void setParentPolicy(Policy policy, String accountAlias, String bearerToken) throws DsmClientException {
         String clcOs = serverClient.getOS(accountAlias, policy.getHostName(), bearerToken);
         Policy parentPolicy;
+        logger.info("Selecting the parent policy for "+clcOs);
         if (clcOs.toLowerCase().contains("win")) {
             parentPolicy = retrieveSecurityProfileByName(OsType.CLC_WINDOWS.getValue());
         } else {
             parentPolicy = retrieveSecurityProfileByName(OsType.CLC_LINUX.getValue());
         }
         policy.setParentPolicyId(parentPolicy.getVendorPolicyId());
+        logger.info("Parent policy set...");
     }
 
     public Policy retrieveSecurityProfileById(int id) throws DsmClientException {

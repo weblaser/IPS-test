@@ -60,6 +60,7 @@ public class DsmTenantClient {
 
 
     public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException {
+        logger.info("Creating DSM Tenant...");
         String sessionId = null;
         CreateTenantResponse createTenantResponse = null;
         SecurityTenant createdSecurityTenant = null;
@@ -75,6 +76,7 @@ public class DsmTenantClient {
 
             String address = protocol + host + ":" + port + path + PATH_TENANTS;
 
+            logger.info("Sending Create Request for DSM Tenant...");
             CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
                     .post(address)
                     .addHeader("Content-Type", "application/json")
@@ -84,6 +86,7 @@ public class DsmTenantClient {
             String responseContent = ctlSecurityResponse.getResponseContent();
             logger.info(responseContent);
 
+            logger.info("Marshalling Response...");
             JAXBContext jc = JAXBContext.newInstance(CreateTenantResponse.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -92,7 +95,7 @@ public class DsmTenantClient {
             createTenantResponse = (CreateTenantResponse) unmarshaller.unmarshal(inputStream);
 
             createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
-
+            logger.info("Successfully Created Tenant...");
         } catch (JAXBException | UnsupportedEncodingException e) {
             logger.error(e);
             return null;
