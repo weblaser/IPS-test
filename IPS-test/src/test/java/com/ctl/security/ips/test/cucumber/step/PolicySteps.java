@@ -47,7 +47,7 @@ public class PolicySteps {
 
 
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
-    public static final int MAX_WAIT_TIME = 30;
+    public static final int MAX_WAIT_TIME = 150;
 
     private Exception exception;
     private List<Policy> policyList;
@@ -104,7 +104,6 @@ public class PolicySteps {
     public void I_POST_a_policy() {
         try {
             policy = new Policy();
-            String name = "name" + System.currentTimeMillis();
 
             String activeProfiles = environment.getActiveProfiles()[0];
 
@@ -116,7 +115,7 @@ public class PolicySteps {
             }
 
             String userName = "userName" + System.currentTimeMillis();
-            policy.setName(name).
+            policy.setName("name" + System.currentTimeMillis()).
                     setHostName(hostName).
                     setUsername(userName);
 

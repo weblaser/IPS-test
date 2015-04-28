@@ -60,6 +60,7 @@ public class DsmTenantClient {
 
 
     public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException {
+        logger.info("Creating DSM Tenant...");
         String sessionId = null;
         CreateTenantResponse createTenantResponse = null;
         SecurityTenant createdSecurityTenant = null;
@@ -75,15 +76,28 @@ public class DsmTenantClient {
 
             String address = protocol + host + ":" + port + path + PATH_TENANTS;
 
-            CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
-                    .post(address)
-                    .addHeader("Content-Type", "application/json")
-                    .body(createTenantRequestMap)
-                    .execute();
+            logger.info("Sending Create Request for DSM Tenant to: " + address);
+            logger.info("Request Sent: " + createTenantRequestMap);
+            CtlSecurityResponse ctlSecurityResponse=null;
+            try {
+                ctlSecurityResponse = ctlSecurityClient
+                        .post(address)
+                        .addHeader("Content-Type", "application/json")
+                        .body(createTenantRequestMap)
+                        .execute();
+            } catch (Exception e) {
+                logger.error("Failed");
+                logger.error(e.getMessage(), e);
+            }
+
+            logger.info(ctlSecurityResponse);
+            logger.info(ctlSecurityResponse.getStatusCode());
+            logger.info(ctlSecurityResponse.getResponseContent());
 
             String responseContent = ctlSecurityResponse.getResponseContent();
             logger.info(responseContent);
 
+            logger.info("Marshalling Response...");
             JAXBContext jc = JAXBContext.newInstance(CreateTenantResponse.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
 
@@ -92,7 +106,7 @@ public class DsmTenantClient {
             createTenantResponse = (CreateTenantResponse) unmarshaller.unmarshal(inputStream);
 
             createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
-
+            logger.info("Successfully created Tenant...");
         } catch (JAXBException | UnsupportedEncodingException e) {
             logger.error(e);
             return null;
