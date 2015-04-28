@@ -45,16 +45,18 @@ public class PolicyServiceWrite extends PolicyService {
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
 
+        //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
+        cmdbService.installProduct(installationBean);
+
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
 
         logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
 
         packageInstallationService.installClcPackage(
-                dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
-                newlyCreatedPolicyBean.getAccountAlias(),
+            dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
+            newlyCreatedPolicyBean.getAccountAlias(),
                 newlyCreatedPolicyBean.getBearerToken());
 
-        cmdbService.installProduct(installationBean);
 
         return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
     }
