@@ -68,6 +68,7 @@ public class DsmTenantClient {
         SecurityTenant createdSecurityTenant = null;
         Integer attempts = 0;
         while (createdSecurityTenant == null && attempts < MAX_RETRY) {
+            attempts++;
 
             try {
                 sessionId = dsmLogInClient.connectToDSMClient(username, password);
