@@ -35,8 +35,6 @@ public class DsmTenantClient {
     public static final String PATH_TENANTS_ID = "/tenants/id/";
     public static final String QUERY_PARAM_SESSION_ID = "sID=";
 
-    public static final Integer MAX_RETRY = 10;
-
     @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
     private String protocol;
     @Value("${${spring.profiles.active:local}.dsm.rest.host}")
@@ -66,9 +64,6 @@ public class DsmTenantClient {
         String sessionId = null;
         CreateTenantResponse createTenantResponse = null;
         SecurityTenant createdSecurityTenant = null;
-        Integer attempts = 0;
-        while (createdSecurityTenant == null && attempts < MAX_RETRY) {
-            attempts++;
 
             try {
                 sessionId = dsmLogInClient.connectToDSMClient(username, password);
@@ -124,7 +119,6 @@ public class DsmTenantClient {
             } finally {
                 dsmLogInClient.endSession(sessionId);
             }
-        }
         return createdSecurityTenant;
     }
 
