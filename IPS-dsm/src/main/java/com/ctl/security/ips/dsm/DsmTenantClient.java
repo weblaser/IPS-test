@@ -78,11 +78,17 @@ public class DsmTenantClient {
 
             logger.info("Sending Create Request for DSM Tenant to: " + address);
             logger.info("Request Sent: " + createTenantRequestMap);
-            CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
-                    .post(address)
-                    .addHeader("Content-Type", "application/json")
-                    .body(createTenantRequestMap)
-                    .execute();
+            CtlSecurityResponse ctlSecurityResponse=null;
+            try {
+                ctlSecurityResponse = ctlSecurityClient
+                        .post(address)
+                        .addHeader("Content-Type", "application/json")
+                        .body(createTenantRequestMap)
+                        .execute();
+            } catch (Exception e) {
+                logger.error("Failed");
+                logger.error(e.getMessage(), e);
+            }
 
             logger.info(ctlSecurityResponse);
             logger.info(ctlSecurityResponse.getStatusCode());
