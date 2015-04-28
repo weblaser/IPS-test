@@ -47,7 +47,7 @@ public class PolicySteps {
 
 
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
-    public static final int MAX_WAIT_TIME = 150;
+    public static final int MAX_WAIT_TIME = 300;
 
     private Exception exception;
     private List<Policy> policyList;
