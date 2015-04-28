@@ -62,7 +62,7 @@ public class PolicyServiceWrite extends PolicyService {
     }
 
     private SecurityTenant buildSecurityTenant(PolicyBean policyBean) {
-        return new SecurityTenant().setTenantName(policyBean.getPolicy().getUsername()).setAdminEmail("test@test.com")
+        return new SecurityTenant().setTenantName("Tenant "+policyBean.getPolicy().getUsername()).setAdminEmail("test@test.com")
                 .setAdminPassword("secretpassword").setAdminAccount("TestAdmin");
     }
 
