@@ -118,11 +118,13 @@ public class DsmClientSteps {
         assertNotNull(newlyCreateSecurityTenant);
         assertNotNull(newlyCreateSecurityTenant.getTenantId());
         assertNotNull(newlyCreateSecurityTenant.getAgentInitiatedActivationPassword());
+        dsmTenantClient.deleteDsmTenant(newlyCreateSecurityTenant.getTenantId().toString());
     }
 
     @Then("^the correct tenant is returned$")
-    public void the_correct_tenant_is_returned() {
+    public void the_correct_tenant_is_returned() throws DsmClientException {
         assertNotNull(retrievedNewlyCreateSecurityTenant);
+        dsmTenantClient.deleteDsmTenant(retrievedNewlyCreateSecurityTenant.getTenantId().toString());
     }
 
     @Then("^the tenant is pending deletion$")
