@@ -18,7 +18,7 @@ public class DsmLogInClient {
     private Manager manager;
 
     public String connectToDSMClient(String username, String password) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {
-        logger.info("Connecting to DSM...");
+        logger.info("Connecting to DSM with username: " + username);
         String sessionId = manager.authenticate(username, password);
         logger.info("Session ID: " + sessionId);
         return sessionId;
