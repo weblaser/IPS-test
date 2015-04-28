@@ -88,6 +88,7 @@ public class DsmTenantClient {
             } catch (Exception e) {
                 logger.error("Failed");
                 logger.error(e.getMessage(), e);
+                throw e;
             }
 
             logger.info(ctlSecurityResponse);
