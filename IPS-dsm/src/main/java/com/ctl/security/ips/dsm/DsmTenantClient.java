@@ -60,51 +60,65 @@ public class DsmTenantClient {
 
 
     public SecurityTenant createDsmTenant(SecurityTenant securityTenant) throws DsmClientException {
+        logger.info("Creating DSM Tenant...");
         String sessionId = null;
         CreateTenantResponse createTenantResponse = null;
         SecurityTenant createdSecurityTenant = null;
-        try {
 
-            sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            try {
+                sessionId = dsmLogInClient.connectToDSMClient(username, password);
 
-            CreateTenantRequest createTenantRequest = createDsmCreateTenantRequest(securityTenant)
-                    .setSessionId(sessionId);
+                CreateTenantRequest createTenantRequest = createDsmCreateTenantRequest(securityTenant)
+                        .setSessionId(sessionId);
 
-            Map<String, CreateTenantRequest> createTenantRequestMap = new HashMap<>();
-            createTenantRequestMap.put("createTenantRequest", createTenantRequest);
+                Map<String, CreateTenantRequest> createTenantRequestMap = new HashMap<>();
+                createTenantRequestMap.put("createTenantRequest", createTenantRequest);
 
-            String address = protocol + host + ":" + port + path + PATH_TENANTS;
+                String address = protocol + host + ":" + port + path + PATH_TENANTS;
 
-            CtlSecurityResponse ctlSecurityResponse = ctlSecurityClient
-                    .post(address)
-                    .addHeader("Content-Type", "application/json")
-                    .body(createTenantRequestMap)
-                    .execute();
+                logger.info("Sending Create Request for DSM Tenant to: " + address);
+                logger.info("Request Sent: " + createTenantRequestMap);
+                CtlSecurityResponse ctlSecurityResponse = null;
+                try {
+                    ctlSecurityResponse = ctlSecurityClient
+                            .post(address)
+                            .addHeader("Content-Type", "application/json")
+                            .body(createTenantRequestMap)
+                            .execute();
+                } catch (Exception e) {
+                    logger.error("Failed");
+                    logger.error(e.getMessage(), e);
+                    throw e;
+                }
 
-            String responseContent = ctlSecurityResponse.getResponseContent();
-            logger.info(responseContent);
+                logger.info(ctlSecurityResponse);
+                logger.info(ctlSecurityResponse.getStatusCode());
+                logger.info(ctlSecurityResponse.getResponseContent());
 
-            JAXBContext jc = JAXBContext.newInstance(CreateTenantResponse.class);
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
+                String responseContent = ctlSecurityResponse.getResponseContent();
+                logger.info(responseContent);
 
-            InputStream inputStream = new ByteArrayInputStream(responseContent.getBytes("UTF-8"));
+                logger.info("Marshalling Response...");
+                JAXBContext jc = JAXBContext.newInstance(CreateTenantResponse.class);
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
 
-            createTenantResponse = (CreateTenantResponse) unmarshaller.unmarshal(inputStream);
+                InputStream inputStream = new ByteArrayInputStream(responseContent.getBytes("UTF-8"));
 
-            createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
+                createTenantResponse = (CreateTenantResponse) unmarshaller.unmarshal(inputStream);
 
-        } catch (JAXBException | UnsupportedEncodingException e) {
-            logger.error(e);
-            return null;
-        } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
-                ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
-                ManagerMaxSessionsException_Exception | ManagerException_Exception e) {
-            logger.error(e);
-            throw new DsmClientException(e);
-        } finally {
-            dsmLogInClient.endSession(sessionId);
-        }
-
+                createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
+                logger.info("Successfully created Tenant...");
+            } catch (JAXBException | UnsupportedEncodingException e) {
+                logger.error(e);
+                return null;
+            } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
+                    ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
+                    ManagerMaxSessionsException_Exception | ManagerException_Exception e) {
+                logger.error(e);
+                throw new DsmClientException(e);
+            } finally {
+                dsmLogInClient.endSession(sessionId);
+            }
         return createdSecurityTenant;
     }
 
