@@ -47,18 +47,20 @@ public class PolicyServiceWrite extends PolicyService {
 
         //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
         cmdbService.installProduct(installationBean);
+//TODO This Major Comment Below is a quick and Dirty Bug Fix.  This should be uncommented for production
+//        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
+//
+//        logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
+//
+//        packageInstallationService.installClcPackage(
+//            dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
+//            newlyCreatedPolicyBean.getAccountAlias(),
+//                newlyCreatedPolicyBean.getBearerToken());
+//
+//
+//        return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
 
-        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
-
-        logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
-
-        packageInstallationService.installClcPackage(
-            dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
-            newlyCreatedPolicyBean.getAccountAlias(),
-                newlyCreatedPolicyBean.getBearerToken());
-
-
-        return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
+        return  newlyCreatedPolicyBean.getPolicy().setTenantId("New Tenant Id "+System.currentTimeMillis());
     }
 
     private SecurityTenant buildSecurityTenant(PolicyBean policyBean) {
