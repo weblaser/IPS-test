@@ -11,5 +11,4 @@ import java.util.List;
  */
 public interface EventAdapter {
     void triggerEvent(ConfigurationItem configurationItem, List<FirewallEvent> firewallEvents);
-
 }

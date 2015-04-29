@@ -43,7 +43,6 @@ Feature:  Security - policy
     When I PUT a valid policy
     Then I receive a response that does not contain an error message
 
-  @WIP
   Scenario: Get valid response when deleting a policy for an account
     Given I have an valid account
     And I POST a policy
