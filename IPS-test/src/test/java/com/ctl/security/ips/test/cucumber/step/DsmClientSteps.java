@@ -45,11 +45,6 @@ public class DsmClientSteps {
     private SecurityTenant newlyCreateSecurityTenant;
 
     private SecurityTenant retrievedNewlyCreateSecurityTenant;
-    private String username = "apiuser";
-    private String password = "trejachad32jUgEs";
-
-    private Integer tenantId;
-
 
 
     @Given("^I have a policy that I want to create in DSM$")
