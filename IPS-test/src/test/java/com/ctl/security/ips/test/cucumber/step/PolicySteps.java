@@ -49,6 +49,8 @@ public class PolicySteps {
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
     public static final int MAX_WAIT_TIME = 300;
 
+    public static final String CREATE_TENANT = "createTenant";
+
     private Exception exception;
     private List<Policy> policyList;
     private Policy policy;
@@ -114,7 +116,8 @@ public class PolicySteps {
                 hostName = clcServerName;
             }
 
-            String userName = "userName" + System.currentTimeMillis();
+            String userName = "userName" + System.currentTimeMillis() + " " + CREATE_TENANT;
+
             policy.setName("name" + System.currentTimeMillis()).
                     setHostName(hostName).
                     setUsername(userName);

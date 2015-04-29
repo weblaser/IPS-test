@@ -91,11 +91,11 @@ public class EventSteps {
         }
 
         notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(SOME_VALID_ADDRESS))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.SC_OK)));
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.SC_OK)));
         notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(SOME_INVALID_ADDRESS))
-                .willReturn(aResponse()
-                        .withStatus(HttpStatus.SC_FORBIDDEN)));
+            .willReturn(aResponse()
+                .withStatus(HttpStatus.SC_FORBIDDEN)));
     }
 
     @When("^the event notification is posted to the events endpoint$")
@@ -124,9 +124,20 @@ public class EventSteps {
 
     @Then("^the notification is persisted in the product user activity document$")
     public void the_notification_is_persisted_in_the_product_user_activity_document() throws Throwable {
-        ProductUserActivityResource retrievedProductUserActivity = productUserActivityClient.getProductUserActivityByConfigurationItemId(configurationItemResource.getContent().getId());
-        assertNotNull(retrievedProductUserActivity);
-        assertNotNull(retrievedProductUserActivity.getId());
+
+        ProductUserActivityResource retrievedProductUserActivityResource = null;
+
+        int currentAttempts = 0;
+        while (currentAttempts < MAX_ATTEMPTS && retrievedProductUserActivityResource == null) {
+            retrievedProductUserActivityResource = productUserActivityClient.getProductUserActivityByConfigurationItemId(configurationItemResource.getContent().getId());
+            waitComponent.sleep(retryWaitTime, currentAttempts);
+            currentAttempts++;
+        }
+        assertNotNull(retrievedProductUserActivityResource);
+        assertNotNull(retrievedProductUserActivityResource.getId());
+
+        configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
+        productUserActivityClient.deleteProductUserActivity(retrievedProductUserActivityResource.getContent().getId());
     }
 
     private void createAndConfigureConfigurationItem(String accountId, String hostName) {
