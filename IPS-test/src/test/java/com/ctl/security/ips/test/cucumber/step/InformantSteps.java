@@ -185,7 +185,7 @@ public class InformantSteps {
 
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
                 waitForPostRequests(1, notificationDestination.getUrl());
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev") || activeProfiles.equalsIgnoreCase("ts")) {
+                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
                     notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
                 }
             }
