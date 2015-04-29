@@ -45,7 +45,7 @@ public class PolicyServiceWrite extends PolicyService {
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
 
-        //TODO remove this install product and fix the current create tenant error SECURITY-813
+        //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
         cmdbService.installProduct(installationBean);
 
         SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
@@ -53,12 +53,10 @@ public class PolicyServiceWrite extends PolicyService {
         logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
 
         packageInstallationService.installClcPackage(
-                dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
-                newlyCreatedPolicyBean.getAccountAlias(),
+            dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
+            newlyCreatedPolicyBean.getAccountAlias(),
                 newlyCreatedPolicyBean.getBearerToken());
 
-        //TODO have the install product happen here SECURITY-813
-//        cmdbService.installProduct(installationBean);
 
         return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
     }
