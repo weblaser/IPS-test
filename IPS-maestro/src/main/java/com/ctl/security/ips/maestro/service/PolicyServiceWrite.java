@@ -22,6 +22,7 @@ import java.util.Arrays;
 public class PolicyServiceWrite extends PolicyService {
 
     private static final Logger logger = LogManager.getLogger(PolicyServiceWrite.class);
+    public static final String CREATE_TENANT = "createTenant";
 
 
     @Autowired
@@ -47,9 +48,13 @@ public class PolicyServiceWrite extends PolicyService {
 
         //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
         cmdbService.installProduct(installationBean);
+
 //TODO This Major Comment Below is a quick and Dirty Bug Fix.  This should be uncommented for production
-//        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
-//
+
+        if(policyBean.getPolicy().getUsername().contains(CREATE_TENANT)){
+            SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
+        }
+
 //        logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
 //
 //        packageInstallationService.installClcPackage(
