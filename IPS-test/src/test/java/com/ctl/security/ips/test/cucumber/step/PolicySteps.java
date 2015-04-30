@@ -89,6 +89,8 @@ public class PolicySteps {
     @Value("${clc.client.test.package.server}")
     private String clcServerName;
 
+    private String createTenant;
+
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
         if (VALID.equalsIgnoreCase(validity)) {
@@ -99,6 +101,11 @@ public class PolicySteps {
             accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
         }
+    }
+
+    @Given("^a tenant will be created$")
+    public void a_tenant_will_be_created() throws Throwable {
+        createTenant = " " + CREATE_TENANT;
     }
 
 
@@ -116,7 +123,7 @@ public class PolicySteps {
                 hostName = clcServerName;
             }
 
-            String userName = "userName" + System.currentTimeMillis() + " " + CREATE_TENANT;
+            String userName = "userName" + System.currentTimeMillis() + createTenant;
 
             policy.setName("name" + System.currentTimeMillis()).
                     setHostName(hostName).
