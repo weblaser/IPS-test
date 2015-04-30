@@ -6,7 +6,6 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
-import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.data.common.domain.mongo.Product;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
 import com.ctl.security.ips.client.PolicyClient;

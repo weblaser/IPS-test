@@ -46,26 +46,29 @@ public class PolicyServiceWrite extends PolicyService {
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
         InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
 
-        //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
-        cmdbService.installProduct(installationBean);
 
 //TODO This Major Comment Below is a quick and Dirty Bug Fix.  This should be uncommented for production
+        String tenantId="New Tenant Id "+System.currentTimeMillis();
 
         if(policyBean.getPolicy().getUsername().contains(CREATE_TENANT)){
             SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
+            logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
+
+            packageInstallationService.installClcPackage(
+                    dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
+                    newlyCreatedPolicyBean.getAccountAlias(),
+                    newlyCreatedPolicyBean.getBearerToken());
+
+            //TODO: make this the correct call
+            cmdbService.installProduct(installationBean);
+
+            tenantId = createdSecurityTenant.getTenantId().toString();
         }
 
-//        logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
-//
-//        packageInstallationService.installClcPackage(
-//            dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
-//            newlyCreatedPolicyBean.getAccountAlias(),
-//                newlyCreatedPolicyBean.getBearerToken());
-//
-//
-//        return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
+        //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
+        cmdbService.installProduct(installationBean);
 
-        return  newlyCreatedPolicyBean.getPolicy().setTenantId("New Tenant Id "+System.currentTimeMillis());
+        return  newlyCreatedPolicyBean.getPolicy().setTenantId(tenantId);
     }
 
     private SecurityTenant buildSecurityTenant(PolicyBean policyBean) {
