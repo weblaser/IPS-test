@@ -59,9 +59,6 @@ public class PolicyServiceWrite extends PolicyService {
                     newlyCreatedPolicyBean.getAccountAlias(),
                     newlyCreatedPolicyBean.getBearerToken());
 
-            //TODO: make this the correct call
-            cmdbService.installProduct(installationBean);
-
             tenantId = createdSecurityTenant.getTenantId().toString();
         }
 
