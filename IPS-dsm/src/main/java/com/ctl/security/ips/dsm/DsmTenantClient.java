@@ -6,6 +6,7 @@ import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityRequest;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
+import com.google.gson.Gson;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,19 @@ public class DsmTenantClient {
         SecurityTenant createdSecurityTenant = null;
 
             try {
+
+
+                logger.info("username: " + username);
+                logger.info("password: " + password);
+
                 sessionId = dsmLogInClient.connectToDSMClient(username, password);
+
+                logger.info("sessionId: " + sessionId);
+
+                Gson gson = new Gson();
+                String securityTenantJson = gson.toJson(securityTenant);
+
+                logger.info("securityTenantJson: " + securityTenantJson);
 
                 CreateTenantRequest createTenantRequest = createDsmCreateTenantRequest(securityTenant)
                         .setSessionId(sessionId);
