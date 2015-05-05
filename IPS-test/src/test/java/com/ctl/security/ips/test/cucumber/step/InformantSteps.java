@@ -2,7 +2,11 @@ package com.ctl.security.ips.test.cucumber.step;
 
 import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
+import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
+import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
+import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
+import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.client.PolicyClient;
@@ -62,6 +66,9 @@ public class InformantSteps {
     @Autowired
     private WireMockServer notificationDestinationWireMockServer;
 
+    @Autowired
+    private ProductUserActivityClient productUserActivityClient;
+
     @Value("${${spring.profiles.active:local}.ips.test.port}")
     private int destinationPort;
 
@@ -78,6 +85,8 @@ public class InformantSteps {
     private Integer maxRetryAttempts;
 
     private String bearerToken;
+
+    private Map<User, Policy> policiesToCleanUp = new HashMap<>();
 
     private Map<ConfigurationItem, User> safeConfigurationItemUsers = new HashMap<>();
 
@@ -121,7 +130,22 @@ public class InformantSteps {
                     .setHostName(configurationItem.getHostName())
                     .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
 
+
             policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
+            waitForPolicyToBeCreated(user,policy);
+            policiesToCleanUp.put(user, policy);
+        }
+    }
+
+    private void waitForPolicyToBeCreated(User user, Policy policy) {
+        int currentAttempts = 0;
+        int maxTries = MAX_ATTEMPTS;
+        UserResource userResource = null;
+
+        while(currentAttempts < maxTries && (userResource == null || userResource.getId() == null)){
+            waitComponent.sleep(retryWaitTime, currentAttempts);
+            userResource = userClient.getUser(policy.getUsername(), user.getAccountId());
+            currentAttempts++;
         }
     }
 
@@ -215,10 +239,22 @@ public class InformantSteps {
                     notificationDestinationWireMockServer.verify(0, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
                 }
             }
-
+            cleanUpPolicies();
             cleanUpUser(currentUser);
             cleanUpConfigurationItems(currentConfigurationItem);
         }
+    }
+
+    private void cleanUpPolicies() {
+        policiesToCleanUp.forEach(((user, policy) -> {
+            Optional<Policy> matchingPolicy = policyClient.getPoliciesForAccount(user.getAccountId(), bearerToken)
+                    .stream().filter(currentPolicy -> currentPolicy.getHostName() == policy.getHostName()).findFirst();
+            if (matchingPolicy.isPresent()) {
+                policyClient.deletePolicyForAccount(user.getAccountId(),
+                        matchingPolicy.get().getTenantId(), matchingPolicy.get().getUsername(),
+                        matchingPolicy.get().getHostName(), bearerToken);
+            }
+        }));
     }
 
     private ConfigurationItem randomSafeConfigItem() {
@@ -328,8 +364,10 @@ public class InformantSteps {
     }
 
     private void cleanUpUser(User userToDelete) {
-        User user = userClient.getUser(userToDelete.getUsername(), userToDelete.getAccountId()).getContent();
-        userClient.deleteUser(user.getId());
+        UserResource user = userClient.getUser(userToDelete.getUsername(), userToDelete.getAccountId());
+        userClient.deleteUser(user.getContent().getId());
+        userClient.getProductUserActivities(user).unwrap().stream()
+                .forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
     }
 
 }
