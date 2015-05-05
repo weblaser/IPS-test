@@ -368,8 +368,9 @@ public class InformantSteps {
     private void cleanUpUser(User userToDelete) {
         UserResource user = userClient.getUser(userToDelete.getUsername(), userToDelete.getAccountId());
         userClient.deleteUser(user.getContent().getId());
-        userClient.getProductUserActivities(user).unwrap().stream()
-                .forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
+        //TODO clean out product user activities
+//        userClient.getProductUserActivities(user).unwrap().stream()
+//                .forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));
     }
 
 }
