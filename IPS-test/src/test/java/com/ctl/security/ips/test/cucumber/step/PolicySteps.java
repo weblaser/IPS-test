@@ -289,7 +289,7 @@ public class PolicySteps {
             i++;
         }
 
-        String message = "Failure in getting user with username: " + policy.getUsername();
+        String message = "Failure in getting user with name: " + policy.getName() + " username: " + policy.getUsername();
         assertNotNull(message, user.getId());
         assertNotNull(message, user.getContent());
         assertNotNull(message, user.getContent().getId());
