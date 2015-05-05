@@ -246,15 +246,17 @@ public class InformantSteps {
     }
 
     private void cleanUpPolicies() {
-        policiesToCleanUp.forEach(((user, policy) -> {
-            Optional<Policy> matchingPolicy = policyClient.getPoliciesForAccount(user.getAccountId(), bearerToken)
-                    .stream().filter(currentPolicy -> currentPolicy.getHostName() == policy.getHostName()).findFirst();
-            if (matchingPolicy.isPresent()) {
-                policyClient.deletePolicyForAccount(user.getAccountId(),
-                        matchingPolicy.get().getTenantId(), matchingPolicy.get().getUsername(),
-                        matchingPolicy.get().getHostName(), bearerToken);
-            }
-        }));
+
+        //TODO ensure that the policies are cleaned out of DSM
+//        policiesToCleanUp.forEach(((user, policy) -> {
+//            Optional<Policy> matchingPolicy = policyClient.getPoliciesForAccount(user.getAccountId(), bearerToken)
+//                    .stream().filter(currentPolicy -> currentPolicy.getHostName() == policy.getHostName()).findFirst();
+//            if (matchingPolicy.isPresent()) {
+//                policyClient.deletePolicyForAccount(user.getAccountId(),
+//                        matchingPolicy.get().getTenantId(), matchingPolicy.get().getUsername(),
+//                        matchingPolicy.get().getHostName(), bearerToken);
+//            }
+//        }));
     }
 
     private ConfigurationItem randomSafeConfigItem() {
