@@ -119,7 +119,7 @@ public class InformantSteps {
             Policy policy = new Policy()
                     .setName("name" + System.currentTimeMillis())
                     .setHostName(configurationItem.getHostName())
-                    .setUsername(user.getAccountId());
+                    .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
 
             policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
         }
