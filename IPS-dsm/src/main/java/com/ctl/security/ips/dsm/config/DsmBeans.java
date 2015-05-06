@@ -2,6 +2,7 @@ package com.ctl.security.ips.dsm.config;
 
 import manager.Manager;
 import org.apache.logging.log4j.LogManager;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,6 +26,14 @@ import java.util.Map;
 public class DsmBeans extends BaseDsmBeans {
 
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(DsmBeans.class);
+
+    @Value("${${spring.profiles.active:local}.dsm.rest.protocol}")
+    private String protocol;
+    @Value("${${spring.profiles.active:local}.dsm.rest.host}")
+    private String host;
+    @Value("${${spring.profiles.active:local}.dsm.rest.port}")
+    private String port;
+
 
     @Bean
     public Manager manager() {
@@ -63,7 +72,10 @@ public class DsmBeans extends BaseDsmBeans {
 
             JaxWsPortProxyFactoryBean proxyFactoryBean = new JaxWsPortProxyFactoryBean();
             proxyFactoryBean.setServiceInterface(Manager.class);
-            proxyFactoryBean.setWsdlDocumentUrl(new URL("https://10.126.155.12:4119/webservice/Manager?WSDL"));
+
+            String address = protocol + host + ":" + port;
+
+            proxyFactoryBean.setWsdlDocumentUrl(new URL(address + "/webservice/Manager?WSDL"));
             proxyFactoryBean.setNamespaceUri("urn:Manager");
             proxyFactoryBean.setServiceName("ManagerService");
             proxyFactoryBean.setLookupServiceOnStartup(false);
