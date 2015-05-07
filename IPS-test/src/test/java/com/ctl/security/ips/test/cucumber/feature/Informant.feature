@@ -1,7 +1,7 @@
 @REGRESSION
 Feature: Security - Informant
 
-@WIP
+
   Scenario: An account is notified when a event is triggered on a configuration item
     Given there is 3 configuration item running
     And DSM agent is installed on all of the configuration items
