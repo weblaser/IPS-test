@@ -31,7 +31,6 @@ public class DsmLogInClient {
 
     public String connectTenantToDSMClient(String tenantName, String username, String password) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception {
         logger.info("Connecting to DSM with Tenant " + tenantName);
-        logger.info("Using Username: "+ username);
         String sessionId = manager.authenticateTenant(tenantName, username, password);
         logger.info("Session ID: " + sessionId);
         return sessionId;
