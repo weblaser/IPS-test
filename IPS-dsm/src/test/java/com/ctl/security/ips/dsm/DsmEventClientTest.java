@@ -73,12 +73,13 @@ public class DsmEventClientTest extends TestCase {
         int currentSessionId = 0;
         List<String> sessionIds = new ArrayList<>();
 
+        when(dsmLogInClient.connectToDSMClient(eq(username),eq(password))).thenReturn(sessionId);
         for (String currentTenant : tenants) {
             currentSessionId++;
-            String sessionId = Integer.toString(currentSessionId);
-            when(dsmLogInClient.connectTenantToDSMClient(eq(currentTenant), eq(username), eq(password)))
-                    .thenReturn(sessionId);
-            sessionIds.add(sessionId);
+            String tenantSessionId = Integer.toString(currentSessionId);
+            when(dsmLogInClient.connectTenantToDSMClient(eq(currentTenant), eq(sessionId)))
+                    .thenReturn(tenantSessionId);
+            sessionIds.add(tenantSessionId);
         }
 
         return sessionIds;
@@ -88,10 +89,12 @@ public class DsmEventClientTest extends TestCase {
         ReflectionTestUtils.setField(classUnderTest, "username", username);
         ReflectionTestUtils.setField(classUnderTest, "password", password);
 
-        for (String currentTenant : tenants) {
-            when(dsmLogInClient.connectTenantToDSMClient(eq(currentTenant), eq(username), eq(password)))
-                    .thenThrow(throwable);
-        }
+        when(dsmLogInClient.connectToDSMClient(eq(username),eq(password))).thenThrow(throwable);
+
+//        for (String currentTenant : tenants) {
+//            when(dsmLogInClient.connectTenantToDSMClient(eq(currentTenant), eq(username), eq(password)))
+//            ;
+//        }
 
     }
 
@@ -117,6 +120,239 @@ public class DsmEventClientTest extends TestCase {
             assertNotNull(currentEvents);
             verify(dsmLogInClient).endSession(sessionIds.get(index));
         }
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerException_Exception_GetFirewallEvents() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
+
+        ManagerException_Exception managerException_exception = new ManagerException_Exception(exceptionTestMessage);
+
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                eq(sessionId))).thenThrow(managerException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerException_exception, sessionId,1);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerAuthenticationException_Exception_GetFirewallEvents() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
+
+        ManagerAuthenticationException_Exception managerAuthenticationException_exception;
+        managerAuthenticationException_exception = new ManagerAuthenticationException_Exception(exceptionTestMessage);
+
+
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                anyString())).thenThrow(managerAuthenticationException_exception);
+
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerAuthenticationException_exception, sessionId,1);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerTimeoutException_Exception_GetFirewallEvents() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
+
+        ManagerTimeoutException_Exception managerTimeoutException_exception;
+        managerTimeoutException_exception = new ManagerTimeoutException_Exception(exceptionTestMessage);
+
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                anyString())).thenThrow(managerTimeoutException_exception);
+
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerTimeoutException_exception, sessionId,1);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerValidationException_Exception_GetFirewallEvents() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
+
+        ManagerValidationException_Exception managerValidationException_exception;
+        managerValidationException_exception = new ManagerValidationException_Exception(exceptionTestMessage);
+        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                anyString())).thenThrow(managerValidationException_exception);
+
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerValidationException_exception, sessionId,1);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerSecurityException_Exception_ConnectToDSMClient() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+
+        ManagerSecurityException_Exception managerSecurityException_exception;
+        managerSecurityException_exception = new ManagerSecurityException_Exception(exceptionTestMessage);
+        setupUsernamePasswordWhen(tenants, username, password, managerSecurityException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerSecurityException_exception, null, 2);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerAuthenticationException_Exception_ConnectToDSMClient() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+
+
+        ManagerAuthenticationException_Exception managerAuthenticationException_exception;
+        managerAuthenticationException_exception = new ManagerAuthenticationException_Exception(exceptionTestMessage);
+
+        setupUsernamePasswordWhen(tenants, username, password, managerAuthenticationException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerAuthenticationException_exception, null, 2);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerLockoutException_Exception_ConnectToDSMClient() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+
+
+        ManagerLockoutException_Exception managerLockoutException_exception;
+        managerLockoutException_exception = new ManagerLockoutException_Exception(exceptionTestMessage);
+
+        setupUsernamePasswordWhen(tenants, username, password, managerLockoutException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerLockoutException_exception, null, 2);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerCommunicationException_Exception_ConnectToDSMClient() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+
+
+        ManagerCommunicationException_Exception managerCommunicationException_exception;
+        managerCommunicationException_exception = new ManagerCommunicationException_Exception(exceptionTestMessage);
+
+        setupUsernamePasswordWhen(tenants, username, password, managerCommunicationException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerCommunicationException_exception, null, 2);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerMaxSessionsException_Exception_ConnectToDSMClient() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+
+
+        ManagerMaxSessionsException_Exception managerMaxSessionsException_exception;
+        managerMaxSessionsException_exception = new ManagerMaxSessionsException_Exception(exceptionTestMessage);
+
+        setupUsernamePasswordWhen(tenants, username, password, managerMaxSessionsException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerMaxSessionsException_exception, null, 2);
+    }
+
+    @Test
+    public void gatherEvents_throws_ManagerException_Exception_ConnectToDSMClient() throws Exception {
+        DsmEventClientException dsmEventClientException = null;
+        ArrayList<String> tenants = new ArrayList<>();
+        tenants.add(SOME_TENANT);
+
+
+        ManagerException_Exception managerException_exception = new ManagerException_Exception(exceptionTestMessage);
+
+        setupUsernamePasswordWhen(tenants, username, password, managerException_exception);
+
+        try {
+            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+        } catch (DsmEventClientException e) {
+            dsmEventClientException = e;
+        }
+
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerException_exception, null, 2);
+    }
+
+    private void verifyCorrectExceptionAndEndSession(DsmEventClientException dsmEventClientException, Throwable managerException_exception, String sessionId, Integer amount) {
+        assertNotNull(dsmEventClientException);
+
+        assertEquals(new DsmEventClientException(managerException_exception).toString(),
+                dsmEventClientException.toString());
+        verify(dsmLogInClient, times(amount)).endSession(sessionId);
     }
 
     private List<String> getTenants(Integer amount) {
@@ -154,239 +390,6 @@ public class DsmEventClientTest extends TestCase {
                 .thenReturn(firewallEventListTransport);
 
         return firewallEventTransports;
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerException_Exception_GetFirewallEvents() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
-
-        ManagerException_Exception managerException_exception = new ManagerException_Exception(exceptionTestMessage);
-
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                eq(sessionId))).thenThrow(managerException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerException_exception, sessionId);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerAuthenticationException_Exception_GetFirewallEvents() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
-
-        ManagerAuthenticationException_Exception managerAuthenticationException_exception;
-        managerAuthenticationException_exception = new ManagerAuthenticationException_Exception(exceptionTestMessage);
-
-
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                anyString())).thenThrow(managerAuthenticationException_exception);
-
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerAuthenticationException_exception, sessionId);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerTimeoutException_Exception_GetFirewallEvents() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
-
-        ManagerTimeoutException_Exception managerTimeoutException_exception;
-        managerTimeoutException_exception = new ManagerTimeoutException_Exception(exceptionTestMessage);
-
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                anyString())).thenThrow(managerTimeoutException_exception);
-
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerTimeoutException_exception, sessionId);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerValidationException_Exception_GetFirewallEvents() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-        String sessionId = setupUsernamePasswordWhen(tenants, username, password).get(0);
-
-        ManagerValidationException_Exception managerValidationException_exception;
-        managerValidationException_exception = new ManagerValidationException_Exception(exceptionTestMessage);
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                anyString())).thenThrow(managerValidationException_exception);
-
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerValidationException_exception, sessionId);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerSecurityException_Exception_ConnectToDSMClient() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-
-        ManagerSecurityException_Exception managerSecurityException_exception;
-        managerSecurityException_exception = new ManagerSecurityException_Exception(exceptionTestMessage);
-        setupUsernamePasswordWhen(tenants, username, password, managerSecurityException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerSecurityException_exception, null);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerAuthenticationException_Exception_ConnectToDSMClient() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-
-
-        ManagerAuthenticationException_Exception managerAuthenticationException_exception;
-        managerAuthenticationException_exception = new ManagerAuthenticationException_Exception(exceptionTestMessage);
-
-        setupUsernamePasswordWhen(tenants, username, password, managerAuthenticationException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerAuthenticationException_exception, null);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerLockoutException_Exception_ConnectToDSMClient() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-
-
-        ManagerLockoutException_Exception managerLockoutException_exception;
-        managerLockoutException_exception = new ManagerLockoutException_Exception(exceptionTestMessage);
-
-        setupUsernamePasswordWhen(tenants, username, password, managerLockoutException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerLockoutException_exception, null);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerCommunicationException_Exception_ConnectToDSMClient() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-
-
-        ManagerCommunicationException_Exception managerCommunicationException_exception;
-        managerCommunicationException_exception = new ManagerCommunicationException_Exception(exceptionTestMessage);
-
-        setupUsernamePasswordWhen(tenants, username, password, managerCommunicationException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerCommunicationException_exception, null);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerMaxSessionsException_Exception_ConnectToDSMClient() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-
-
-        ManagerMaxSessionsException_Exception managerMaxSessionsException_exception;
-        managerMaxSessionsException_exception = new ManagerMaxSessionsException_Exception(exceptionTestMessage);
-
-        setupUsernamePasswordWhen(tenants, username, password, managerMaxSessionsException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerMaxSessionsException_exception, null);
-    }
-
-    @Test
-    public void gatherEvents_throws_ManagerException_Exception_ConnectToDSMClient() throws Exception {
-        DsmEventClientException dsmEventClientException = null;
-        ArrayList<String> tenants = new ArrayList<>();
-        tenants.add(SOME_TENANT);
-
-
-        ManagerException_Exception managerException_exception = new ManagerException_Exception(exceptionTestMessage);
-
-        setupUsernamePasswordWhen(tenants, username, password, managerException_exception);
-
-        try {
-            List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
-        } catch (DsmEventClientException e) {
-            dsmEventClientException = e;
-        }
-
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerException_exception, null);
-    }
-
-    private void verifyCorrectExceptionAndEndSession(DsmEventClientException dsmEventClientException, Throwable managerException_exception, String sessionId) {
-        assertNotNull(dsmEventClientException);
-
-        assertEquals(new DsmEventClientException(managerException_exception).toString(),
-                dsmEventClientException.toString());
-        verify(dsmLogInClient).endSession(sessionId);
     }
 
 }
