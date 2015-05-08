@@ -155,11 +155,10 @@ public class MockDsmBeans extends BaseDsmBeans {
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
 
-    private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
-        when(manager.authenticateTenant(
+    private void setupDsmTenantAuthentication() throws ManagerTimeoutException_Exception, ManagerSecurityException_Exception, ManagerException_Exception {
+        when(manager.signInAsTenant(
                 anyString(),
-                eq(BaseDsmBeans.APIUSER),
-                eq(BaseDsmBeans.PASSWORD_CORRECT)
+                anyString()
         )).thenAnswer(new Answer<String>() {
             @Override
             public String answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -167,7 +166,7 @@ public class MockDsmBeans extends BaseDsmBeans {
                 Object[] arguments = invocationOnMock.getArguments();
                 String accountId = arguments[argumentAccountId].toString();
                 String sessionId = createSessionId(accountId);
-                createFirewallEventRetrieveMock(sessionId,accountId);
+                createFirewallEventRetrieveMock(sessionId, accountId);
                 return sessionId;
             }
         });
@@ -186,7 +185,8 @@ public class MockDsmBeans extends BaseDsmBeans {
                             + host + "/" + accountId;
                     response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
                             null, FirewallEvent[].class).getBody());
-                } catch (RestClientException rce) {}
+                } catch (RestClientException rce) {
+                }
                 return convertAllToFirewallEventListTransport(response);
             }
         });
