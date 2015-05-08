@@ -43,13 +43,18 @@ public class DsmEventClient {
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
     public List<FirewallEvent> gatherEvents(String accountId, Date fromTime, Date toTime) throws DsmEventClientException {
+        String tenantSessionId = null;
         String sessionId = null;
         try {
-            sessionId = dsmLogInClient.connectTenantToDSMClient(accountId,username, password);
-            logger.info("session created with id " + sessionId);
+            sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            tenantSessionId=dsmLogInClient.connectTenantToDSMClient(accountId, sessionId);
+            //TODO remove this
+//            tenantSessionId = dsmLogInClient.connectTenantToDSMClient(accountId, username, password);
+
+            logger.info("session created with id " + tenantSessionId);
 
             List<FirewallEventTransport> firewallEventTransportList;
-            firewallEventTransportList = getFirewallEventTransports(fromTime, toTime, sessionId);
+            firewallEventTransportList = getFirewallEventTransports(fromTime, toTime, tenantSessionId);
 
             List<FirewallEvent> firewallEvents = marshallToFirewallEvents(firewallEventTransportList);
 
@@ -57,12 +62,14 @@ public class DsmEventClient {
             return firewallEvents;
         } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
                 ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
-                ManagerMaxSessionsException_Exception  | ManagerException_Exception e) {
+                ManagerMaxSessionsException_Exception | ManagerException_Exception |
+                ManagerTimeoutException_Exception e) {
             logger.error("Exception caught connecting to the dsm: " + e.getMessage());
             throw new DsmEventClientException(e);
         } finally {
+            dsmLogInClient.endSession(tenantSessionId);
             dsmLogInClient.endSession(sessionId);
-            logger.info("session " + sessionId + " closed");
+            logger.info("session " + tenantSessionId + " closed");
         }
     }
 
