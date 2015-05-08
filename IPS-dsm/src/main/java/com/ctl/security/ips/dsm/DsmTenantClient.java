@@ -11,6 +11,7 @@ import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -30,6 +31,7 @@ import static org.springframework.http.HttpStatus.*;
  * Created by Chad.Middleton on 1/15/2015.
  */
 @Component
+@Scope("prototype")
 public class DsmTenantClient {
 
     public static final String PATH_TENANTS = "/tenants";
