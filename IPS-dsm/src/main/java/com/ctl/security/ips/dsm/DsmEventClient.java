@@ -30,11 +30,11 @@ public class DsmEventClient {
     @Autowired
     private Manager manager;
 
-    @Value("${${spring.profiles.active:local}.dsm.username}")
-    private String username;
+//    @Value("${${spring.profiles.active:local}.dsm.username}")
+    private String username="TestAdmin";
 
-    @Value("${${spring.profiles.active:local}.dsm.password}")
-    private String password;
+//    @Value("${${spring.profiles.active:local}.dsm.password}")
+    private String password="secretpassword";
 
     @Autowired
     private DsmLogInClient dsmLogInClient;
