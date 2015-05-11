@@ -35,7 +35,7 @@ public class Informant {
     private static final String USERNAME = "Bugs";
     private static final String PASSWORD = "vZb]9yKv==Bnmozn";
     public static final String ACCOUNT = "TCCD";
-    public static final Integer DSM_LAGTIME_MIN=10;
+
 
     @Autowired
     private DsmEventClient dsmEventClient;
@@ -54,6 +54,9 @@ public class Informant {
 
     @Value("${${spring.profiles.active:local}.informant.defaultGatherLength}")
     private String defaultGatheringLength;
+
+    @Value("${${spring.profiles.active:local}.informant.dsm_lag}")
+    public Integer DSM_LAGTIME_MIN;
 
     private String authenticate() {
         ClcAuthenticationResponse clcAuthenticationResponse = authenticationClient

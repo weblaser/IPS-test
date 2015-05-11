@@ -65,6 +65,7 @@ public class InformantTest {
     public void init() {
         file = new File("lastExecutionTest.txt");
         ReflectionTestUtils.setField(classUnderTest, "file", file);
+        ReflectionTestUtils.setField(classUnderTest,"DSM_LAGTIME_MIN",0);
     }
 
     @Test
