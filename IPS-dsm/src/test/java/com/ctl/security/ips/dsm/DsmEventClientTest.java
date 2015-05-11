@@ -52,6 +52,20 @@ public class DsmEventClientTest extends TestCase {
     private String exceptionTestMessage = "This is a Test";
     private String SOME_TENANT = "Tenant";
 
+    private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws Exception {
+        ReflectionTestUtils.setField(classUnderTest, "username", username);
+        ReflectionTestUtils.setField(classUnderTest, "password", password);
+
+        when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenReturn(sessionId);
+    }
+
+    private void setupUsernamePasswordWhen(String username, String password, Throwable throwable) throws Exception {
+        ReflectionTestUtils.setField(classUnderTest, "username", username);
+        ReflectionTestUtils.setField(classUnderTest, "password", password);
+
+        when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenThrow(throwable);
+    }
+
     private List<String> setupUsernamePasswordWhen(List<String> tenants, String username, String password) throws Exception {
         ReflectionTestUtils.setField(classUnderTest, "username", username);
         ReflectionTestUtils.setField(classUnderTest, "password", password);
@@ -59,7 +73,7 @@ public class DsmEventClientTest extends TestCase {
         int currentSessionId = 0;
         List<String> sessionIds = new ArrayList<>();
 
-        when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenReturn(sessionId);
+        when(dsmLogInClient.connectToDSMClient(eq(username),eq(password))).thenReturn(sessionId);
         for (String currentTenant : tenants) {
             currentSessionId++;
             String tenantSessionId = Integer.toString(currentSessionId);
@@ -71,23 +85,17 @@ public class DsmEventClientTest extends TestCase {
         return sessionIds;
     }
 
-    private void throwExceptionWhenConnectToDSM(String username, String password, Throwable throwable) throws Exception {
+    private void setupUsernamePasswordWhen(List<String> tenants, String username, String password, Throwable throwable) throws Exception {
         ReflectionTestUtils.setField(classUnderTest, "username", username);
         ReflectionTestUtils.setField(classUnderTest, "password", password);
 
-        when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenThrow(throwable);
-    }
+        when(dsmLogInClient.connectToDSMClient(eq(username),eq(password))).thenThrow(throwable);
 
-    private void throwExceptionWhenTenantConnectToDSM(List<String> tenants, String username, String password, Throwable throwable) throws Exception {
-        ReflectionTestUtils.setField(classUnderTest, "username", username);
-        ReflectionTestUtils.setField(classUnderTest, "password", password);
+//        for (String currentTenant : tenants) {
+//            when(dsmLogInClient.connectTenantToDSMClient(eq(currentTenant), eq(username), eq(password)))
+//            ;
+//        }
 
-        when(dsmLogInClient.connectToDSMClient(eq(username), eq(password))).thenThrow(throwable);
-
-        for (String currentTenant : tenants) {
-            when(dsmLogInClient.connectTenantToDSMClient(eq(currentTenant), eq(username), eq(password)))
-                    .thenThrow(throwable);
-        }
     }
 
     @Test
@@ -99,10 +107,8 @@ public class DsmEventClientTest extends TestCase {
         for (String currentSessionId : sessionIds) {
             int amount = new Random().nextInt(10);
             List<FirewallEventTransport> firewallEventTransports = getFirewallEventTransports(amount, currentSessionId);
-            getDPIEventTransports(1,currentSessionId);
             allFirewallEventTransports.add(firewallEventTransports);
         }
-
 
         for (int index = 0; index < tenants.size(); index++) {
             List<FirewallEvent> currentEvents = classUnderTest.gatherEvents(tenants.get(index), new Date(), new Date());
@@ -131,15 +137,13 @@ public class DsmEventClientTest extends TestCase {
                 any(IDFilterTransport.class),
                 eq(sessionId))).thenThrow(managerException_exception);
 
-        getDPIEventTransports(1, sessionId);
-
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
 
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerException_exception, sessionId, 1);
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerException_exception, sessionId,1);
     }
 
     @Test
@@ -154,8 +158,6 @@ public class DsmEventClientTest extends TestCase {
         managerAuthenticationException_exception = new ManagerAuthenticationException_Exception(exceptionTestMessage);
 
 
-        getDPIEventTransports(1,sessionId);
-
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
@@ -168,7 +170,7 @@ public class DsmEventClientTest extends TestCase {
             dsmEventClientException = e;
         }
 
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerAuthenticationException_exception, sessionId, 1);
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerAuthenticationException_exception, sessionId,1);
     }
 
     @Test
@@ -182,9 +184,6 @@ public class DsmEventClientTest extends TestCase {
         ManagerTimeoutException_Exception managerTimeoutException_exception;
         managerTimeoutException_exception = new ManagerTimeoutException_Exception(exceptionTestMessage);
 
-
-        getDPIEventTransports(1,sessionId);
-
         when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
@@ -197,7 +196,7 @@ public class DsmEventClientTest extends TestCase {
             dsmEventClientException = e;
         }
 
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerTimeoutException_exception, sessionId, 1);
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerTimeoutException_exception, sessionId,1);
     }
 
     @Test
@@ -215,7 +214,6 @@ public class DsmEventClientTest extends TestCase {
                 any(IDFilterTransport.class),
                 anyString())).thenThrow(managerValidationException_exception);
 
-        getDPIEventTransports(1,sessionId);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -223,7 +221,7 @@ public class DsmEventClientTest extends TestCase {
             dsmEventClientException = e;
         }
 
-        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerValidationException_exception, sessionId, 1);
+        verifyCorrectExceptionAndEndSession(dsmEventClientException, managerValidationException_exception, sessionId,1);
     }
 
     @Test
@@ -234,7 +232,7 @@ public class DsmEventClientTest extends TestCase {
 
         ManagerSecurityException_Exception managerSecurityException_exception;
         managerSecurityException_exception = new ManagerSecurityException_Exception(exceptionTestMessage);
-        throwExceptionWhenConnectToDSM(username, password, managerSecurityException_exception);
+        setupUsernamePasswordWhen(tenants, username, password, managerSecurityException_exception);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -255,7 +253,7 @@ public class DsmEventClientTest extends TestCase {
         ManagerAuthenticationException_Exception managerAuthenticationException_exception;
         managerAuthenticationException_exception = new ManagerAuthenticationException_Exception(exceptionTestMessage);
 
-        throwExceptionWhenConnectToDSM(username, password, managerAuthenticationException_exception);
+        setupUsernamePasswordWhen(tenants, username, password, managerAuthenticationException_exception);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -276,7 +274,7 @@ public class DsmEventClientTest extends TestCase {
         ManagerLockoutException_Exception managerLockoutException_exception;
         managerLockoutException_exception = new ManagerLockoutException_Exception(exceptionTestMessage);
 
-        throwExceptionWhenConnectToDSM(username, password, managerLockoutException_exception);
+        setupUsernamePasswordWhen(tenants, username, password, managerLockoutException_exception);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -297,7 +295,7 @@ public class DsmEventClientTest extends TestCase {
         ManagerCommunicationException_Exception managerCommunicationException_exception;
         managerCommunicationException_exception = new ManagerCommunicationException_Exception(exceptionTestMessage);
 
-        throwExceptionWhenConnectToDSM(username, password, managerCommunicationException_exception);
+        setupUsernamePasswordWhen(tenants, username, password, managerCommunicationException_exception);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -318,7 +316,7 @@ public class DsmEventClientTest extends TestCase {
         ManagerMaxSessionsException_Exception managerMaxSessionsException_exception;
         managerMaxSessionsException_exception = new ManagerMaxSessionsException_Exception(exceptionTestMessage);
 
-        throwExceptionWhenConnectToDSM(username, password, managerMaxSessionsException_exception);
+        setupUsernamePasswordWhen(tenants, username, password, managerMaxSessionsException_exception);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -338,7 +336,7 @@ public class DsmEventClientTest extends TestCase {
 
         ManagerException_Exception managerException_exception = new ManagerException_Exception(exceptionTestMessage);
 
-        throwExceptionWhenConnectToDSM(username, password, managerException_exception);
+        setupUsernamePasswordWhen(tenants, username, password, managerException_exception);
 
         try {
             List<FirewallEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
@@ -394,29 +392,4 @@ public class DsmEventClientTest extends TestCase {
         return firewallEventTransports;
     }
 
-
-    private List<DPIEventTransport> getDPIEventTransports(Integer amount, String sessionId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
-        DPIEventListTransport dpiEventListTransport = mock(DPIEventListTransport.class);
-        ArrayOfDPIEventTransport arrayOfDPIEventTransport = mock(ArrayOfDPIEventTransport.class);
-
-        List<DPIEventTransport> dpiEventTransports = new ArrayList();
-
-        when(dpiEventListTransport.getDPIEvents())
-                .thenReturn(arrayOfDPIEventTransport);
-        when(arrayOfDPIEventTransport.getItem())
-                .thenReturn(dpiEventTransports);
-
-        for (Integer count = 0; count < amount; count++) {
-            DPIEventTransport dpiEventTransport = new DPIEventTransport();
-            dpiEventTransports.add(dpiEventTransport);
-        }
-
-        when(manager.dpiEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                eq(sessionId)))
-                .thenReturn(dpiEventListTransport);
-
-        return dpiEventTransports;
-    }
 }

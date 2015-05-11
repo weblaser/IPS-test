@@ -82,13 +82,6 @@ public class DsmEventClient {
 
             logger.info("Gathering Events for From: " + fromTime + " To: " + toTime);
 
-            //TODO gather either firewall events or DPI events.
-
-            DPIEventListTransport dpiEventListTransport = manager.dpiEventRetrieve(getTimeFilterTransport(fromTime, toTime), getHostFilterTransport(), getIdFilterTransport(), sessionId);
-
-            List<DPIEventTransport> item = dpiEventListTransport.getDPIEvents().getItem();
-            logger.info("Gathered "+ item.size() + " DPI events");
-
             List<FirewallEventTransport> firewallEventTransportList = manager
                     .firewallEventRetrieve(
                             timeFilterTransport,
@@ -98,7 +91,7 @@ public class DsmEventClient {
                     .getFirewallEvents()
                     .getItem();
 
-            logger.info("Gathered " + firewallEventTransportList.size() + "Firewall events");
+            logger.info("Gathered " + firewallEventTransportList.size() + " events");
 
             return firewallEventTransportList;
 
