@@ -1,5 +1,6 @@
 package com.ctl.security.ips.dsm;
 
+import com.ctl.security.clc.client.common.domain.ClcServerDetailsResponse;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
@@ -46,6 +47,9 @@ public class DsmPolicyClientTest {
 
     @Mock
     private ServerClient serverClient;
+
+    @Mock
+    private ClcServerDetailsResponse clcServerDetailsResponse;
 
     @Mock
     private SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
@@ -107,7 +111,8 @@ public class DsmPolicyClientTest {
         when(securityProfileTransportMarshaller.convert(policyToBeCreated)).thenReturn(securityProfileTransportToBeCreated);
         when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedPolicy);
         when(securityProfileTransportMarshaller.convert(parentProfileTransport)).thenReturn(parentPolicy);
-        when(serverClient.getOS(anyString(), anyString(), anyString())).thenReturn(os);
+        when(serverClient.getServerDetails(anyString(), anyString(), anyString())).thenReturn(clcServerDetailsResponse);
+        when(clcServerDetailsResponse.getOs()).thenReturn(os);
     }
 
     private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {

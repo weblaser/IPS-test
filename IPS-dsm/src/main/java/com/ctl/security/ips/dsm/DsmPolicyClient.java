@@ -75,7 +75,7 @@ public class DsmPolicyClient {
     }
 
     private void setParentPolicy(Policy policy, String accountAlias, String bearerToken) throws DsmClientException {
-        String clcOs = serverClient.getOS(accountAlias, policy.getHostName(), bearerToken);
+        String clcOs = serverClient.getServerDetails(accountAlias, policy.getHostName(), bearerToken).getOs();
         String osType = osTypeMap.get(clcOs);
 
         if(osType != null) {
