@@ -1,6 +1,7 @@
 package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
+import com.ctl.security.clc.client.common.domain.ClcServerDetailsResponse;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
@@ -28,8 +29,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,6 +68,9 @@ public class PolicyServiceWriteTest {
     @Mock
     private DsmAgentInstallPackageFactory dsmAgentInstallPackageFactory;
 
+    @Mock
+    private ClcServerDetailsResponse clcServerDetailsResponse;
+
     @Test
     public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
         //arrange
@@ -84,7 +86,12 @@ public class PolicyServiceWriteTest {
 
         when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
         when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
-        when(serverClient.getOS(policyToBeCreatedBean.getAccountAlias(), policyToBeCreatedBean.getPolicy().getHostName(), policyToBeCreatedBean.getBearerToken())).thenReturn(hostOs);
+        when(serverClient.getServerDetails(policyToBeCreatedBean.getAccountAlias(),
+                        policyToBeCreatedBean.getPolicy().getHostName(),
+                        policyToBeCreatedBean.getBearerToken())
+        ).thenReturn(clcServerDetailsResponse);
+
+        when(clcServerDetailsResponse.getOs()).thenReturn(hostOs);
 
         //act
         Policy result = classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
