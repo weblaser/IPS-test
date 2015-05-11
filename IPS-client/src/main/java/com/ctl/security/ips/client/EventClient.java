@@ -35,7 +35,7 @@ public class EventClient {
     public void notify(EventBean eventBean, String bearerToken) {
         String address = hostUrl + EVENT +"/"+ eventBean.getAccountId()+"/"+eventBean.getHostName();
 
-        logger.info("FirewallEvent Occurred: " + eventBean.getEvent().getReason());
+        logger.info("Event Occurred: " + eventBean.getEvent().toString());
         HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(address,

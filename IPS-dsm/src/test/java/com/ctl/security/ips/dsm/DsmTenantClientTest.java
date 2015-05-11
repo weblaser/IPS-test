@@ -100,7 +100,7 @@ public class DsmTenantClientTest {
         ReflectionTestUtils.setField(classUnderTest, "host", host);
         ReflectionTestUtils.setField(classUnderTest, "port", port);
         ReflectionTestUtils.setField(classUnderTest, "path", path);
-        
+
     }
 
     @Test
@@ -235,7 +235,7 @@ public class DsmTenantClientTest {
         verify(dsmLogInClient).endSession(anyString());
     }
 
-    @Test (expected = DsmClientException.class)
+    @Test(expected = DsmClientException.class)
     public void deleteDsmTenantTest_failsToDeleteInDSM() throws Exception {
         String tenantId = TENANT_ID.toString();
         String address = protocol + host + ":" + port + path + PATH_TENANTS_ID + tenantId + "?"

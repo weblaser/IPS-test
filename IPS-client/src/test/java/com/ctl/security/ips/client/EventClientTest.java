@@ -1,6 +1,6 @@
 package com.ctl.security.ips.client;
 
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.exception.IpsException;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import org.junit.Test;
@@ -33,18 +33,19 @@ public class EventClientTest {
 
     private HttpHeaders httpHeaders = new HttpHeaders();
 
+
     @Test
-    public void notify_notifiesAnEventOccurred() throws Exception {
+    public void notify_notifiesAFirewallEventOccurred() throws Exception {
         String hostName = null;
         String accountId = null;
-        FirewallEvent event = new FirewallEvent();
+        DpiEvent event = new DpiEvent();
         event.setReason("This is My Reason");
         event.setHostName("This is My Host Name");
-        EventBean eventBean = new EventBean(hostName,accountId,event);
+        EventBean eventBean = new EventBean(hostName, accountId, event);
 
         String hostUrl = "hostUrlValueForTest";
         ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
-        String address = hostUrl + EventClient.EVENT +"/"+ eventBean.getAccountId()+"/"+eventBean.getHostName();
+        String address = hostUrl + EventClient.EVENT + "/" + eventBean.getAccountId() + "/" + eventBean.getHostName();
 
         String bearerToken = null;
         httpHeaders.add("test", "test");
@@ -57,7 +58,7 @@ public class EventClientTest {
 
         when(responseEntity.getStatusCode()).thenReturn(HttpStatus.OK);
 
-        classUnderTest.notify(eventBean,bearerToken);
+        classUnderTest.notify(eventBean, bearerToken);
 
         verify(restTemplate).exchange(address,
                 HttpMethod.POST, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
@@ -65,14 +66,14 @@ public class EventClientTest {
 
 
     @Test(expected = IpsException.class)
-    public void notify_failsToPutOnNotificationDestination() {
+    public void notify_failsToPostFirewallEventOnNotificationDestination() {
         //arrange
         String hostName = null;
         String accountId = null;
-        FirewallEvent event = new FirewallEvent();
+        DpiEvent event = new DpiEvent();
         event.setReason("This is My Reason");
         event.setHostName("This is My Host Name");
-        EventBean eventBean = new EventBean(hostName,accountId,event);
+        EventBean eventBean = new EventBean(hostName, accountId, event);
 
         String hostUrl = "hostUrlValueForTest";
         ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
@@ -91,4 +92,63 @@ public class EventClientTest {
         //act
         classUnderTest.notify(eventBean, bearerToken);
     }
+//
+//    @Test
+//    public void notify_notifiesAFirewallEventOccurred() throws Exception {
+//        String hostName = null;
+//        String accountId = null;
+//        FirewallEvent event = new FirewallEvent();
+//        event.setReason("This is My Reason");
+//        event.setHostName("This is My Host Name");
+//        EventBean eventBean = new EventBean(hostName,accountId,event);
+//
+//        String hostUrl = "hostUrlValueForTest";
+//        ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
+//        String address = hostUrl + EventClient.EVENT +"/"+ eventBean.getAccountId()+"/"+eventBean.getHostName();
+//
+//        String bearerToken = null;
+//        httpHeaders.add("test", "test");
+//        when(clientComponent.createHeaders(bearerToken))
+//                .thenReturn(httpHeaders);
+//
+//        //arrange
+//        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+//                .thenReturn(responseEntity);
+//
+//        when(responseEntity.getStatusCode()).thenReturn(HttpStatus.OK);
+//
+//        classUnderTest.notify(eventBean,bearerToken);
+//
+//        verify(restTemplate).exchange(address,
+//                HttpMethod.POST, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
+//    }
+//
+//
+//    @Test(expected = IpsException.class)
+//    public void notify_failsToPostFirewallEventOnNotificationDestination() {
+//        //arrange
+//        String hostName = null;
+//        String accountId = null;
+//        FirewallEvent event = new FirewallEvent();
+//        event.setReason("This is My Reason");
+//        event.setHostName("This is My Host Name");
+//        EventBean eventBean = new EventBean(hostName,accountId,event);
+//
+//        String hostUrl = "hostUrlValueForTest";
+//        ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
+//
+//        String bearerToken = null;
+//        httpHeaders.add("test", "test");
+//        when(clientComponent.createHeaders(bearerToken))
+//                .thenReturn(httpHeaders);
+//
+//        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+//                .thenReturn(responseEntity);
+//
+//        when(responseEntity.getStatusCode())
+//                .thenReturn(HttpStatus.I_AM_A_TEAPOT);
+//
+//        //act
+//        classUnderTest.notify(eventBean, bearerToken);
+//    }
 }

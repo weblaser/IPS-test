@@ -1,6 +1,7 @@
 package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
+import com.ctl.security.clc.client.common.domain.ClcServerDetailsResponse;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
@@ -67,6 +68,9 @@ public class PolicyServiceWriteTest {
     private ServerClient serverClient;
 
     @Mock
+    private ClcServerDetailsResponse clcServerDetailsResponse;
+
+    @Mock
     private DsmAgentInstallPackageFactory dsmAgentInstallPackageFactory;
 
     @Test
@@ -84,7 +88,11 @@ public class PolicyServiceWriteTest {
 
         when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
         when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
-        when(serverClient.getOS(policyToBeCreatedBean.getAccountAlias(), policyToBeCreatedBean.getPolicy().getHostName(), policyToBeCreatedBean.getBearerToken())).thenReturn(hostOs);
+        when(serverClient.getServerDetails(policyToBeCreatedBean.getAccountAlias(),
+                policyToBeCreatedBean.getPolicy().getHostName(),
+                policyToBeCreatedBean.getBearerToken()))
+                .thenReturn(clcServerDetailsResponse);
+        when(clcServerDetailsResponse.getOs()).thenReturn(hostOs);
 
         //act
         Policy result = classUnderTest.createPolicyForAccount(policyToBeCreatedBean);

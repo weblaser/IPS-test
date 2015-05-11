@@ -10,6 +10,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -20,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.*;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class DsmPolicyClientTest {
@@ -44,7 +42,7 @@ public class DsmPolicyClientTest {
     @Mock
     private DsmLogInClient dsmLogInClient;
 
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private ServerClient serverClient;
 
     @Mock
@@ -67,7 +65,7 @@ public class DsmPolicyClientTest {
 
     @Before
     public void setup() throws Exception {
-        Map<String,String> osTypeMap = new HashMap<>();
+        Map<String, String> osTypeMap = new HashMap<>();
         osTypeMap.put(LINUX, CLC_LINUX);
         osTypeMap.put(WINDOWS_2008, CLC_WINDOWS_2008);
         osTypeMap.put(WINDOWS_2012, CLC_WINDOWS_2012);
@@ -95,7 +93,7 @@ public class DsmPolicyClientTest {
         SecurityProfileTransport createdPolicyProfileTransport = new SecurityProfileTransport();
         createdPolicyProfileTransport.setParentSecurityProfileID(NumberUtils.createInteger(parentPolicy.getVendorPolicyId()));
 
-        if(os.equals(WINDOWS_2008)) {
+        if (os.equals(WINDOWS_2008)) {
             when(manager.securityProfileRetrieveByName(CLC_WINDOWS_2008, sessionId)).thenReturn(parentProfileTransport);
         } else if (os.equals(WINDOWS_2012)) {
             when(manager.securityProfileRetrieveByName(CLC_WINDOWS_2012, sessionId)).thenReturn(parentProfileTransport);
@@ -107,7 +105,7 @@ public class DsmPolicyClientTest {
         when(securityProfileTransportMarshaller.convert(policyToBeCreated)).thenReturn(securityProfileTransportToBeCreated);
         when(securityProfileTransportMarshaller.convert(expectedSecurityProfileTransport)).thenReturn(expectedPolicy);
         when(securityProfileTransportMarshaller.convert(parentProfileTransport)).thenReturn(parentPolicy);
-        when(serverClient.getOS(anyString(), anyString(), anyString())).thenReturn(os);
+        when(serverClient.getServerDetails(anyString(), anyString(), anyString()).getOs()).thenReturn(os);
     }
 
     private void setupUsernamePasswordWhen(String username, String password, String sessionId) throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthenticationException_Exception {
@@ -139,7 +137,7 @@ public class DsmPolicyClientTest {
         fail("DsmClientException should have been thrown");
     }
 
-    @Test (expected = DsmClientException.class)
+    @Test(expected = DsmClientException.class)
     public void createPolicyOnDSMClientTestFail() throws Exception {
         //arrange
         setupMocks("rhel_64bit");

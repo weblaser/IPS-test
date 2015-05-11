@@ -6,18 +6,17 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- * Created by sean.robb on 3/9/2015.
+ * Created by Sean Robb on 5/11/2015.
  */
 
 @ToString
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class FirewallEvent extends Event {
-
+public class DpiEvent extends Event {
 
     @Override
     public String toString() {
-        return "Firewall Event Reason: " +  this.getReason();
+        return "DPI Event Reason: " + this.getReason();
     }
 }

@@ -7,6 +7,7 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.client.domain.user.UserResources;
 import com.ctl.security.ips.client.EventClient;
+import com.ctl.security.ips.common.domain.Event.Event;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
@@ -100,10 +101,10 @@ public class Informant {
         for (UserResource userResource : allUsers.getContent()) {
             try {
                 String accountId = userResource.getContent().getAccountId();
-                List<FirewallEvent> currentEvents = dsmEventClient.gatherEvents(accountId, fromDate, toDate);
+                List<Event> currentEvents = dsmEventClient.gatherEvents(accountId, fromDate, toDate);
 
-                for (FirewallEvent firewallEvent : currentEvents) {
-                    EventBean eventBean = new EventBean(firewallEvent.getHostName(), accountId, firewallEvent);
+                for (Event event : currentEvents) {
+                    EventBean eventBean = new EventBean(event.getHostName(), accountId, event);
                     events.add(eventBean);
                 }
             } catch (DsmEventClientException e) {

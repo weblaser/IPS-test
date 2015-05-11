@@ -40,7 +40,7 @@ public class DsmLoginClientTest {
     }
 
     @Test(expected = ManagerAuthenticationException_Exception.class)
-    public void loginFail() throws Exception{
+    public void loginFail() throws Exception {
         //Arrange
         when(manager.authenticate(eq(invalidUsername), eq(invalidPassword))).thenThrow(ManagerAuthenticationException_Exception.class);
         //Act
@@ -48,7 +48,7 @@ public class DsmLoginClientTest {
     }
 
     @Test
-    public void endSession_endsSession(){
+    public void endSession_endsSession() {
         underTest.endSession(validSessionId);
 
         verify(manager).endSession(validSessionId);

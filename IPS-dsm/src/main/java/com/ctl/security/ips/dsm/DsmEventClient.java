@@ -1,6 +1,9 @@
 package com.ctl.security.ips.dsm;
 
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
+import com.ctl.security.ips.common.domain.Event.Event;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.dsm.domain.DpiEventTransportMarshaller;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import manager.*;
@@ -41,20 +44,24 @@ public class DsmEventClient {
     @Autowired
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
-    public List<FirewallEvent> gatherEvents(String accountId, Date fromTime, Date toTime) throws DsmEventClientException {
+    @Autowired
+    private DpiEventTransportMarshaller dpiEventTransportMarshaller;
+
+    public List<Event> gatherEvents(String accountId, Date fromTime, Date toTime) throws DsmEventClientException {
         String sessionId = null;
         String tenantSessionId = null;
         try {
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
             tenantSessionId = dsmLogInClient.connectTenantToDSMClient(accountId, sessionId);
 
-            List<FirewallEvent> firewallEvents = marshallToFirewallEvents(
-                    getFirewallEventTransports(fromTime, toTime, tenantSessionId)
-            );
+            List<Event> events = new ArrayList<>();
 
-            logger.info("Gathered " + firewallEvents.size() + " events");
+            events.addAll(marshallToDpiEvents(getDPIEventTransports(fromTime, toTime, tenantSessionId)));
 
-            return firewallEvents;
+
+            logger.info("Gathered " + events.size() + " events");
+
+            return events;
         } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
                 ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
                 ManagerMaxSessionsException_Exception | ManagerException_Exception |
@@ -82,13 +89,6 @@ public class DsmEventClient {
 
             logger.info("Gathering Events for From: " + fromTime + " To: " + toTime);
 
-            //TODO gather either firewall events or DPI events.
-
-            DPIEventListTransport dpiEventListTransport = manager.dpiEventRetrieve(getTimeFilterTransport(fromTime, toTime), getHostFilterTransport(), getIdFilterTransport(), sessionId);
-
-            List<DPIEventTransport> item = dpiEventListTransport.getDPIEvents().getItem();
-            logger.info("Gathered "+ item.size() + " DPI events");
-
             List<FirewallEventTransport> firewallEventTransportList = manager
                     .firewallEventRetrieve(
                             timeFilterTransport,
@@ -106,6 +106,40 @@ public class DsmEventClient {
                 ManagerTimeoutException_Exception | ManagerValidationException_Exception |
                 DatatypeConfigurationException e) {
             logger.error("Exception caught gathering events: " + e.getMessage());
+            throw new DsmEventClientException(e);
+        }
+    }
+
+    private List<DpiEvent> marshallToDpiEvents(List<DPIEventTransport> dpiEventTransportList) {
+        List<DpiEvent> firewallEvents = new ArrayList<>();
+        for (DPIEventTransport dpiEventTransport : dpiEventTransportList) {
+            DpiEvent firewallEvent = dpiEventTransportMarshaller.convert(dpiEventTransport);
+            firewallEvents.add(firewallEvent);
+        }
+        return firewallEvents;
+    }
+
+    private List<DPIEventTransport> getDPIEventTransports(Date fromTime, Date toTime, String sessionId) throws DsmEventClientException {
+        try {
+
+            TimeFilterTransport timeFilterTransport = getTimeFilterTransport(fromTime, toTime);
+
+            logger.info("Gathering Events for From: " + fromTime + " To: " + toTime);
+
+            List<DPIEventTransport> dpiEventTransportList = manager
+                    .dpiEventRetrieve(
+                            timeFilterTransport,
+                            getHostFilterTransport(),
+                            getIdFilterTransport(),
+                            sessionId).getDPIEvents().getItem();
+
+            logger.info("Gathered " + dpiEventTransportList.size() + " DPI events");
+
+            return dpiEventTransportList;
+        } catch (ManagerException_Exception | ManagerAuthenticationException_Exception |
+                ManagerTimeoutException_Exception | ManagerValidationException_Exception |
+                DatatypeConfigurationException e) {
+            logger.error("Exception caught gathering DPI events: " + e.getMessage());
             throw new DsmEventClientException(e);
         }
     }

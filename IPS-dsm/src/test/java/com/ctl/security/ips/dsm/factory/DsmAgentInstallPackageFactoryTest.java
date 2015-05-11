@@ -1,6 +1,7 @@
 package com.ctl.security.ips.dsm.factory;
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
+import com.ctl.security.clc.client.common.domain.ClcServerDetailsResponse;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.SecurityTenant;
@@ -33,6 +34,9 @@ public class DsmAgentInstallPackageFactoryTest {
     private static final String REDHAT_6_UUID = "redHat6_uuid";
     private static final String DSM_MOTHERSHIP = "DSM Mothership";
 
+    @Mock
+    private ClcServerDetailsResponse serverDetailsResponse;
+
     @InjectMocks
     private DsmAgentInstallPackageFactory classUnderTest;
 
@@ -56,7 +60,8 @@ public class DsmAgentInstallPackageFactoryTest {
         ClcExecutePackageRequest expected = new ClcExecutePackageRequest().addServer(SERVER);
         expected.getSoftwarePackage().setPackageId(REDHAT_6_UUID);
 
-        when(serverClient.getOS(anyString(), eq(SERVER), anyString())).thenReturn(REDHAT);
+        when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
+        when(serverDetailsResponse.getOs()).thenReturn(REDHAT);
 
         //act
         ClcExecutePackageRequest result = classUnderTest.configurePackageRequest(securityTenant, policyBean);
@@ -81,7 +86,8 @@ public class DsmAgentInstallPackageFactoryTest {
                 .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
                 .addParameter("T3.Account.Alias", policyBean.getAccountAlias());
 
-        when(serverClient.getOS(anyString(), eq(SERVER), anyString())).thenReturn(REDHAT);
+        when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
+        when(serverDetailsResponse.getOs()).thenReturn(REDHAT);
 
         //act
         ClcExecutePackageRequest result = classUnderTest.configurePackageRequest(securityTenant, policyBean);
@@ -99,7 +105,8 @@ public class DsmAgentInstallPackageFactoryTest {
         ClcExecutePackageRequest expected = new ClcExecutePackageRequest().addServer(SERVER);
         expected.getSoftwarePackage().setPackageId(REDHAT_6_UUID);
 
-        when(serverClient.getOS(anyString(), eq(SERVER), anyString())).thenReturn("SomeInvalidOs");
+        when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
+        when(serverDetailsResponse.getOs()).thenReturn("SomeInvalidOs");
 
         //act
         classUnderTest.configurePackageRequest(securityTenant, policyBean);
@@ -114,7 +121,8 @@ public class DsmAgentInstallPackageFactoryTest {
         ClcExecutePackageRequest expected = new ClcExecutePackageRequest().addServer(SERVER);
         expected.getSoftwarePackage().setPackageId(REDHAT_6_UUID);
 
-        when(serverClient.getOS(anyString(), eq(SERVER), anyString())).thenReturn(null);
+        when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
+        when(serverDetailsResponse.getOs()).thenReturn(null);
 
         //act
         ClcExecutePackageRequest result = classUnderTest.configurePackageRequest(securityTenant, policyBean);

@@ -7,6 +7,8 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.client.domain.user.UserResources;
 import com.ctl.security.ips.client.EventClient;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
+import com.ctl.security.ips.common.domain.Event.Event;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
@@ -25,13 +27,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -40,8 +41,10 @@ public class InformantTest {
 
     @InjectMocks
     private Informant classUnderTest;
+
     @Mock
     private DsmEventClient dsmEventClient;
+
     @Mock
     private EventClient eventClient;
 
@@ -65,15 +68,16 @@ public class InformantTest {
     public void init() {
         file = new File("lastExecutionTest.txt");
         ReflectionTestUtils.setField(classUnderTest, "file", file);
-        ReflectionTestUtils.setField(classUnderTest,"DSM_LAGTIME_MIN",0);
+        ReflectionTestUtils.setField(classUnderTest, "DSM_LAGTIME_MIN", 0);
     }
 
     @Test
     public void inform_gathersEventsForDifferentAccounts() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+        List<Event> events = new ArrayList<>();
+        events.addAll(createDpiEvents(5));
+        setUpMocksForEvents(accountIds, events);
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -85,11 +89,14 @@ public class InformantTest {
 
     @Test
     public void inform_gathersEventsAndSendsOneEvent() throws Exception {
-        List<FirewallEvent> firewallEvents = createFirewallEvents(1);
+        List<Event> events = new ArrayList<>();
+        events.addAll(createDpiEvents(1));
         List<String> accountIds = getAccountIds(1);
-        List<EventBean> eventBeans = createEventBeans(accountIds.get(0), firewallEvents);
+        List<EventBean> eventBeans = createEventBeans(accountIds.get(0), events);
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+
+        setUpMocksForEvents(accountIds, events);
+
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -102,10 +109,12 @@ public class InformantTest {
     @Test
     public void inform_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
-        List<EventBean> eventBeans = createEventBeans(accountIds.get(0), firewallEvents);
+        List<Event> events = new ArrayList<>();
+        events.addAll(createDpiEvents(5));
+        List<EventBean> eventBeans = createEventBeans(accountIds.get(0), events);
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForEvents(accountIds, events);
+
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
 
@@ -119,9 +128,11 @@ public class InformantTest {
     @Test
     public void inform_writesExecutionTimeToAFile() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+        List<Event> events = new ArrayList<>();
+        events.addAll(createDpiEvents(5));
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForEvents(accountIds, events);
+
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -140,9 +151,11 @@ public class InformantTest {
     @Test
     public void inform_readsExecutionTimeToAFile() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+        List<Event> events = new ArrayList<>();
+        events.addAll(createDpiEvents(5));
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForEvents(accountIds, events);
+
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -157,9 +170,11 @@ public class InformantTest {
     @Test
     public void inform_nullEventsAreGathered() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<FirewallEvent> firewallEvents = createFirewallEvents(5);
+        List<Event> events = new ArrayList<>();
+        events.addAll(createDpiEvents(5));
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForEvents(accountIds, events);
+
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -171,10 +186,11 @@ public class InformantTest {
 
     @Test
     public void inform_noEventsAreGathered() throws Exception {
-        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
 
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+        setUpMocksForEvents(accountIds, events);
+
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -186,9 +202,10 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotWriteLastExecutionDate() throws Exception {
-        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+
+        setUpMocksForEvents(accountIds, events);
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDate(lastExecutionDateString);
@@ -201,9 +218,11 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotReadLastExecutionDateParseFailure() throws Exception {
+        List<Event> events = new ArrayList<>();
         List<FirewallEvent> firewallEvents = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+
+        setUpMocksForEvents(accountIds, events);
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDateParseFailure();
@@ -214,9 +233,10 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotReadLastExecutionDateNoFileFailure() throws Exception {
-        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
-        setUpMocksForFirewallEvents(accountIds, firewallEvents);
+
+        setUpMocksForEvents(accountIds, events);
         setUpMocksForUsers(accountIds);
         setUpMocksForInform();
         setupReadingLastExecutionDateNoFileFailure();
@@ -233,9 +253,9 @@ public class InformantTest {
         ReflectionTestUtils.setField(classUnderTest, "defaultGatheringLength", "1");
     }
 
-    private void setEventsForAccountId(String accountId, List<FirewallEvent> firewallEvents) throws DsmEventClientException {
+    private void setEventsForAccountId(String accountId, List<Event> events) throws DsmEventClientException {
         when(dsmEventClient.gatherEvents(eq(accountId), any(Date.class), any(Date.class)))
-                .thenReturn(firewallEvents);
+                .thenReturn(events);
     }
 
     private void setupReadingLastExecutionDate(String lastExecutionDateString) throws IOException {
@@ -271,11 +291,22 @@ public class InformantTest {
         return firewallEvents;
     }
 
-    private List<EventBean> createEventBeans(String accountId, List<FirewallEvent> firewallEvents) {
+    private List<DpiEvent> createDpiEvents(int count) {
+        List<DpiEvent> firewallEvents = new ArrayList<>();
+        for (int eventCount = 0; eventCount < count; eventCount++) {
+            DpiEvent firewallEvent = new DpiEvent();
+            firewallEvent.setHostName("Hostname" + eventCount);
+            firewallEvent.setReason("Reason" + eventCount);
+            firewallEvents.add(firewallEvent);
+        }
+        return firewallEvents;
+    }
+
+    private List<EventBean> createEventBeans(String accountId, List<Event> events) {
         List<EventBean> eventBeans = new ArrayList<>();
 
-        for (FirewallEvent currentFirewallEvent : firewallEvents) {
-            EventBean eventBean = new EventBean(currentFirewallEvent.getHostName(), accountId, currentFirewallEvent);
+        for (Event currentEvents : events) {
+            EventBean eventBean = new EventBean(currentEvents.getHostName(), accountId, currentEvents);
             eventBeans.add(eventBean);
         }
         return eventBeans;
@@ -295,9 +326,9 @@ public class InformantTest {
         }
     }
 
-    private void setUpMocksForFirewallEvents(List<String> accountIds, List<FirewallEvent> firewallEvents) throws DsmEventClientException {
+    private void setUpMocksForEvents(List<String> accountIds, List<Event> events) throws DsmEventClientException {
         for (String currentAccount : accountIds) {
-            setEventsForAccountId(currentAccount, firewallEvents);
+            setEventsForAccountId(currentAccount, events);
         }
     }
 

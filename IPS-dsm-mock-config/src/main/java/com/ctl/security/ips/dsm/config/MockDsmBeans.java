@@ -1,6 +1,8 @@
 package com.ctl.security.ips.dsm.config;
 
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.dsm.domain.DpiEventTransportMarshaller;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
@@ -10,17 +12,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doAnswer;
@@ -63,6 +65,8 @@ public class MockDsmBeans extends BaseDsmBeans {
     private RestTemplate restTemplate;
     @Autowired
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
+    @Autowired
+    private DpiEventTransportMarshaller dpiEventTransportMarshaller;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.port}")
     private int destinationPort;
@@ -167,6 +171,7 @@ public class MockDsmBeans extends BaseDsmBeans {
                 String accountId = arguments[argumentAccountId].toString();
                 String sessionId = createSessionId(accountId);
                 createFirewallEventRetrieveMock(sessionId, accountId);
+                createDpiEventRetrieveMock(sessionId,accountId);
                 return sessionId;
             }
         });
@@ -182,12 +187,32 @@ public class MockDsmBeans extends BaseDsmBeans {
                 List<FirewallEvent> response = null;
                 try {
                     String address = "http://" + destinationHostName + ":" + destinationPort
-                            + host + "/" + accountId;
+                            + host + "/" + "Firewall" + "/" + accountId;
                     response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
                             null, FirewallEvent[].class).getBody());
                 } catch (RestClientException rce) {
                 }
                 return convertAllToFirewallEventListTransport(response);
+            }
+        });
+    }
+
+    private void createDpiEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
+        when(manager.dpiEventRetrieve(any(TimeFilterTransport.class),
+                any(HostFilterTransport.class),
+                any(IDFilterTransport.class),
+                eq(sessionId))).thenAnswer(new Answer<DPIEventListTransport>() {
+            @Override
+            public DPIEventListTransport answer(InvocationOnMock invocationOnMock) {
+                List<DpiEvent> response = null;
+                try {
+                    String address = "http://" + destinationHostName + ":" + destinationPort
+                            + host + "/" + "DPI" + "/" + accountId;
+                    response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
+                            null, DpiEvent[].class).getBody());
+                } catch (RestClientException rce) {
+                }
+                return convertAllToDpiEventListTransport(response);
             }
         });
     }
@@ -207,6 +232,23 @@ public class MockDsmBeans extends BaseDsmBeans {
             }
         }
         return firewallEventListTransport;
+    }
+
+    private DPIEventListTransport getDpiEventListTransport() {
+        DPIEventListTransport dpiEventListTransport = new DPIEventListTransport();
+        dpiEventListTransport.setDPIEvents(new ArrayOfDPIEventTransport());
+        return dpiEventListTransport;
+    }
+
+    private DPIEventListTransport convertAllToDpiEventListTransport(List<DpiEvent> response) {
+        DPIEventListTransport dpiEventListTransport = getDpiEventListTransport();
+        if (response != null) {
+            for (DpiEvent dpiEvent : response) {
+                dpiEventListTransport.getDPIEvents().getItem()
+                        .add(dpiEventTransportMarshaller.convert(dpiEvent));
+            }
+        }
+        return dpiEventListTransport;
     }
 
     private String createSessionId(String accountId) {

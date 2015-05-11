@@ -8,6 +8,7 @@ import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.client.NotificationClient;
 
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
@@ -193,7 +194,7 @@ public class EventSteps {
 
     private void createEventBean(String accountId, String hostName) {
         //Creates an event
-        FirewallEvent event = new FirewallEvent();
+        DpiEvent event = new DpiEvent();
         event.setReason("An FirewallEvent Reason");
         event.setHostName("An FirewallEvent Host");
 

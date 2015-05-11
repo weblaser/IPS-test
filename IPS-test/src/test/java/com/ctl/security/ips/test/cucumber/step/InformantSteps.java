@@ -4,19 +4,17 @@ import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
-import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
-import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.client.PolicyClient;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
+import com.ctl.security.ips.common.domain.Event.Event;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -180,11 +178,11 @@ public class InformantSteps {
             User attackedUser = safeConfigurationItemUsers.get(attackedConfigItem);
 
             //Creates a FirewallEvent
-            FirewallEvent firewallEvent = new FirewallEvent();
-            firewallEvent.setReason("An FirewallEvent Reason");
-            firewallEvent.setHostName(attackedConfigItem.getHostName());
+            DpiEvent event = new DpiEvent();
+            event.setReason("An  DPI Event Reason");
+            event.setHostName(attackedConfigItem.getHostName());
 
-            eventAdapter.triggerEvent(attackedConfigItem, Arrays.asList(firewallEvent));
+            eventAdapter.triggerDpiEvent(attackedConfigItem, Arrays.asList(event));
 
             attackedConfigurationItemsUsers.put(attackedConfigItem, attackedUser);
             safeConfigurationItemUsers.remove(attackedConfigItem);
