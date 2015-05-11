@@ -80,7 +80,7 @@ public class DsmEventClient {
         try {
             TimeFilterTransport timeFilterTransport = getTimeFilterTransport(fromTime, toTime);
 
-            logger.info("Gathering Events for" + " From:" + fromTime + "To: " + toTime);
+            logger.info("Gathering Events for From: " + fromTime + " To: " + toTime);
 
             List<FirewallEventTransport> firewallEventTransportList = manager
                     .firewallEventRetrieve(
