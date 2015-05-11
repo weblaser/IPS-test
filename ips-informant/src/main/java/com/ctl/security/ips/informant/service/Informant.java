@@ -35,6 +35,7 @@ public class Informant {
     private static final String USERNAME = "Bugs";
     private static final String PASSWORD = "vZb]9yKv==Bnmozn";
     public static final String ACCOUNT = "TCCD";
+    public static final Integer DSM_LAGTIME_MIN=10;
 
     @Autowired
     private DsmEventClient dsmEventClient;
@@ -70,8 +71,8 @@ public class Informant {
     @Scheduled(cron = "${${spring.profiles.active}.informant.cron}")
     public void inform() {
 
-        Date toDate = new Date();
         Date fromDate = new Date();
+        Date toDate = DateTime.now().minusMinutes(DSM_LAGTIME_MIN).toDate();
         try {
             String ticksReadString = FileUtils.readFileToString(file);
             if (ticksReadString == null) {
@@ -79,7 +80,12 @@ public class Informant {
             }
             fromDate.setTime(Long.parseLong(ticksReadString));
 
-        } catch (IOException | IllegalArgumentException e) {
+            if(fromDate.after(toDate)){
+                //TODO make this exception more specific
+                throw new Exception("The From Date can not be after the To Date.");
+            }
+
+        } catch (Exception e) {
             fromDate = DateTime.now().minusHours(Integer.parseInt(defaultGatheringLength)).toDate();
             //TODO Log that file was not found
         }
@@ -97,7 +103,6 @@ public class Informant {
                     EventBean eventBean = new EventBean(firewallEvent.getHostName(), accountId, firewallEvent);
                     events.add(eventBean);
                 }
-
             } catch (DsmEventClientException e) {
                 e.printStackTrace();
                 //TODO log that eventClient had errors gathering events
