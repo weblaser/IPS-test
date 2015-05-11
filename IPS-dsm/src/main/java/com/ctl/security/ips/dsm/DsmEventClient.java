@@ -1,6 +1,5 @@
 package com.ctl.security.ips.dsm;
 
-import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
@@ -43,22 +42,18 @@ public class DsmEventClient {
     private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
     public List<FirewallEvent> gatherEvents(String accountId, Date fromTime, Date toTime) throws DsmEventClientException {
-        String tenantSessionId = null;
         String sessionId = null;
+        String tenantSessionId = null;
         try {
             sessionId = dsmLogInClient.connectToDSMClient(username, password);
-            tenantSessionId=dsmLogInClient.connectTenantToDSMClient(accountId, sessionId);
-            //TODO remove this
-//            tenantSessionId = dsmLogInClient.connectTenantToDSMClient(accountId, username, password);
+            tenantSessionId = dsmLogInClient.connectTenantToDSMClient(accountId, sessionId);
 
-            logger.info("session created with id " + tenantSessionId);
+            List<FirewallEvent> firewallEvents = marshallToFirewallEvents(
+                    getFirewallEventTransports(fromTime, toTime, tenantSessionId)
+            );
 
-            List<FirewallEventTransport> firewallEventTransportList;
-            firewallEventTransportList = getFirewallEventTransports(fromTime, toTime, tenantSessionId);
+            logger.info("Gathered " + firewallEvents.size() + " events");
 
-            List<FirewallEvent> firewallEvents = marshallToFirewallEvents(firewallEventTransportList);
-
-            logger.info("gathered " + firewallEvents.size() + " events");
             return firewallEvents;
         } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
                 ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
@@ -69,7 +64,6 @@ public class DsmEventClient {
         } finally {
             dsmLogInClient.endSession(tenantSessionId);
             dsmLogInClient.endSession(sessionId);
-            logger.info("session " + tenantSessionId + " closed");
         }
     }
 
@@ -92,10 +86,19 @@ public class DsmEventClient {
 
             HostFilterTransport hostFilterTransport = getHostFilterTransport();
 
+            logger.info("Gathering Events for" +
+                            " Id: " + idFilterTransport.toString() +
+                            " Time: " + timeFilterTransport.toString() +
+                            " HostFilter: " + hostFilterTransport.toString()
+            );
+
             firewallEventTransportList = manager
                     .firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId)
                     .getFirewallEvents()
                     .getItem();
+
+
+            logger.info("Gathered " + firewallEventTransportList.size() + " events");
 
             return firewallEventTransportList;
 
