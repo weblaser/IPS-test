@@ -78,25 +78,18 @@ public class DsmEventClient {
 
     private List<FirewallEventTransport> getFirewallEventTransports(Date fromTime, Date toTime, String sessionId) throws DsmEventClientException {
         try {
-            List<FirewallEventTransport> firewallEventTransportList;
-
-            IDFilterTransport idFilterTransport = getIdFilterTransport();
-
             TimeFilterTransport timeFilterTransport = getTimeFilterTransport(fromTime, toTime);
 
-            HostFilterTransport hostFilterTransport = getHostFilterTransport();
+            logger.info("Gathering Events for" + " From:" + fromTime + "To: " + toTime);
 
-            logger.info("Gathering Events for" +
-                            " Id: " + idFilterTransport.toString() +
-                            " Time: " + timeFilterTransport.toString() +
-                            " HostFilter: " + hostFilterTransport.toString()
-            );
-
-            firewallEventTransportList = manager
-                    .firewallEventRetrieve(timeFilterTransport, hostFilterTransport, idFilterTransport, sessionId)
+            List<FirewallEventTransport> firewallEventTransportList = manager
+                    .firewallEventRetrieve(
+                            timeFilterTransport,
+                            getHostFilterTransport(),
+                            getIdFilterTransport(),
+                            sessionId)
                     .getFirewallEvents()
                     .getItem();
-
 
             logger.info("Gathered " + firewallEventTransportList.size() + " events");
 
