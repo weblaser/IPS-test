@@ -38,8 +38,6 @@ public class DsmEventClient {
     @Autowired
     private DsmLogInClient dsmLogInClient;
 
-//    @Autowired
-//    private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
 
     @Autowired
     private DpiEventTransportMarshaller dpiEventTransportMarshaller;
@@ -70,42 +68,7 @@ public class DsmEventClient {
             dsmLogInClient.endSession(sessionId);
         }
     }
-
-//    private List<FirewallEvent> marshallToFirewallEvents(List<FirewallEventTransport> firewallEventTransportList) {
-//        List<FirewallEvent> firewallEvents = new ArrayList<>();
-//        for (FirewallEventTransport firewallEventTransport : firewallEventTransportList) {
-//            FirewallEvent firewallEvent = firewallEventTransportMarshaller.convert(firewallEventTransport);
-//            firewallEvents.add(firewallEvent);
-//        }
-//        return firewallEvents;
-//    }
-//
-//    private List<FirewallEventTransport> getFirewallEventTransports(Date fromTime, Date toTime, String sessionId) throws DsmEventClientException {
-//        try {
-//            TimeFilterTransport timeFilterTransport = getTimeFilterTransport(fromTime, toTime);
-//
-//            logger.info("Gathering Events for From: " + fromTime + " To: " + toTime);
-//
-//            List<FirewallEventTransport> firewallEventTransportList = manager
-//                    .firewallEventRetrieve(
-//                            timeFilterTransport,
-//                            getHostFilterTransport(),
-//                            getIdFilterTransport(),
-//                            sessionId)
-//                    .getFirewallEvents()
-//                    .getItem();
-//
-//            logger.info("Gathered " + firewallEventTransportList.size() + "Firewall events");
-//
-//            return firewallEventTransportList;
-//
-//        } catch (ManagerException_Exception | ManagerAuthenticationException_Exception |
-//                ManagerTimeoutException_Exception | ManagerValidationException_Exception |
-//                DatatypeConfigurationException e) {
-//            logger.error("Exception caught gathering events: " + e.getMessage());
-//            throw new DsmEventClientException(e);
-//        }
-//    }
+    
 
     private List<DpiEvent> marshallToDpiEvents(List<DPIEventTransport> dpiEventTransportList) {
         List<DpiEvent> firewallEvents = new ArrayList<>();
