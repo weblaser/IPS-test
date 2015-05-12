@@ -114,24 +114,26 @@ public class InformantSteps {
 
     @And("^DSM agent is installed on all of the configuration items$")
     public void DSM_agent_is_installed_on_all_of_the_configuration_items() {
+        //We are assuming that the DSM Agent is already installed
 
-        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
-
-        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
-
-            ConfigurationItem configurationItem = entry.getKey();
-            User user = entry.getValue();
-
-            Policy policy = new Policy()
-                    .setName("name" + System.currentTimeMillis())
-                    .setHostName(configurationItem.getHostName())
-                    .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
-
-
-            policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
-            waitForPolicyToBeCreated(user, policy);
-            policiesToCleanUp.put(user, policy);
-        }
+//
+//        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
+//
+//        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
+//
+//            ConfigurationItem configurationItem = entry.getKey();
+//            User user = entry.getValue();
+//
+//            Policy policy = new Policy()
+//                    .setName("name" + System.currentTimeMillis())
+//                    .setHostName(configurationItem.getHostName())
+//                    .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
+//
+//
+//            policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
+//            waitForPolicyToBeCreated(user, policy);
+//            policiesToCleanUp.put(user, policy);
+//        }
     }
 
     private void waitForPolicyToBeCreated(User user, Policy policy) {
