@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,14 +37,16 @@ public class NotificationServiceWriteTest {
     @Mock
     private Account account;
 
-    @Test
-    public void updateNotificationDestination_updatesNotificationDestination(){
+    private NotificationDestinationBean notificationDestinationBean;
+    private String hostName;
+    private String accountId;
 
-        String hostName = null;
-        String accountId = null;
+    @Test
+    public void testUpdateNotificationDestination_updatesNotificationDestination(){
+
         NotificationDestination notificationDestination = null;
         List<NotificationDestination> notificationDestinations = Arrays.asList(notificationDestination);
-        NotificationDestinationBean notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, notificationDestinations);
+        notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, notificationDestinations);
 
         when(configurationItem.getAccount()).thenReturn(account);
         when(configurationItemClient.getConfigurationItem(hostName, accountId)).thenReturn(configurationItemResource);
@@ -59,4 +62,19 @@ public class NotificationServiceWriteTest {
 
     }
 
+    @Test
+    public void testDeleteNotificationDestination() throws Exception {
+        //arrange
+        notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, null);
+
+        when(configurationItemClient.getConfigurationItem(hostName, accountId)).thenReturn(configurationItemResource);
+        when(configurationItemResource.getContent()).thenReturn(configurationItem);
+        when(configurationItem.getAccount()).thenReturn(account);
+        //act
+        classUnderTest.deleteNotificationDestination(notificationDestinationBean);
+        //assert
+        verify(configurationItemClient).updateConfigurationItem(configurationItem);
+        verify(configurationItemClient).getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+        verify(account).setNotificationDestinations(null);
+    }
 }

@@ -29,4 +29,12 @@ public class NotificationServiceWrite {
 
 
     }
+
+    public void deleteNotificationDestination(NotificationDestinationBean notificationDestinationBean) {
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+        ConfigurationItem configurationItem = configurationItemResource.getContent();
+        configurationItem.getAccount().setNotificationDestinations(null);
+        configurationItemClient.updateConfigurationItem(configurationItem);
+
+    }
 }
