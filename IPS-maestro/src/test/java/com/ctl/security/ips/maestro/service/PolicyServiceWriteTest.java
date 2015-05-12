@@ -29,6 +29,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -106,71 +107,81 @@ public class PolicyServiceWriteTest {
                         policyToBeCreatedBean.getPolicy().getHostName(),
                         product));
     }
-//TODO Uncomment
-//    @Test
-//    public void testCreatePolicy_createsPolicyWithTenant() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
-//
-//        //arrange
-//        Policy policyToBeCreated = new Policy();
-//        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
-//        PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, new Policy(), TOKEN);
-//        SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
-//        String hostOs = "Windows_OS";
-//
-//        when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
-//        when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
-//        when(serverClient.getOS(policyToBeCreatedBean.getAccountAlias(), policyToBeCreatedBean.getPolicy().getHostName(), policyToBeCreatedBean.getBearerToken())).thenReturn(hostOs);
-//
-//
-//        //act
-//        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
-//
-//        //assert
-//        verify(dsmTenantClient).createDsmTenant(any(SecurityTenant.class));
-//        assertEquals(expectedNewlyCreatedPolicy.getPolicy().getTenantId(), actualNewlyPersistedPolicy.getTenantId());
-//    }
-//TODO Uncomment
-//    @Test
-//    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstall() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
-//
-//        //arrange
-//        Policy policyToBeCreated = new Policy();
-//        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
-//        PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, new Policy(), TOKEN);
-//        SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
-//        String hostOs = "Windows_OS";
-//
-//        when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
-//        when(serverClient.getOS(policyToBeCreatedBean.getAccountAlias(), policyToBeCreatedBean.getPolicy().getHostName(), policyToBeCreatedBean.getBearerToken())).thenReturn(hostOs);
-//        when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
-//
-//        //act
-//        classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
-//
-//        //assert
-//        verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
-//    }
-//TODO uncomment
-//    @Test
-//    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstallOnLinux() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
-//
-//        //arrange
-//        Policy policyToBeCreated = new Policy();
-//        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
-//        PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, new Policy(), TOKEN);
-//        SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
-//        String hostOs = "Linus_OS";
-//
-//        when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
-//        when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
-//        when(serverClient.getOS(policyToBeCreatedBean.getAccountAlias(), policyToBeCreatedBean.getPolicy().getHostName(), policyToBeCreatedBean.getBearerToken())).thenReturn(hostOs);
-//
-//        //act
-//        classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
-//
-//        //assert
-//        verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
-//    }
+
+    @Test
+    public void testCreatePolicy_createsPolicyWithTenant() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+
+        //arrange
+        Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
+        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
+        String hostOs = "Windows_OS";
+
+        when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
+        when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
+        when(serverClient.getServerDetails(policyToBeCreatedBean.getAccountAlias(),
+                        policyToBeCreatedBean.getPolicy().getHostName(),
+                        policyToBeCreatedBean.getBearerToken())
+        ).thenReturn(clcServerDetailsResponse);
+
+        when(clcServerDetailsResponse.getOs()).thenReturn(hostOs);
+
+        //act
+        Policy actualNewlyPersistedPolicy = classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
+
+        //assert
+        verify(dsmTenantClient).createDsmTenant(any(SecurityTenant.class));
+        assertEquals(expectedNewlyCreatedPolicy.getPolicy().getTenantId(), actualNewlyPersistedPolicy.getTenantId());
+    }
+
+    @Test
+    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstall() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+
+        //arrange
+        Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
+        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
+        String hostOs = "Windows_OS";
+
+        when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
+        when(serverClient.getServerDetails(policyToBeCreatedBean.getAccountAlias(), policyToBeCreatedBean.getPolicy().getHostName(), policyToBeCreatedBean.getBearerToken())).thenReturn(clcServerDetailsResponse);
+        when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
+        when(clcServerDetailsResponse.getOs()).thenReturn(hostOs);
+
+        //act
+        classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
+
+        //assert
+        verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
+    }
+
+    @Test
+    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstallOnLinux() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+
+        //arrange
+        Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
+        PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
+        SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
+        String hostOs = "Linus_OS";
+
+        when(dsmTenantClient.createDsmTenant(any(SecurityTenant.class))).thenReturn(createdSecurityTenant);
+        when(dsmPolicyClient.createPolicyWithParentPolicy(policyToBeCreatedBean)).thenReturn(expectedNewlyCreatedPolicy);
+        when(serverClient.getServerDetails(policyToBeCreatedBean.getAccountAlias(),
+                        policyToBeCreatedBean.getPolicy().getHostName(),
+                        policyToBeCreatedBean.getBearerToken())
+        ).thenReturn(clcServerDetailsResponse);
+
+        when(clcServerDetailsResponse.getOs()).thenReturn(hostOs);
+
+        //act
+        classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
+
+        //assert
+        verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
+    }
 
     @Test
     public void testDeletePolicyForAccount() throws DsmClientException {
