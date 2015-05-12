@@ -1,13 +1,14 @@
 #!/bin/bash
 #
-# description:  Start up Informant
+# chkconfig: 236 99 01
+# description:  start up | shut down informant
 # author Gary Hebel
 
 JAVA8="/opt/jdk8/bin/java"
 RETVAL=0
 APP_NAME="ips-informant"
 APP_HOME="/opt/java-app/informant"
-JAVA_OPTS="-Dspring.profiles.active=dev"
+JAVA_OPTS="-Dspring.profiles.active=ts"
 PID_DIR="/var/run/informant"
 PID_FILE="$PID_DIR/informant.pid"
 
@@ -21,10 +22,8 @@ start() {
         echo "starting informant..."
         if [ ! -f $PID_FILE ]; then
                 cd $APP_HOME
-                pwd
                 exec -a ips-informant nohup $JAVA8 -jar $JAVA_OPTS $APP_HOME/ips-informant.jar > /home/java/log.log & echo $! > $PID_FILE
                 echo "informant started: PID = `cat $PID_FILE`"
-                pwd
         else
                 echo "informant is already running..."
                 exit 1
