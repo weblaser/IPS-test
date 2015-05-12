@@ -2,11 +2,8 @@ package com.ctl.security.ips.dsm;
 
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
-import com.ctl.security.ips.common.domain.Event.Event;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.domain.DpiEventTransportMarshaller;
-import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import junit.framework.TestCase;
 import manager.*;
@@ -38,10 +35,6 @@ public class DsmEventClientTest extends TestCase {
 
     @Mock
     private DsmLogInClient dsmLogInClient;
-
-    @Mock
-    private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
-
 
     @Mock
     private DpiEventTransportMarshaller dpiEventTransportMarshaller;
@@ -103,26 +96,18 @@ public class DsmEventClientTest extends TestCase {
         List<String> sessionIds = setupUsernamePasswordWhen(tenants, username, password);
         List<List<DPIEventTransport>> allDpiEventTransports = new ArrayList<>();
 
-//        List<List<FirewallEventTransport>> allDpiEventTransports = new ArrayList<>();
 
         for (String currentSessionId : sessionIds) {
             int amount = new Random().nextInt(10);
             List<DPIEventTransport> dpiEventTransports = getDPIEventTransports(amount, currentSessionId);
             allDpiEventTransports.add(dpiEventTransports);
-
-//            List<FirewallEventTransport> firewallEventTransports = getFirewallEventTransports(amount, currentSessionId);
-//            allDpiEventTransports.add(firewallEventTransports);
         }
 
 
         for (int index = 0; index < tenants.size(); index++) {
-            List<Event> currentEvents = classUnderTest.gatherEvents(tenants.get(index), new Date(), new Date());
+            List<DpiEvent> currentEvents = classUnderTest.gatherEvents(tenants.get(index), new Date(), new Date());
 
-//            for (FirewallEventTransport firewallEventTransport : allDpiEventTransports.get(index)) {
-//                verify(firewallEventTransportMarshaller).convert(firewallEventTransport);
-//            }
-
-            for(DPIEventTransport dpiEventTransport:allDpiEventTransports.get(index)){
+            for (DPIEventTransport dpiEventTransport : allDpiEventTransports.get(index)) {
                 verify(dpiEventTransportMarshaller).convert(dpiEventTransport);
             }
 
@@ -147,7 +132,7 @@ public class DsmEventClientTest extends TestCase {
                 eq(sessionId))).thenThrow(managerException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -173,7 +158,7 @@ public class DsmEventClientTest extends TestCase {
 
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -199,7 +184,7 @@ public class DsmEventClientTest extends TestCase {
 
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -224,7 +209,7 @@ public class DsmEventClientTest extends TestCase {
                 anyString())).thenThrow(managerValidationException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -243,7 +228,7 @@ public class DsmEventClientTest extends TestCase {
         throwExceptionWhenConnectToDSM(username, password, managerSecurityException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -264,7 +249,7 @@ public class DsmEventClientTest extends TestCase {
         throwExceptionWhenConnectToDSM(username, password, managerAuthenticationException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -285,7 +270,7 @@ public class DsmEventClientTest extends TestCase {
         throwExceptionWhenConnectToDSM(username, password, managerLockoutException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -306,7 +291,7 @@ public class DsmEventClientTest extends TestCase {
         throwExceptionWhenConnectToDSM(username, password, managerCommunicationException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -327,7 +312,7 @@ public class DsmEventClientTest extends TestCase {
         throwExceptionWhenConnectToDSM(username, password, managerMaxSessionsException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -347,7 +332,7 @@ public class DsmEventClientTest extends TestCase {
         throwExceptionWhenConnectToDSM(username, password, managerException_exception);
 
         try {
-            List<Event> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
+            List<DpiEvent> events = classUnderTest.gatherEvents(SOME_TENANT, new Date(), new Date());
         } catch (DsmEventClientException e) {
             dsmEventClientException = e;
         }
@@ -371,36 +356,6 @@ public class DsmEventClientTest extends TestCase {
         return tenants;
     }
 
-    private List<FirewallEventTransport> getFirewallEventTransports(Integer amount, String sessionId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
-        FirewallEventListTransport firewallEventListTransport = mock(FirewallEventListTransport.class);
-        ArrayOfFirewallEventTransport arrayOfFirewallEventTransport = mock(ArrayOfFirewallEventTransport.class);
-
-        List<FirewallEventTransport> firewallEventTransports = new ArrayList();
-
-        when(firewallEventListTransport.getFirewallEvents())
-                .thenReturn(arrayOfFirewallEventTransport);
-        when(arrayOfFirewallEventTransport.getItem())
-                .thenReturn(firewallEventTransports);
-
-        for (Integer count = 0; count < amount; count++) {
-            FirewallEventTransport firewallEventTransport = new FirewallEventTransport();
-            FirewallEvent firewallEvent = new FirewallEvent();
-
-            when(firewallEventTransportMarshaller.convert(firewallEventTransport))
-                    .thenReturn(firewallEvent);
-            firewallEventTransports.add(firewallEventTransport);
-        }
-
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                eq(sessionId)))
-                .thenReturn(firewallEventListTransport);
-
-        return firewallEventTransports;
-    }
-
-
     private List<DPIEventTransport> getDPIEventTransports(Integer amount, String sessionId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
         DPIEventListTransport dpiEventListTransport = mock(DPIEventListTransport.class);
         ArrayOfDPIEventTransport arrayOfDPIEventTransport = mock(ArrayOfDPIEventTransport.class);
@@ -414,7 +369,7 @@ public class DsmEventClientTest extends TestCase {
 
         for (Integer count = 0; count < amount; count++) {
             DPIEventTransport dpiEventTransport = new DPIEventTransport();
-            DpiEvent dpiEvent=new DpiEvent();
+            DpiEvent dpiEvent = new DpiEvent();
 
             when(dpiEventTransportMarshaller.convert(dpiEventTransport))
                     .thenReturn(dpiEvent);

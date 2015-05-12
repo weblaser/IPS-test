@@ -41,7 +41,7 @@ public class MockEventAdapterImpl implements EventAdapter {
     @Override
     public void triggerDpiEvent(ConfigurationItem configurationItem, List<DpiEvent> dpiEvents) {
 
-        String url = host + "/" + "DPI" +" /" + configurationItem.getAccount().getCustomerAccountId();
+        String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
 
 
         wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(url))

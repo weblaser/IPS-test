@@ -1,9 +1,7 @@
 package com.ctl.security.ips.dsm.config;
 
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.dsm.domain.DpiEventTransportMarshaller;
-import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,8 +61,6 @@ public class MockDsmBeans extends BaseDsmBeans {
     private Manager manager;
     @Autowired
     private RestTemplate restTemplate;
-    @Autowired
-    private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
     @Autowired
     private DpiEventTransportMarshaller dpiEventTransportMarshaller;
 
@@ -170,29 +166,8 @@ public class MockDsmBeans extends BaseDsmBeans {
                 Object[] arguments = invocationOnMock.getArguments();
                 String accountId = arguments[argumentAccountId].toString();
                 String sessionId = createSessionId(accountId);
-                createFirewallEventRetrieveMock(sessionId, accountId);
                 createDpiEventRetrieveMock(sessionId,accountId);
                 return sessionId;
-            }
-        });
-    }
-
-    private void createFirewallEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
-                any(HostFilterTransport.class),
-                any(IDFilterTransport.class),
-                eq(sessionId))).thenAnswer(new Answer<FirewallEventListTransport>() {
-            @Override
-            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock) {
-                List<FirewallEvent> response = null;
-                try {
-                    String address = "http://" + destinationHostName + ":" + destinationPort
-                            + host + "/" + "Firewall" + "/" + accountId;
-                    response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
-                            null, FirewallEvent[].class).getBody());
-                } catch (RestClientException rce) {
-                }
-                return convertAllToFirewallEventListTransport(response);
             }
         });
     }
@@ -207,7 +182,7 @@ public class MockDsmBeans extends BaseDsmBeans {
                 List<DpiEvent> response = null;
                 try {
                     String address = "http://" + destinationHostName + ":" + destinationPort
-                            + host + "/" + "DPI" + "/" + accountId;
+                            + host + "/" + accountId;
                     response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
                             null, DpiEvent[].class).getBody());
                 } catch (RestClientException rce) {
@@ -215,23 +190,6 @@ public class MockDsmBeans extends BaseDsmBeans {
                 return convertAllToDpiEventListTransport(response);
             }
         });
-    }
-
-    private FirewallEventListTransport getFirewallEventListTransport() {
-        FirewallEventListTransport firewallEventListTransport = new FirewallEventListTransport();
-        firewallEventListTransport.setFirewallEvents(new ArrayOfFirewallEventTransport());
-        return firewallEventListTransport;
-    }
-
-    private FirewallEventListTransport convertAllToFirewallEventListTransport(List<FirewallEvent> response) {
-        FirewallEventListTransport firewallEventListTransport = getFirewallEventListTransport();
-        if (response != null) {
-            for (FirewallEvent firewallEvent : response) {
-                firewallEventListTransport.getFirewallEvents().getItem()
-                        .add(firewallEventTransportMarshaller.convert(firewallEvent));
-            }
-        }
-        return firewallEventListTransport;
     }
 
     private DPIEventListTransport getDpiEventListTransport() {

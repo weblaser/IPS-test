@@ -7,8 +7,7 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.client.domain.user.UserResources;
 import com.ctl.security.ips.client.EventClient;
-import com.ctl.security.ips.common.domain.Event.Event;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
@@ -28,7 +27,6 @@ import java.util.List;
 
 /**
  * Created by Sean Robb on 3/24/2015.
- *
  */
 
 @Component
@@ -84,7 +82,7 @@ public class Informant {
             }
             fromDate.setTime(Long.parseLong(ticksReadString));
 
-            if(fromDate.after(toDate)){
+            if (fromDate.after(toDate)) {
                 //TODO make this exception more specific
                 throw new Exception("The From Date can not be after the To Date.");
             }
@@ -101,9 +99,9 @@ public class Informant {
         for (UserResource userResource : allUsers.getContent()) {
             try {
                 String accountId = userResource.getContent().getAccountId();
-                List<Event> currentEvents = dsmEventClient.gatherEvents(accountId, fromDate, toDate);
+                List<DpiEvent> currentEvents = dsmEventClient.gatherEvents(accountId, fromDate, toDate);
 
-                for (Event event : currentEvents) {
+                for (DpiEvent event : currentEvents) {
                     EventBean eventBean = new EventBean(event.getHostName(), accountId, event);
                     events.add(eventBean);
                 }

@@ -9,7 +9,6 @@ import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.client.PolicyClient;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
-import com.ctl.security.ips.common.domain.Event.Event;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
@@ -130,7 +129,7 @@ public class InformantSteps {
 
 
             policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
-            waitForPolicyToBeCreated(user,policy);
+            waitForPolicyToBeCreated(user, policy);
             policiesToCleanUp.put(user, policy);
         }
     }
@@ -140,7 +139,7 @@ public class InformantSteps {
         int maxTries = MAX_ATTEMPTS;
         UserResource userResource = null;
 
-        while(currentAttempts < maxTries && (userResource == null || userResource.getId() == null)){
+        while (currentAttempts < maxTries && (userResource == null || userResource.getId() == null)) {
             waitComponent.sleep(retryWaitTime, currentAttempts);
             userResource = userClient.getUser(policy.getUsername(), user.getAccountId());
             currentAttempts++;
@@ -177,7 +176,7 @@ public class InformantSteps {
             ConfigurationItem attackedConfigItem = randomSafeConfigItem();
             User attackedUser = safeConfigurationItemUsers.get(attackedConfigItem);
 
-            //Creates a FirewallEvent
+            //Creates a Dpi Event
             DpiEvent event = new DpiEvent();
             event.setReason("An  DPI Event Reason");
             event.setHostName(attackedConfigItem.getHostName());

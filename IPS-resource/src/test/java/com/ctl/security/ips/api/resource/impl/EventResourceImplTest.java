@@ -1,7 +1,7 @@
 package com.ctl.security.ips.api.resource.impl;
 
 import com.ctl.security.ips.api.jms.EventMessageSender;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ public class EventResourceImplTest {
     public void testNotify() throws Exception {
         String hostName = null;
         String accountId = null;
-        FirewallEvent event=null;
+        DpiEvent event=null;
 
         classUnderTest.notify(hostName,accountId,event);
 

@@ -1,6 +1,6 @@
 package com.ctl.security.ips.api.resource;
 
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.wordnik.swagger.annotations.*;
 import org.apache.http.HttpStatus;
 
@@ -27,7 +27,7 @@ public interface EventResource {
             @ApiResponse(code = HttpStatus.SC_FORBIDDEN, message = ResourceConstants.UNAUTHORIZED)})
     void notify(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
                                        @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String hostName,
-                                       @ApiParam(value = ResourceConstants.EVENT_LABEL, required = true) FirewallEvent event);
+                                       @ApiParam(value = ResourceConstants.EVENT_LABEL, required = true) DpiEvent event);
 
 
 }

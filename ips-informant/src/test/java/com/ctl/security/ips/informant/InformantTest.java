@@ -8,8 +8,6 @@ import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.client.domain.user.UserResources;
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
-import com.ctl.security.ips.common.domain.Event.Event;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
@@ -74,7 +72,7 @@ public class InformantTest {
     @Test
     public void inform_gathersEventsForDifferentAccounts() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         events.addAll(createDpiEvents(5));
         setUpMocksForEvents(accountIds, events);
 
@@ -89,7 +87,7 @@ public class InformantTest {
 
     @Test
     public void inform_gathersEventsAndSendsOneEvent() throws Exception {
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         events.addAll(createDpiEvents(1));
         List<String> accountIds = getAccountIds(1);
         List<EventBean> eventBeans = createEventBeans(accountIds.get(0), events);
@@ -109,7 +107,7 @@ public class InformantTest {
     @Test
     public void inform_gathersEventsAndSendsAnArrayOfEvents() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         events.addAll(createDpiEvents(5));
         List<EventBean> eventBeans = createEventBeans(accountIds.get(0), events);
 
@@ -128,7 +126,7 @@ public class InformantTest {
     @Test
     public void inform_writesExecutionTimeToAFile() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         events.addAll(createDpiEvents(5));
 
         setUpMocksForEvents(accountIds, events);
@@ -151,7 +149,7 @@ public class InformantTest {
     @Test
     public void inform_readsExecutionTimeToAFile() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         events.addAll(createDpiEvents(5));
 
         setUpMocksForEvents(accountIds, events);
@@ -170,7 +168,7 @@ public class InformantTest {
     @Test
     public void inform_nullEventsAreGathered() throws Exception {
         List<String> accountIds = getAccountIds(5);
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         events.addAll(createDpiEvents(5));
 
         setUpMocksForEvents(accountIds, events);
@@ -186,7 +184,7 @@ public class InformantTest {
 
     @Test
     public void inform_noEventsAreGathered() throws Exception {
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
 
         setUpMocksForEvents(accountIds, events);
@@ -202,7 +200,7 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotWriteLastExecutionDate() throws Exception {
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
 
         setUpMocksForEvents(accountIds, events);
@@ -218,8 +216,7 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotReadLastExecutionDateParseFailure() throws Exception {
-        List<Event> events = new ArrayList<>();
-        List<FirewallEvent> firewallEvents = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
 
         setUpMocksForEvents(accountIds, events);
@@ -233,7 +230,7 @@ public class InformantTest {
 
     @Test
     public void inform_couldNotReadLastExecutionDateNoFileFailure() throws Exception {
-        List<Event> events = new ArrayList<>();
+        List<DpiEvent> events = new ArrayList<>();
         List<String> accountIds = getAccountIds(1);
 
         setUpMocksForEvents(accountIds, events);
@@ -253,7 +250,7 @@ public class InformantTest {
         ReflectionTestUtils.setField(classUnderTest, "defaultGatheringLength", "1");
     }
 
-    private void setEventsForAccountId(String accountId, List<Event> events) throws DsmEventClientException {
+    private void setEventsForAccountId(String accountId, List<DpiEvent> events) throws DsmEventClientException {
         when(dsmEventClient.gatherEvents(eq(accountId), any(Date.class), any(Date.class)))
                 .thenReturn(events);
     }
@@ -280,17 +277,6 @@ public class InformantTest {
         }
     }
 
-    private List<FirewallEvent> createFirewallEvents(int count) {
-        List<FirewallEvent> firewallEvents = new ArrayList<>();
-        for (int eventCount = 0; eventCount < count; eventCount++) {
-            FirewallEvent firewallEvent = new FirewallEvent();
-            firewallEvent.setHostName("Hostname" + eventCount);
-            firewallEvent.setReason("Reason" + eventCount);
-            firewallEvents.add(firewallEvent);
-        }
-        return firewallEvents;
-    }
-
     private List<DpiEvent> createDpiEvents(int count) {
         List<DpiEvent> firewallEvents = new ArrayList<>();
         for (int eventCount = 0; eventCount < count; eventCount++) {
@@ -302,10 +288,10 @@ public class InformantTest {
         return firewallEvents;
     }
 
-    private List<EventBean> createEventBeans(String accountId, List<Event> events) {
+    private List<EventBean> createEventBeans(String accountId, List<DpiEvent> events) {
         List<EventBean> eventBeans = new ArrayList<>();
 
-        for (Event currentEvents : events) {
+        for (DpiEvent currentEvents : events) {
             EventBean eventBean = new EventBean(currentEvents.getHostName(), accountId, currentEvents);
             eventBeans.add(eventBean);
         }
@@ -326,7 +312,7 @@ public class InformantTest {
         }
     }
 
-    private void setUpMocksForEvents(List<String> accountIds, List<Event> events) throws DsmEventClientException {
+    private void setUpMocksForEvents(List<String> accountIds, List<DpiEvent> events) throws DsmEventClientException {
         for (String currentAccount : accountIds) {
             setEventsForAccountId(currentAccount, events);
         }

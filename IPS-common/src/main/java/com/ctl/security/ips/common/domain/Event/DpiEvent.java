@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import java.io.Serializable;
+
 /**
  * Created by Sean Robb on 5/11/2015.
  */
@@ -13,7 +15,10 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class DpiEvent extends Event {
+public class DpiEvent implements Serializable {
+
+    private String hostName;
+    private String reason;
 
     @Override
     public String toString() {
