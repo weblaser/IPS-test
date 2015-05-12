@@ -117,7 +117,7 @@ public class DsmEventClientTest extends TestCase {
     }
 
     @Test
-    public void gatherEvents_throws_ManagerException_Exception_GetFirewallEvents() throws Exception {
+    public void gatherEvents_throws_ManagerException_Exception_GetDPIEvents() throws Exception {
         DsmEventClientException dsmEventClientException = null;
 
         ArrayList<String> tenants = new ArrayList<>();
