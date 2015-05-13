@@ -11,8 +11,6 @@ import java.io.Serializable;
  * Created by Sean Robb on 5/11/2015.
  */
 
-@ToString
-@EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
 public class DpiEvent implements Serializable {
