@@ -7,6 +7,7 @@ import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -17,11 +18,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by sean.robb on 3/5/2015.
+ *
  */
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
@@ -41,8 +44,8 @@ public class NotificationSteps {
 
     public static final int MAX_ATTEMPTS = 30;
 
-    @Given("^the customer wants to update a notification for a server$")
-    public void the_customer_wants_to_update_a_notification_for_a_server(){
+    @Given("^the customer has a notification destination for a server$")
+    public void the_customer_has_a_notification_destination_for_a_server(){
 
         ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
         String accountAlias = clcAuthenticationResponse.getAccountAlias();
@@ -93,6 +96,26 @@ public class NotificationSteps {
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0).getIntervalCode());
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0).getTypeCode());
         assertNotNull(configurationItemResource.getContent().getAccount().getNotificationDestinations().get(0).getEmailAddress());
+
+        //cleanup
+        configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
+    }
+
+    @When("^the notification destination is deleted via the notification resource$")
+    public void the_notification_destination_is_deleted_via_the_notification_resource() throws Throwable {
+        notificationClient.deleteNotificationDestination(notificationDestinationBean, bearerToken);
+    }
+
+    @Then("^there is no notification destination in the configuration item$")
+    public void there_is_no_notification_destination_in_the_configuration_item() throws Throwable {
+        waitForNotificationDestinationUpdate();
+
+        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+
+        assertNotNull(configurationItemResource);
+        assertNotNull(configurationItemResource.getContent());
+        assertNotNull(configurationItemResource.getContent().getAccount());
+        assertNull(configurationItemResource.getContent().getAccount().getNotificationDestinations());
 
         //cleanup
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());

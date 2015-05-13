@@ -77,4 +77,17 @@ public class NotificationServiceWriteTest {
         verify(configurationItemClient).getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
         verify(account).setNotificationDestinations(null);
     }
+
+    @Test
+    public void testDelete_NotificationDestination_NullConfigurationItem() throws Exception {
+        //arrange
+        notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, null);
+
+        when(configurationItemClient.getConfigurationItem(hostName, accountId)).thenReturn(null);
+        //act
+        classUnderTest.deleteNotificationDestination(notificationDestinationBean);
+        //assert
+        verify(configurationItemClient).getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+
+    }
 }

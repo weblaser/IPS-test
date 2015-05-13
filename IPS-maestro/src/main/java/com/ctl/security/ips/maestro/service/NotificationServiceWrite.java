@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by kevin.wilde on 3/4/2015.
+ *
  */
 
 @Component
@@ -32,9 +33,11 @@ public class NotificationServiceWrite {
 
     public void deleteNotificationDestination(NotificationDestinationBean notificationDestinationBean) {
         ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
-        ConfigurationItem configurationItem = configurationItemResource.getContent();
-        configurationItem.getAccount().setNotificationDestinations(null);
-        configurationItemClient.updateConfigurationItem(configurationItem);
 
+        if (configurationItemResource != null) {
+            ConfigurationItem configurationItem = configurationItemResource.getContent();
+            configurationItem.getAccount().setNotificationDestinations(null);
+            configurationItemClient.updateConfigurationItem(configurationItem);
+        }
     }
 }
