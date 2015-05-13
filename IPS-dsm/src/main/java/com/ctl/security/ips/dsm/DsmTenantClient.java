@@ -8,18 +8,22 @@ import com.ctl.security.library.common.httpclient.CtlSecurityRequest;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import com.google.gson.Gson;
 import manager.*;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.entity.ContentType;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -93,25 +97,39 @@ public class DsmTenantClient {
 
                 logger.info("Sending Create Request for DSM Tenant to: " + address);
                 logger.info("Request Sent: " + createTenantRequestMap);
-                CtlSecurityResponse ctlSecurityResponse = null;
+                //CtlSecurityResponse ctlSecurityResponse = null;
+                HttpResponse response = null;
                 try {
-                    ctlSecurityResponse = ctlSecurityClient
-                            .post(address)
+
+                    String json = gson.toJson(createTenantRequestMap);
+
+                    response = Request.Post(address)
                             .addHeader("Content-Type", "application/json")
-                            .body(createTenantRequestMap)
-                            .execute();
+                            .bodyString(json, ContentType.APPLICATION_JSON)
+                            .execute().returnResponse();
+
+//                    ctlSecurityResponse = ctlSecurityClient
+//                            .post(address)
+//                            .addHeader("Content-Type", "application/json")
+//                            .body(createTenantRequestMap)
+//                            .execute();
+                } catch (IOException ex) {
+                    logger.error("exception caught: " + ex.getMessage());
+                    return null;
                 } catch (Exception e) {
                     logger.error("Failed");
                     logger.error(e.getMessage(), e);
                     throw e;
                 }
 
-                logger.info(ctlSecurityResponse);
-                logger.info(ctlSecurityResponse.getStatusCode());
-                logger.info(ctlSecurityResponse.getResponseContent());
-
-                String responseContent = ctlSecurityResponse.getResponseContent();
-                logger.info(responseContent);
+//                logger.info(ctlSecurityResponse);
+//                logger.info(ctlSecurityResponse.getStatusCode());
+//                logger.info(ctlSecurityResponse.getResponseContent());
+                logger.info("response: " + response);
+                logger.info("respopnse status: " + response.getStatusLine().getStatusCode());
+                String responseContent = IOUtils.toString(response.getEntity().getContent());
+                logger.info("response content: "  + responseContent);
+                //String responseContent = ctlSecurityResponse.getResponseContent();
 
                 logger.info("Marshalling Response...");
                 JAXBContext jc = JAXBContext.newInstance(CreateTenantResponse.class);
@@ -123,8 +141,8 @@ public class DsmTenantClient {
 
                 createdSecurityTenant = getSecurityTenant(createTenantResponse.getTenantID(), sessionId);
                 logger.info("Successfully created Tenant...");
-            } catch (JAXBException | UnsupportedEncodingException e) {
-                logger.error(e);
+            } catch (JAXBException | IOException e) {
+                logger.error("exception caught: " + e);
                 return null;
             } catch (ManagerSecurityException_Exception | ManagerAuthenticationException_Exception |
                     ManagerLockoutException_Exception | ManagerCommunicationException_Exception |
