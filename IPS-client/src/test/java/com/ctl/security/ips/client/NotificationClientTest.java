@@ -48,33 +48,45 @@ public class NotificationClientTest {
     private RestTemplate restTemplate;
 
     private HttpHeaders httpHeaders = new HttpHeaders();
+    private static final String BEARER_TOKEN = "token";
+    private static final String HOSTNAME = "hostName";
+    private static final String ACCOUNT_ID = "accountId";
+    private static final String URL = "exampleUrl";
+    private static final NotificationDestination NOTIFICATION_DESTINATION = new NotificationDestination().setUrl(URL);
+    private static final List<NotificationDestination> NOTIFICATION_DESTINATIONS = Arrays.asList(NOTIFICATION_DESTINATION);
+    private NotificationDestinationBean notificationDestinationBean;
 
     @Test
     public void updateNotificationDestination_updatesNotificationDestination(){
-
-        String hostName = null;
-        String accountId = null;
-        NotificationDestination notificationDestination = null;
-        List<NotificationDestination> notificationDestinations = Arrays.asList(notificationDestination);
-        NotificationDestinationBean notificationDestinationBean = new NotificationDestinationBean(hostName, accountId, notificationDestinations);
-
-        when(configurationItem.getAccount()).thenReturn(account);
-        when(configurationItemClient.getConfigurationItem(hostName, accountId)).thenReturn(configurationItemResource);
-        when(configurationItemResource.getContent()).thenReturn(configurationItem);
+        notificationDestinationBean = new NotificationDestinationBean(HOSTNAME, ACCOUNT_ID, NOTIFICATION_DESTINATIONS);
 
         String hostUrl = "hostUrlValueForTest";
         ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
         String address = hostUrl + NotificationClient.NOTIFICATIONS + "/" + notificationDestinationBean.getAccountId() + "/" + notificationDestinationBean.getHostName();
 
-        String bearerToken = null;
         httpHeaders.add("test", "test");
-        when(clientComponent.createHeaders(bearerToken)).thenReturn(httpHeaders);
+        when(clientComponent.createHeaders(BEARER_TOKEN)).thenReturn(httpHeaders);
 
 
-        classUnderTest.updateNotificationDestination(notificationDestinationBean, bearerToken);
+        classUnderTest.updateNotificationDestination(notificationDestinationBean, BEARER_TOKEN);
 
 
         verify(restTemplate).exchange(address,
                 HttpMethod.PUT, new HttpEntity<>(notificationDestinationBean.getNotificationDestinations(), httpHeaders), String.class);
+    }
+
+    @Test
+    public void testDeleteNotificationDestination(){
+        //arrange
+        notificationDestinationBean = new NotificationDestinationBean(HOSTNAME, ACCOUNT_ID, NOTIFICATION_DESTINATIONS);
+        String hostUrl = "hostUrlValueForTest";
+        ReflectionTestUtils.setField(classUnderTest, "hostUrl", hostUrl);
+        String address = hostUrl + NotificationClient.NOTIFICATIONS + "/" + notificationDestinationBean.getAccountId() + "/" + notificationDestinationBean.getHostName();
+
+        when(clientComponent.createHeaders(BEARER_TOKEN)).thenReturn(httpHeaders);
+        //act
+        classUnderTest.deleteNotificationDestination(notificationDestinationBean, BEARER_TOKEN);
+        //assert
+        verify(restTemplate).exchange(address, HttpMethod.DELETE, new HttpEntity<>(httpHeaders), String.class);
     }
 }

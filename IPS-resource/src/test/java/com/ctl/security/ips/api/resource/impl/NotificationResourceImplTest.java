@@ -23,16 +23,26 @@ public class NotificationResourceImplTest {
     @Mock
     private NotificationMessageSender notificationMessageSender;
 
+    String hostName;
+    String accountId;
+
     @Test
     public void updateNotificationDestination_updatesNotificationDestination(){
-        String hostName = null;
-        String accountId = null;
         NotificationDestination notificationDestination = null;
         List<NotificationDestination> notificationDestinations = Arrays.asList(notificationDestination);
 
         classUnderTest.updateNotificationDestination(accountId,hostName,notificationDestinations);
 
         verify(notificationMessageSender).updateNotificationDestination(new NotificationDestinationBean(hostName, accountId, notificationDestinations));
+    }
+
+    @Test
+    public void testDeleteNotificationDestination(){
+        //arrange
+        //act
+        classUnderTest.deleteNotificationDestination(accountId, hostName);
+        //assert
+        verify(notificationMessageSender).deleteNotificationDestination(new NotificationDestinationBean(hostName, accountId, null));
     }
 
 }

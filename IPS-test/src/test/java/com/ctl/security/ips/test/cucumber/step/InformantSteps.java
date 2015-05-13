@@ -40,9 +40,6 @@ public class InformantSteps {
     EventAdapter eventAdapter;
 
     @Autowired
-    private PolicyClient policyClient;
-
-    @Autowired
     private ConfigurationItemClient configurationItemClient;
 
     @Autowired
@@ -366,7 +363,9 @@ public class InformantSteps {
 
     private void cleanUpUser(User userToDelete) {
         UserResource user = userClient.getUser(userToDelete.getUsername(), userToDelete.getAccountId());
-        userClient.deleteUser(user.getContent().getId());
+        if (user.getContent().getId() != null) {
+            userClient.deleteUser(user.getContent().getId());
+        }
         //TODO clean out product user activities
 //        userClient.getProductUserActivities(user).unwrap().stream()
 //                .forEach(x -> productUserActivityClient.deleteProductUserActivity(x.getId()));

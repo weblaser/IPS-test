@@ -17,11 +17,13 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by sean.robb on 3/5/2015.
+ *
  */
 
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = {CucumberConfiguration.class})
@@ -36,13 +38,16 @@ public class NotificationSteps {
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
 
+    @Autowired
+    private WaitComponent waitComponent;
+
     private NotificationDestinationBean notificationDestinationBean;
     private String bearerToken;
 
     public static final int MAX_ATTEMPTS = 30;
 
-    @Given("^the customer wants to update a notification for a server$")
-    public void the_customer_wants_to_update_a_notification_for_a_server(){
+    @Given("^the customer has a notification destination for a server$")
+    public void the_customer_has_a_notification_destination_for_a_server(){
 
         ClcAuthenticationResponse clcAuthenticationResponse = clcAuthenticationComponent.authenticate();
         String accountAlias = clcAuthenticationResponse.getAccountAlias();
@@ -76,7 +81,6 @@ public class NotificationSteps {
 
     @Then("^the server notification destination is updated with new destination$")
     public void the_server_notification_destination_is_updated_with_new_destination() throws Throwable{
-
         waitForNotificationDestinationUpdate();
 
         ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
@@ -98,14 +102,40 @@ public class NotificationSteps {
         configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
     }
 
+    @When("^the notification destination is deleted via the notification resource$")
+    public void the_notification_destination_is_deleted_via_the_notification_resource() throws Throwable {
+        notificationClient.deleteNotificationDestination(notificationDestinationBean, bearerToken);
+    }
+
+    @Then("^there is no notification destination in the configuration item$")
+    public void there_is_no_notification_destination_in_the_configuration_item() throws Throwable {
+        List<NotificationDestination> notificationDestinations;
+        ConfigurationItemResource configurationItemResource;
+        int currentAttempts = 0;
+        do {
+            configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+            notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
+            waitComponent.sleep(1000, currentAttempts);
+            currentAttempts++;
+        } while (currentAttempts < MAX_ATTEMPTS && notificationDestinations != null);
+
+        assertNotNull(configurationItemResource);
+        assertNotNull(configurationItemResource.getContent());
+        assertNotNull(configurationItemResource.getContent().getAccount());
+        assertNull(configurationItemResource.getContent().getAccount().getNotificationDestinations());
+
+        //cleanup
+        configurationItemClient.deleteConfigurationItem(configurationItemResource.getContent().getId());
+    }
+
     private ConfigurationItemResource waitForNotificationDestinationUpdate() throws InterruptedException {
-        ConfigurationItemResource configurationItemResource=null;
-        List<NotificationDestination> notificationDestinations=null;
+        ConfigurationItemResource configurationItemResource = null;
+        List<NotificationDestination> notificationDestinations = null;
         int currentAttempts = 0;
         while(currentAttempts < MAX_ATTEMPTS && notificationDestinations == null){
             configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
             notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
-            Thread.sleep(1000);
+            waitComponent.sleep(1000, currentAttempts);
             currentAttempts++;
         }
         return configurationItemResource;

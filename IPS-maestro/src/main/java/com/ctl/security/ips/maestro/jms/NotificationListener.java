@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by sean.robb on 3/6/2015.
+ * Added to by Chad on 5/12/2015
  */
 
 @Component
@@ -20,6 +21,11 @@ public class NotificationListener {
     @JmsListener(destination = NotificationOperation.UPDATE_NOTIFICATION_DESTINATION_FOR_SERVER)
     public void updateNotificationDestination(final NotificationDestinationBean notificationDestinationBean) {
         notificationServiceWrite.updateNotificationDestination(notificationDestinationBean);
+    }
+
+    @JmsListener(destination = NotificationOperation.DELETE_NOTIFICATION_DESTINATION_FOR_SERVER)
+    public void deleteNotificationDestination(final NotificationDestinationBean notificationDestinationBean) {
+        notificationServiceWrite.deleteNotificationDestination(notificationDestinationBean);
     }
 }
 
