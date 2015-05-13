@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,5 +44,15 @@ public class NotificationClient {
                 new HttpEntity<>(notificationDestinationBean.getNotificationDestinations(), httpHeaders),
                 String.class
         );
+    }
+
+    public void deleteNotificationDestination(NotificationDestinationBean notificationDestinationBean, String bearerToken) {
+        String address = hostUrl + NOTIFICATIONS + "/" + notificationDestinationBean.getAccountId() + "/" + notificationDestinationBean.getHostName();
+        HttpHeaders httpHeaders = clientComponent.createHeaders(bearerToken);
+
+        logger.info("deleting notification destination for account " + notificationDestinationBean.getAccountId() +
+        " on host " + notificationDestinationBean.getHostName());
+
+        restTemplate.exchange(address, HttpMethod.DELETE, new HttpEntity<>(httpHeaders), String.class);
     }
 }

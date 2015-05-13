@@ -4,15 +4,13 @@ import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.wordnik.swagger.annotations.*;
 import org.apache.http.HttpStatus;
 
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
  * Created by sean.robb on 3/5/2015.
+ * Edited by Chad on 5/12/2015.
  */
 
 @Path("/notifications")
@@ -31,6 +29,17 @@ public interface NotificationResource {
     void updateNotificationDestination(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
                                        @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String hostName,
                                        @ApiParam(value = ResourceConstants.NOTIFICATION_DESTINATION_LABEL, required = true) List<NotificationDestination> notificationDestinations);
+
+    @DELETE
+    @Path("/{" + ResourceConstants.ACCT_PARAM + "}/{" + ResourceConstants.HOST_NAME_PARAM + "}")
+    @ApiOperation(value = "Delete Notification Destination for a Server")
+    @ApiResponses(value = {
+            @ApiResponse(code = HttpStatus.SC_NO_CONTENT, message = "Notification Destination Deleted"),
+            @ApiResponse(code = HttpStatus.SC_BAD_REQUEST, message = ResourceConstants.BAD_REQUEST),
+            @ApiResponse(code = HttpStatus.SC_FORBIDDEN, message = ResourceConstants.UNAUTHORIZED)
+    })
+    void deleteNotificationDestination(@ApiParam(value = ResourceConstants.ACCOUNT, required = true) @PathParam(ResourceConstants.ACCT_PARAM) String account,
+                                       @ApiParam(value = ResourceConstants.HOST_NAME_LABEL, required = true) @PathParam(ResourceConstants.HOST_NAME_PARAM) String hostName);
 
 
 }

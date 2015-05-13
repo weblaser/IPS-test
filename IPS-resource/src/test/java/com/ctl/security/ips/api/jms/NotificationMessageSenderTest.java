@@ -28,4 +28,14 @@ public class NotificationMessageSenderTest {
 
             verify(jmsTemplate).convertAndSend(NotificationOperation.UPDATE_NOTIFICATION_DESTINATION_FOR_SERVER, notificationDestinationBean);
     }
+
+    @Test
+    public void testDeleteNotificationDestination() throws Exception {
+        //arrange
+        NotificationDestinationBean notificationDestinationBean = null;
+        //act
+        classUnderTest.deleteNotificationDestination(notificationDestinationBean);
+        //assert
+        verify(jmsTemplate).convertAndSend(NotificationOperation.DELETE_NOTIFICATION_DESTINATION_FOR_SERVER, notificationDestinationBean);
+    }
 }
