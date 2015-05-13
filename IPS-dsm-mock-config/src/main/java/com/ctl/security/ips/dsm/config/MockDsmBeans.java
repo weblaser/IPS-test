@@ -1,7 +1,7 @@
 package com.ctl.security.ips.dsm.config;
 
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
-import com.ctl.security.ips.dsm.domain.FirewallEventTransportMarshaller;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
+import com.ctl.security.ips.dsm.domain.DpiEventTransportMarshaller;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,17 +10,17 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doAnswer;
@@ -62,7 +62,7 @@ public class MockDsmBeans extends BaseDsmBeans {
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
-    private FirewallEventTransportMarshaller firewallEventTransportMarshaller;
+    private DpiEventTransportMarshaller dpiEventTransportMarshaller;
 
     @Value("${${spring.profiles.active:local}.ips.dsm.mock.test.port}")
     private int destinationPort;
@@ -155,11 +155,10 @@ public class MockDsmBeans extends BaseDsmBeans {
         }).when(manager).securityProfileDelete(anyList(), anyString());
     }
 
-    private void setupDsmTenantAuthentication() throws ManagerSecurityException_Exception, ManagerLockoutException_Exception, ManagerMaxSessionsException_Exception, ManagerAuthenticationException_Exception, ManagerCommunicationException_Exception, ManagerException_Exception {
-        when(manager.authenticateTenant(
+    private void setupDsmTenantAuthentication() throws ManagerTimeoutException_Exception, ManagerSecurityException_Exception, ManagerException_Exception {
+        when(manager.signInAsTenant(
                 anyString(),
-                eq(BaseDsmBeans.APIUSER),
-                eq(BaseDsmBeans.PASSWORD_CORRECT)
+                anyString()
         )).thenAnswer(new Answer<String>() {
             @Override
             public String answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -167,46 +166,47 @@ public class MockDsmBeans extends BaseDsmBeans {
                 Object[] arguments = invocationOnMock.getArguments();
                 String accountId = arguments[argumentAccountId].toString();
                 String sessionId = createSessionId(accountId);
-                createFirewallEventRetrieveMock(sessionId,accountId);
+                createDpiEventRetrieveMock(sessionId,accountId);
                 return sessionId;
             }
         });
     }
 
-    private void createFirewallEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
-        when(manager.firewallEventRetrieve(any(TimeFilterTransport.class),
+    private void createDpiEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {
+        when(manager.dpiEventRetrieve(any(TimeFilterTransport.class),
                 any(HostFilterTransport.class),
                 any(IDFilterTransport.class),
-                eq(sessionId))).thenAnswer(new Answer<FirewallEventListTransport>() {
+                eq(sessionId))).thenAnswer(new Answer<DPIEventListTransport>() {
             @Override
-            public FirewallEventListTransport answer(InvocationOnMock invocationOnMock) {
-                List<FirewallEvent> response = null;
+            public DPIEventListTransport answer(InvocationOnMock invocationOnMock) {
+                List<DpiEvent> response = null;
                 try {
                     String address = "http://" + destinationHostName + ":" + destinationPort
                             + host + "/" + accountId;
                     response = Arrays.asList(restTemplate.exchange(address, HttpMethod.GET,
-                            null, FirewallEvent[].class).getBody());
-                } catch (RestClientException rce) {}
-                return convertAllToFirewallEventListTransport(response);
+                            null, DpiEvent[].class).getBody());
+                } catch (RestClientException rce) {
+                }
+                return convertAllToDpiEventListTransport(response);
             }
         });
     }
 
-    private FirewallEventListTransport getFirewallEventListTransport() {
-        FirewallEventListTransport firewallEventListTransport = new FirewallEventListTransport();
-        firewallEventListTransport.setFirewallEvents(new ArrayOfFirewallEventTransport());
-        return firewallEventListTransport;
+    private DPIEventListTransport getDpiEventListTransport() {
+        DPIEventListTransport dpiEventListTransport = new DPIEventListTransport();
+        dpiEventListTransport.setDPIEvents(new ArrayOfDPIEventTransport());
+        return dpiEventListTransport;
     }
 
-    private FirewallEventListTransport convertAllToFirewallEventListTransport(List<FirewallEvent> response) {
-        FirewallEventListTransport firewallEventListTransport = getFirewallEventListTransport();
+    private DPIEventListTransport convertAllToDpiEventListTransport(List<DpiEvent> response) {
+        DPIEventListTransport dpiEventListTransport = getDpiEventListTransport();
         if (response != null) {
-            for (FirewallEvent firewallEvent : response) {
-                firewallEventListTransport.getFirewallEvents().getItem()
-                        .add(firewallEventTransportMarshaller.convert(firewallEvent));
+            for (DpiEvent dpiEvent : response) {
+                dpiEventListTransport.getDPIEvents().getItem()
+                        .add(dpiEventTransportMarshaller.convert(dpiEvent));
             }
         }
-        return firewallEventListTransport;
+        return dpiEventListTransport;
     }
 
     private String createSessionId(String accountId) {

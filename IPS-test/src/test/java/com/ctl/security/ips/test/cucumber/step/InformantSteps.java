@@ -4,19 +4,16 @@ import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
-import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
-import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivityResources;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.client.PolicyClient;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.adapter.EventAdapter;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -117,24 +114,26 @@ public class InformantSteps {
 
     @And("^DSM agent is installed on all of the configuration items$")
     public void DSM_agent_is_installed_on_all_of_the_configuration_items() {
+        //We are assuming that the DSM Agent is already installed
 
-        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
-
-        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
-
-            ConfigurationItem configurationItem = entry.getKey();
-            User user = entry.getValue();
-
-            Policy policy = new Policy()
-                    .setName("name" + System.currentTimeMillis())
-                    .setHostName(configurationItem.getHostName())
-                    .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
-
-
-            policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
-            waitForPolicyToBeCreated(user,policy);
-            policiesToCleanUp.put(user, policy);
-        }
+//
+//        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
+//
+//        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
+//
+//            ConfigurationItem configurationItem = entry.getKey();
+//            User user = entry.getValue();
+//
+//            Policy policy = new Policy()
+//                    .setName("name" + System.currentTimeMillis())
+//                    .setHostName(configurationItem.getHostName())
+//                    .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
+//
+//
+//            policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
+//            waitForPolicyToBeCreated(user, policy);
+//            policiesToCleanUp.put(user, policy);
+//        }
     }
 
     private void waitForPolicyToBeCreated(User user, Policy policy) {
@@ -142,7 +141,7 @@ public class InformantSteps {
         int maxTries = MAX_ATTEMPTS;
         UserResource userResource = null;
 
-        while(currentAttempts < maxTries && (userResource == null || userResource.getId() == null)){
+        while (currentAttempts < maxTries && (userResource == null || userResource.getId() == null)) {
             waitComponent.sleep(retryWaitTime, currentAttempts);
             userResource = userClient.getUser(policy.getUsername(), user.getAccountId());
             currentAttempts++;
@@ -179,12 +178,12 @@ public class InformantSteps {
             ConfigurationItem attackedConfigItem = randomSafeConfigItem();
             User attackedUser = safeConfigurationItemUsers.get(attackedConfigItem);
 
-            //Creates a FirewallEvent
-            FirewallEvent firewallEvent = new FirewallEvent();
-            firewallEvent.setReason("An FirewallEvent Reason");
-            firewallEvent.setHostName(attackedConfigItem.getHostName());
+            //Creates a Dpi Event
+            DpiEvent event = new DpiEvent();
+            event.setReason("An  DPI Event Reason");
+            event.setHostName(attackedConfigItem.getHostName());
 
-            eventAdapter.triggerEvent(attackedConfigItem, Arrays.asList(firewallEvent));
+            eventAdapter.triggerDpiEvent(attackedConfigItem, Arrays.asList(event));
 
             attackedConfigurationItemsUsers.put(attackedConfigItem, attackedUser);
             safeConfigurationItemUsers.remove(attackedConfigItem);

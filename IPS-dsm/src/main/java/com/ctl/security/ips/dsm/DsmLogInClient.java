@@ -35,4 +35,11 @@ public class DsmLogInClient {
         logger.info("Session ID: " + sessionId);
         return sessionId;
     }
+
+    public String connectTenantToDSMClient(String tenantName, String sessionId) throws ManagerTimeoutException_Exception, ManagerSecurityException_Exception, ManagerException_Exception {
+        logger.info("Connecting to DSM with Tenant " + tenantName);
+        String tenantSessionId = manager.signInAsTenant(tenantName, sessionId);
+        logger.info("Session ID: " + tenantSessionId);
+        return tenantSessionId;
+    }
 }

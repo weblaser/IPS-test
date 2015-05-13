@@ -8,15 +8,20 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * Created by sean.robb on 3/9/2015.
+ * Created by Sean Robb on 5/11/2015.
  */
 
 @ToString
 @EqualsAndHashCode()
 @Accessors(chain = true)
 @Data
-public class FirewallEvent implements Serializable {
+public class DpiEvent implements Serializable {
 
     private String hostName;
     private String reason;
+
+    @Override
+    public String toString() {
+        return "DPI Event Reason: " + this.getReason();
+    }
 }

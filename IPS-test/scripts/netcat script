@@ -1,0 +1,59 @@
+#!/bin/bash
+# chkconfig: 2345 13 87
+# Source function library.
+. /etc/init.d/functions
+
+SLAPD_HOST=`hostname -a`
+PIDFILE=/var/lock/subsys/nc-pid
+OPTIONS="-lk 4321"
+
+if [ -f /etc/sysconfig/nc ]; then
+        . /etc/sysconfig/nc
+fi
+
+
+start() {
+        echo -n "Starting netcat "
+        if [ -f $PIDFILE ]; then
+                PID=`cat $PIDFILE`
+                echo nc already running: $PID
+                exit 2;
+        else
+                nohup nc -lk 4321 2>1 &
+                RETVAL=$?
+                echo
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/nc
+                return $RETVAL
+        fi
+
+}
+
+stop() {
+        echo -n "Shutting down netcat "
+        echo
+        killproc nc
+        echo
+        rm -f /var/lock/subsys/nc
+        return 0
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status nc
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+exit $?

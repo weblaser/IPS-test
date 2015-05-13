@@ -4,7 +4,7 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.*;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
@@ -164,7 +164,7 @@ public class EventNotifyServiceTest {
     }
 
     private EventBean createEventBean(String hostName, String accountId) {
-        FirewallEvent event = new FirewallEvent();
+        DpiEvent event = new DpiEvent();
         event.setReason("New Reason");
         event.setHostName("New HostName");
         return new EventBean(hostName, accountId, event);

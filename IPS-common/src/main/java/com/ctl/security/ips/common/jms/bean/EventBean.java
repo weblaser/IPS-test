@@ -1,6 +1,6 @@
 package com.ctl.security.ips.common.jms.bean;
 
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,5 +21,5 @@ import java.io.Serializable;
 public class EventBean implements Serializable {
     private String hostName;
     private String accountId;
-    private FirewallEvent event;
+    private DpiEvent event;
 }

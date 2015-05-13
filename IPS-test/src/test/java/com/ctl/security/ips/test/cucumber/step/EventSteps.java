@@ -7,8 +7,7 @@ import com.ctl.security.data.client.domain.productuseractivity.ProductUserActivi
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.EventClient;
 import com.ctl.security.ips.client.NotificationClient;
-
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -91,11 +90,11 @@ public class EventSteps {
         }
 
         notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(SOME_VALID_ADDRESS))
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.SC_OK)));
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.SC_OK)));
         notificationDestinationWireMockServer.stubFor(post(urlPathEqualTo(SOME_INVALID_ADDRESS))
-            .willReturn(aResponse()
-                .withStatus(HttpStatus.SC_FORBIDDEN)));
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.SC_FORBIDDEN)));
     }
 
     @When("^the event notification is posted to the events endpoint$")
@@ -193,7 +192,7 @@ public class EventSteps {
 
     private void createEventBean(String accountId, String hostName) {
         //Creates an event
-        FirewallEvent event = new FirewallEvent();
+        DpiEvent event = new DpiEvent();
         event.setReason("An FirewallEvent Reason");
         event.setHostName("An FirewallEvent Host");
 

@@ -1,13 +1,12 @@
 package com.ctl.security.ips.test.cucumber.adapter;
 
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
-import com.ctl.security.ips.common.domain.Event.FirewallEvent;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.jsonResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -40,13 +39,13 @@ public class MockEventAdapterImpl implements EventAdapter {
     }
 
     @Override
-    public void triggerEvent(ConfigurationItem configurationItem, List<FirewallEvent> firewallEvents) {
+    public void triggerDpiEvent(ConfigurationItem configurationItem, List<DpiEvent> dpiEvents) {
 
         String url = host + "/" + configurationItem.getAccount().getCustomerAccountId();
 
+
         wireMockForSoapDsmMocking.stubFor(get(urlEqualTo(url))
                 .atPriority(1)
-                .willReturn(aResponse().like(jsonResponse(firewallEvents))));
+                .willReturn(aResponse().like(jsonResponse(dpiEvents))));
     }
-
 }

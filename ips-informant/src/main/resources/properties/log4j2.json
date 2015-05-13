@@ -1,0 +1,28 @@
+{
+  "configuration":{
+    "status":"warn",
+    "name":"ips-informant",
+    "RollingFile":{
+      "name":"dailyLog",
+      "filename":"logs/ips-informant.log",
+      "filePattern":"logs/$${date:yyyy-MM}/ips-api-%d{MM-dd-yyyy}-%i.log.gz",
+      "PatternLayout":{
+        "pattern": "LEVEL [%p] %d{MM-dd-yyyy HH:mm:ss,SSS} %c %M - %m%n"
+      },
+      "Policies":{
+        "TimeBasedTriggeringPolicy":{
+          "interval":"1",
+          "modulate":"true"
+        }
+      }
+    }
+  },
+  "loggers":{
+    "root":{
+      "level":"info",
+      "AppenderRef":{
+        "ref":"dailyLog"
+      }
+    }
+  }
+}

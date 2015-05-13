@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 
 /**
  * Created by kevin.wilde on 1/20/2015.
- *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class SecurityProfileTransportMarshallerTest {
@@ -21,7 +20,7 @@ public class SecurityProfileTransportMarshallerTest {
     private SecurityProfileTransportMarshaller securityProfileTransportMarshaller;
 
     @Test
-    public void convertPolicyToSecurityProfileTransport_marshallsCtlSecurityProfileToSecurityProfileTransport(){
+    public void convertPolicyToSecurityProfileTransport_marshallsCtlSecurityProfileToSecurityProfileTransport() {
         Integer id = 0;
         Integer parentId = 7;
         String name = "name" + System.currentTimeMillis();
@@ -39,7 +38,7 @@ public class SecurityProfileTransportMarshallerTest {
     }
 
     @Test
-    public void convertPolicyToSecurityProfileTransport_handlesNullMembers(){
+    public void convertPolicyToSecurityProfileTransport_handlesNullMembers() {
         String id = null;
         String name = null;
         Policy policy = new Policy();
@@ -56,7 +55,7 @@ public class SecurityProfileTransportMarshallerTest {
     }
 
     @Test
-    public void convertSecurityProfileTransportToPolicy_marshallsSecurityProfileTransportToCtlSecurityProfile(){
+    public void convertSecurityProfileTransportToPolicy_marshallsSecurityProfileTransportToCtlSecurityProfile() {
         Integer id = 0;
         int parentId = 7;
         String name = "name" + System.currentTimeMillis();
@@ -75,7 +74,7 @@ public class SecurityProfileTransportMarshallerTest {
 
 
     @Test
-    public void convertSecurityProfileTransportToPolicy_handlesNullMembers(){
+    public void convertSecurityProfileTransportToPolicy_handlesNullMembers() {
         Integer id = null;
         String name = null;
         SecurityProfileTransport securityProfileTransport = new SecurityProfileTransport();

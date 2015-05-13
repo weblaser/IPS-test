@@ -38,7 +38,10 @@ public class DsmAgentInstallPackageFactory {
     }
 
     private String configurePackageId(PolicyBean policyBean) throws AgentInstallException {
-        String hostOs = serverClient.getOS(policyBean.getAccountAlias(), policyBean.getPolicy().getHostName(), policyBean.getBearerToken());
+        String hostOs = serverClient.getServerDetails(policyBean.getAccountAlias(),
+                policyBean.getPolicy().getHostName(),
+                policyBean.getBearerToken()
+        ).getOs();
 
         String uuidForOs = osOptions.get(hostOs);
         if (StringUtils.isEmpty(uuidForOs)) {
