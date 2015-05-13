@@ -19,12 +19,22 @@ public class NotificationListenerTest {
     @Mock
     private NotificationServiceWrite notificationServiceWrite;
 
+    private NotificationDestinationBean notificationDestinationBean;
+
     @Test
     public void testUpdateNotificationDestination() throws Exception {
-        NotificationDestinationBean notificationDestinationBean = null;
-
         classUnderTest.updateNotificationDestination(notificationDestinationBean);
 
         verify(notificationServiceWrite).updateNotificationDestination(notificationDestinationBean);
     }
+
+    @Test
+    public void testDeleteNotificationDestination(){
+        //arrange
+        //act
+        classUnderTest.deleteNotificationDestination(notificationDestinationBean);
+        //assert
+        verify(notificationServiceWrite).deleteNotificationDestination(notificationDestinationBean);
+    }
+
 }

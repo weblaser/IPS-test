@@ -19,4 +19,7 @@ public class NotificationMessageSender {
         jmsTemplate.convertAndSend(NotificationOperation.UPDATE_NOTIFICATION_DESTINATION_FOR_SERVER, notificationDestinationBean);
     }
 
+    public void deleteNotificationDestination(final NotificationDestinationBean notificationDestinationBean) {
+        jmsTemplate.convertAndSend(NotificationOperation.DELETE_NOTIFICATION_DESTINATION_FOR_SERVER, notificationDestinationBean);
+    }
 }
