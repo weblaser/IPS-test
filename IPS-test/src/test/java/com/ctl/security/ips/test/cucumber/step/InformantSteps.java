@@ -112,7 +112,7 @@ public class InformantSteps {
     public void DSM_agent_is_installed_on_all_of_the_configuration_items() {
         //We are assuming that the DSM Agent is already installed
 
-//
+
 //        bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
 //
 //        for (Map.Entry<ConfigurationItem, User> entry : safeConfigurationItemUsers.entrySet()) {
@@ -123,7 +123,7 @@ public class InformantSteps {
 //            Policy policy = new Policy()
 //                    .setName("name" + System.currentTimeMillis())
 //                    .setHostName(configurationItem.getHostName())
-//                    .setUsername(user.getAccountId() + System.currentTimeMillis()); //This potentially needs to be a unique value
+//                    .setUsername(configurationItem.getAccount().getCustomerAccountId()); //This potentially needs to be a unique value
 //
 //
 //            policyClient.createPolicyForAccount(user.getAccountId(), policy, bearerToken);
@@ -199,9 +199,6 @@ public class InformantSteps {
                     )
                     .getContent();
 
-            //TODO Create Test for TS,QA,PROD
-            String activeProfiles = environment.getActiveProfiles()[0];
-
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
                 waitForPostRequests(1, notificationDestination.getUrl());
                 notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
@@ -224,14 +221,10 @@ public class InformantSteps {
                     )
                     .getContent();
 
-            //TODO Create Test for TS,QA,PROD
-            String activeProfiles = environment.getActiveProfiles()[0];
-
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev") || activeProfiles.equalsIgnoreCase("ts")) {
                     notificationDestinationWireMockServer.verify(0, postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
-                }
             }
+
             cleanUpPolicies();
             cleanUpUser(currentUser);
             cleanUpConfigurationItems(currentConfigurationItem);
