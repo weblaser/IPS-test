@@ -3,6 +3,7 @@ package com.ctl.security.ips.maestro.service;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageResponse;
 import com.ctl.security.clc.client.common.domain.Link;
+import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class PackageInstallationServiceTest {
     }
 
     @Test(expected = RestClientException.class)
-    public void testInstallClcPackage_failureToExecutePackage() {
+    public void testInstallClcPackage_failureToExecutePackage() throws PackageExecutionException {
         //arrange
         when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenThrow(new RestClientException("whatever"));
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
@@ -71,10 +72,25 @@ public class PackageInstallationServiceTest {
     }
 
     @Test(expected = RestClientException.class)
-    public void testInstallClcPackage_failureToGetPackageStatus() {
+    public void testInstallClcPackage_failureToGetPackageStatus() throws PackageExecutionException {
         //arrange
         when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenThrow(new RestClientException("whatever"));
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
+
+        //act
+        classUnderTest.installClcPackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
+    }
+
+    @Test (expected = PackageExecutionException.class)
+    public void testInstallClcPackage_failureInClcQueue() throws Exception {
+        //arrange
+        List<Link> links = Arrays.asList(new Link().setHref("/fakePath").setId(TEST_ID).setRel("status"));
+        List<ClcExecutePackageResponse> executePackageResponses = Arrays.asList(new ClcExecutePackageResponse()
+                .setIsQueued(true)
+                .setServer(TEST_SERVER)
+                .setLinks(links));
+        when(serverClient.executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString())).thenReturn(executePackageResponses);
+        when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "failed");
 
         //act
         classUnderTest.installClcPackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);

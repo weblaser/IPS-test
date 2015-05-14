@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
@@ -16,6 +17,8 @@ import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -255,7 +258,7 @@ public class PolicySteps {
         }
     }
 
-//    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
+    //    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
 //        Policy retrievedPolicy = null;
 //        int i = 0;
 //        int maxTries = MAX_WAIT_TIME;
@@ -271,7 +274,19 @@ public class PolicySteps {
 //        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
 //
 //        return retrievedPolicy;
-//    }
+//
+
+    @And("^my package is set to fail in clc queue$")
+    public void my_package_is_set_to_fail_in_clc_queue() throws Throwable {
+        // Express the Regexp above with the code you wish you had
+        throw new PendingException();
+    }
+
+    @Then("^I receive a failure$")
+    public void I_receive_a_failure(){
+        assertEquals(PackageExecutionException.class, exception);
+    }
+
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);

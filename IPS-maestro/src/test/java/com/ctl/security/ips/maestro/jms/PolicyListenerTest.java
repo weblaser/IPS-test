@@ -1,5 +1,6 @@
 package com.ctl.security.ips.maestro.jms;
 
+import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.ips.common.jms.bean.PolicyBean;
 import com.ctl.security.ips.dsm.exception.AgentInstallException;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
@@ -22,7 +23,7 @@ public class PolicyListenerTest {
     private PolicyServiceWrite policyServiceWrite;
 
     @Test
-    public void createPolicyForAccount_createsPolicyForAccount() throws DsmClientException, AgentInstallException {
+    public void createPolicyForAccount_createsPolicyForAccount() throws DsmClientException, AgentInstallException, PackageExecutionException {
         PolicyBean policyBean = null;
 
         classUnderTest.createPolicyForAccount(policyBean);

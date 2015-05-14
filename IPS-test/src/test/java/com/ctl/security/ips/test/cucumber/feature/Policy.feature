@@ -13,6 +13,11 @@ Feature:  Security - policy
     When I POST a policy
     Then I receive a response with error message 403 Forbidden.
 
+  Scenario: Get an exception while package is executing
+    Given I have a valid account
+    And my package is set to fail in clc queue
+    When I POST a policy
+    Then I receive a failure
 
   Scenario: Get valid response when getting all policies for account
     Given I have a valid account

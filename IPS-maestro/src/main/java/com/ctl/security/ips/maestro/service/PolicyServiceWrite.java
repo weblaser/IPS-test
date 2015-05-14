@@ -1,5 +1,6 @@
 package com.ctl.security.ips.maestro.service;
 
+import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy.Policy;
@@ -40,7 +41,7 @@ public class PolicyServiceWrite extends PolicyService {
     @Autowired
     private DsmAgentInstallPackageFactory dsmAgentInstallPackageFactory;
 
-    public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException {
+    public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException, PackageExecutionException {
         logger.info("Creating policy for account " + policyBean.getPolicy().getName());
 
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);

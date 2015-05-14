@@ -2,6 +2,7 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
 import com.ctl.security.clc.client.common.domain.ClcServerDetailsResponse;
+import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
@@ -74,7 +75,7 @@ public class PolicyServiceWriteTest {
     private DsmAgentInstallPackageFactory dsmAgentInstallPackageFactory;
 
     @Test
-    public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+    public void createPolicy_createsPolicy() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException, PackageExecutionException {
         //arrange
         Policy policyToBeCreated = buildPolicy();
         Policy policyToBeCreatedWithParent = buildPolicy().setParentPolicyId("1");
@@ -109,7 +110,7 @@ public class PolicyServiceWriteTest {
     }
 
     @Test
-    public void testCreatePolicy_createsPolicyWithTenant() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+    public void testCreatePolicy_createsPolicyWithTenant() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException, PackageExecutionException {
 
         //arrange
         Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
@@ -136,7 +137,7 @@ public class PolicyServiceWriteTest {
     }
 
     @Test
-    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstall() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstall() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException, PackageExecutionException {
 
         //arrange
         Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
@@ -158,7 +159,7 @@ public class PolicyServiceWriteTest {
     }
 
     @Test
-    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstallOnLinux() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
+    public void testCreatePolicy_createsPolicyWithTenantAndPackageInstallOnLinux() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException, PackageExecutionException {
 
         //arrange
         Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");

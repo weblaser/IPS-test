@@ -3,6 +3,7 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageResponse;
+import com.ctl.security.clc.client.common.exception.PackageExecutionException;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +34,7 @@ public class PackageInstallationService {
 
     private static final Logger logger = LogManager.getLogger(PackageInstallationService.class);
 
-    public String installClcPackage(ClcExecutePackageRequest clcExecutePackageRequest, String accountAlias, String bearerToken) {
+    public String installClcPackage(ClcExecutePackageRequest clcExecutePackageRequest, String accountAlias, String bearerToken) throws PackageExecutionException {
         logger.info("Installing CLC Package: "+clcExecutePackageRequest.getSoftwarePackage().getPackageId());
         List<ClcExecutePackageResponse> clcExecutePackageResponses = serverClient.executePackage(clcExecutePackageRequest, accountAlias, bearerToken);
         int counter = 0;
@@ -46,6 +47,11 @@ public class PackageInstallationService {
             counter++;
         }
         while (!SUCCEEDED.equals(response) && !FAILED.equals(response) && counter < packageStatusCheckMaxRetryAttempts);
+
+        if (response.equals(FAILED)){
+            throw new PackageExecutionException("Package failed to install on " + clcExecutePackageRequest.getServers());
+        }
+
         return response;
     }
 
