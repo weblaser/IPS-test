@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by Sean Robb on 3/30/2015.
+ *
  */
 
 public class EventAdapterImpl implements EventAdapter {
