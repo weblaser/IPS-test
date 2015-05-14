@@ -7,7 +7,6 @@ import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -38,6 +37,9 @@ public class NotificationSteps {
 
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
+
+    @Autowired
+    private WaitComponent waitComponent;
 
     private NotificationDestinationBean notificationDestinationBean;
     private String bearerToken;
@@ -79,7 +81,6 @@ public class NotificationSteps {
 
     @Then("^the server notification destination is updated with new destination$")
     public void the_server_notification_destination_is_updated_with_new_destination() throws Throwable{
-
         waitForNotificationDestinationUpdate();
 
         ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
@@ -108,9 +109,15 @@ public class NotificationSteps {
 
     @Then("^there is no notification destination in the configuration item$")
     public void there_is_no_notification_destination_in_the_configuration_item() throws Throwable {
-        waitForNotificationDestinationUpdate();
-
-        ConfigurationItemResource configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+        List<NotificationDestination> notificationDestinations;
+        ConfigurationItemResource configurationItemResource;
+        int currentAttempts = 0;
+        do {
+            configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
+            notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
+            waitComponent.sleep(1000, currentAttempts);
+            currentAttempts++;
+        } while (currentAttempts < MAX_ATTEMPTS && notificationDestinations != null);
 
         assertNotNull(configurationItemResource);
         assertNotNull(configurationItemResource.getContent());
@@ -122,13 +129,13 @@ public class NotificationSteps {
     }
 
     private ConfigurationItemResource waitForNotificationDestinationUpdate() throws InterruptedException {
-        ConfigurationItemResource configurationItemResource=null;
-        List<NotificationDestination> notificationDestinations=null;
+        ConfigurationItemResource configurationItemResource = null;
+        List<NotificationDestination> notificationDestinations = null;
         int currentAttempts = 0;
         while(currentAttempts < MAX_ATTEMPTS && notificationDestinations == null){
             configurationItemResource = configurationItemClient.getConfigurationItem(notificationDestinationBean.getHostName(), notificationDestinationBean.getAccountId());
             notificationDestinations = configurationItemResource.getContent().getAccount().getNotificationDestinations();
-            Thread.sleep(1000);
+            waitComponent.sleep(1000, currentAttempts);
             currentAttempts++;
         }
         return configurationItemResource;
