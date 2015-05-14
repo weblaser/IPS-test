@@ -7,7 +7,6 @@ import com.ctl.security.data.client.cmdb.UserClient;
 import com.ctl.security.data.client.domain.user.UserResource;
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.client.NotificationClient;
-import com.ctl.security.ips.client.PolicyClient;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.jms.bean.NotificationDestinationBean;
@@ -34,7 +33,7 @@ import static org.hamcrest.Matchers.lessThan;
  */
 public class InformantSteps {
 
-    public static final int MAX_ATTEMPTS = 100;
+    public static final int MAX_ATTEMPTS = 360;
 
     @Autowired
     EventAdapter eventAdapter;
@@ -205,9 +204,7 @@ public class InformantSteps {
 
             for (NotificationDestination notificationDestination : retrievedConfigurationItem.getAccount().getNotificationDestinations()) {
                 waitForPostRequests(1, notificationDestination.getUrl());
-                if (activeProfiles.equalsIgnoreCase("local") || activeProfiles.equalsIgnoreCase("dev")) {
-                    notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
-                }
+                notificationDestinationWireMockServer.verify(postRequestedFor(urlEqualTo(getWireMockUrl(notificationDestination.getUrl()))));
             }
 
             cleanUpUser(currentUser);
