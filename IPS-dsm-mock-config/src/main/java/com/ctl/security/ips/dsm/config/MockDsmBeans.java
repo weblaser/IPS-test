@@ -180,6 +180,7 @@ public class MockDsmBeans extends BaseDsmBeans {
         hostTransport.setID(007);
 
         ProtectionStatusTransport protectionStatusTransport = new ProtectionStatusTransport();
+        protectionStatusTransport.setProtectionType(EnumProtectionType.AGENT);
         protectionStatusTransport.setStatus(GOOD_STATUS);
         protectionStatusTransport.setDpiStatus(GOOD_DPI_STATUS);
 
