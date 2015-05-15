@@ -15,7 +15,11 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -27,6 +31,7 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -54,6 +59,15 @@ public class DsmTenantClientTest {
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private CtlSecurityClient ctlSecurityClient;
 
+    @Mock
+    private RestTemplate restTemplate;
+
+    @Mock
+    private ResponseEntity responseEntity;
+
+    @Mock
+    private ResponseEntity responseEntityTenantGet;
+
     private final String TENANT_GUID = "B2EABDEC-101F-E8CF-AC25-73C04B548BFA";
     private final int GOOD_STATUS_CODE = HttpStatus.SC_OK;
     private final int BAD_STATUS_CODE = HttpStatus.SC_BAD_REQUEST;
@@ -80,7 +94,7 @@ public class DsmTenantClientTest {
             "        <tenantID>1</tenantID>\n" +
             "        <timeZone>Atlantic/St_Helena</timeZone>\n" +
             "    </tenant>";
-    private final String TENANT_ID_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><createTenantResponse><tenantID>26</tenantID></createTenantResponse>";
+    private final String TENANT_ID_XML = "{\"createTenantResponse\":{\"tenantID\":161}}";
 
     public static final String PATH_TENANTS = "/tenants";
     public static final String PATH_TENANTS_ID = "/tenants/id/";
@@ -117,8 +131,17 @@ public class DsmTenantClientTest {
         when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
         when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
         when(ctlSecurityClient.post(anyString()).addHeader(anyString(), anyString()).body(any(HashMap.class)).execute()).thenReturn(ctlSecurityResponse);
+
+
+        when(responseEntity.getBody()).thenReturn(responseId);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(responseEntity);
+
         when(ctlSecurityResponse.getResponseContent()).thenReturn(responseId);
 
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(responseEntityTenantGet);
+        when(responseEntityTenantGet.getBody()).thenReturn(TENANT_XML);
 
         //act
         SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
@@ -134,7 +157,9 @@ public class DsmTenantClientTest {
     @Test
     public void createDsmTenant_handlesException() throws DsmClientException {
         SecurityTenant securityTenant = new SecurityTenant();
-        when(ctlSecurityClient.post(anyString()).addHeader(anyString(), anyString()).body(any(HashMap.class)).execute()).thenThrow(JAXBException.class);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+            .thenThrow(JAXBException.class);
 
         SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
 
@@ -144,7 +169,9 @@ public class DsmTenantClientTest {
     @Test(expected = DsmClientException.class)
     public void createDsmTenant_handlesLoginException() throws DsmClientException {
         SecurityTenant securityTenant = new SecurityTenant();
-        when(ctlSecurityClient.post(anyString()).addHeader(anyString(), anyString()).body(any(HashMap.class)).execute()).thenThrow(ManagerSecurityException_Exception.class);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+            .thenThrow(ManagerSecurityException_Exception.class);
 
         SecurityTenant result = classUnderTest.createDsmTenant(securityTenant);
     }
@@ -158,7 +185,11 @@ public class DsmTenantClientTest {
         DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
 
         when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
-        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn(responseTenant);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(responseEntityTenantGet);
+        when(responseEntityTenantGet.getBody()).thenReturn(TENANT_XML);
+
         when(unmarshaller.unmarshal(inputStream)).thenReturn(dsmTenant);
 
         //act
@@ -177,7 +208,12 @@ public class DsmTenantClientTest {
         DsmTenant dsmTenant = new DsmTenant().setTenantID(TENANT_ID).setAgentInitiatedActivationPassword(AGENT_PASSWORD);
 
         when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
-        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenReturn("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(responseEntity);
+
+        when(responseEntity.getBody()).thenReturn(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                 "<error>\n" +
                 "    <message>Unable to load. The system may be experiencing loss of database connectivity. Please try again.</message>\n" +
                 "</error>");
@@ -194,7 +230,10 @@ public class DsmTenantClientTest {
     public void retrieveDsmTenant_handlesLoginError() throws Exception {
         //arrange
         when(dsmLogInClient.connectToDSMClient(USERNAME, PASSWORD)).thenReturn(SESSION_ID);
-        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenThrow(ManagerSecurityException_Exception.class);
+//        when(ctlSecurityClient.get(anyString()).execute().getResponseContent()).thenThrow(ManagerSecurityException_Exception.class);
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+            .thenThrow(ManagerSecurityException_Exception.class);
 
         //act
         classUnderTest.retrieveDsmTenant(TENANT_ID);
