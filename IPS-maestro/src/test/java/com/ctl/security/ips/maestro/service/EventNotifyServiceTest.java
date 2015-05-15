@@ -6,17 +6,20 @@ import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemRe
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,8 +45,11 @@ public class EventNotifyServiceTest {
     @Mock
     private Account account;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private CtlSecurityClient ctlSecurityClient;
+    @Mock
+    private RestTemplate restTemplate;
+
+    @Mock
+    private ResponseEntity responseEntity;
 
     @Mock
     private CtlSecurityResponse ctlSecurityResponse;
@@ -74,10 +80,9 @@ public class EventNotifyServiceTest {
 
         basicMockitoSetup(notificationDestinations);
 
-        when(ctlSecurityClient.post(anyString()).body(anyString()).execute())
-                .thenReturn(ctlSecurityResponse);
-        when(ctlSecurityResponse.isSuccessful())
-                .thenReturn(true);
+        when(responseEntity.getStatusCode()).thenReturn(HttpStatus.OK);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(responseEntity);
 
         classUnderTest.notify(eventBean);
 
@@ -100,11 +105,6 @@ public class EventNotifyServiceTest {
 
         basicMockitoSetup(notificationDestinations);
 
-        when(ctlSecurityClient.post(anyString()).body(anyString()).execute())
-                .thenReturn(ctlSecurityResponse);
-        when(ctlSecurityResponse.isSuccessful())
-                .thenReturn(false);
-
         classUnderTest.notify(eventBean);
 
         basicMockitoVerification();
@@ -125,8 +125,6 @@ public class EventNotifyServiceTest {
 
         basicMockitoSetup(notificationDestinations);
 
-        when(ctlSecurityClient.post(anyString())).thenThrow(new RestClientException("test"));
-
         classUnderTest.notify(eventBean);
 
         basicMockitoVerification();
@@ -140,8 +138,10 @@ public class EventNotifyServiceTest {
 
 
     private void verifyRestTemplateExchange(Integer amountOfTimes, EventBean eventBean, List<NotificationDestination> notificationDestinations) {
-        for (NotificationDestination notification : notificationDestinations) {
-            verify(ctlSecurityClient.post(anyString()).body(anyString()), times(amountOfTimes)).execute();
+        for (NotificationDestination notificationDestination : notificationDestinations) {
+//            verify(ctlSecurityClient.post(anyString()).body(anyString()), times(amountOfTimes)).execute();
+            verify(restTemplate, times(amountOfTimes)).exchange(notificationDestination.getUrl(),
+                HttpMethod.POST, new HttpEntity<DpiEvent>(eventBean.getEvent()), String.class);
         }
     }
 

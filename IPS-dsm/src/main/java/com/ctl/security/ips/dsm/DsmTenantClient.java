@@ -1,12 +1,10 @@
 package com.ctl.security.ips.dsm;
 
-import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.SecurityTenant;
-import com.ctl.security.ips.dsm.domain.*;
+import com.ctl.security.ips.dsm.domain.CreateOptions;
+import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
+import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
-import com.ctl.security.library.common.httpclient.CtlSecurityClient;
-import com.ctl.security.library.common.httpclient.CtlSecurityRequest;
-import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.xml.bind.JAXBContext;
@@ -31,7 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.*;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.
@@ -61,9 +57,6 @@ public class DsmTenantClient {
 
     @Autowired
     private DsmLogInClient dsmLogInClient;
-
-    @Autowired
-    private CtlSecurityClient ctlSecurityClient;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -212,11 +205,9 @@ public class DsmTenantClient {
             String address = protocol + host + ":" + port + path + PATH_TENANTS_ID + tenantId + "?" +
                     QUERY_PARAM_SESSION_ID + sessionId;
 
-            CtlSecurityRequest ctlSecurityRequest = ctlSecurityClient.delete(address);
-
-            CtlSecurityResponse ctlSecurityResponse = ctlSecurityRequest.execute();
-
-            HttpStatus httpStatus = valueOf(ctlSecurityResponse.getStatusCode());
+            HttpEntity<String> httpEntity = new HttpEntity<String>("");
+            ResponseEntity<String> responseEntity = restTemplate.exchange(address, HttpMethod.DELETE, httpEntity, String.class);
+            HttpStatus httpStatus = responseEntity.getStatusCode();
 
             if (httpStatus.is2xxSuccessful() == false) {
                 throw new DsmClientException(new Exception("Could not delete Tenant"));

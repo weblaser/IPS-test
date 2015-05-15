@@ -4,13 +4,17 @@ import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemResource;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
+import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -26,12 +30,11 @@ public class EventNotifyService {
     @Autowired
     private ConfigurationItemClient configurationItemClient;
 
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Autowired
     private ProductUserActivityService productUserActivityService;
-
-    @Autowired
-    private CtlSecurityClient ctlSecurityClient;
 
     @Value("${${spring.profiles.active:local}.ips.maxRetryAttempts}")
     private Integer maxRetryAttempts;
@@ -56,12 +59,13 @@ public class EventNotifyService {
 
             Integer retryAttempts = 0;
             CtlSecurityResponse ctlSecurityResponse = null;
+            ResponseEntity<String> responseEntity = null;
 
             do {
                 try {
-                    ctlSecurityResponse = ctlSecurityClient.post(notificationDestination.getUrl())
-                            .body(eventBean.getEvent())
-                            .execute();
+                    responseEntity = restTemplate.exchange(notificationDestination.getUrl(),
+                        HttpMethod.POST, new HttpEntity<DpiEvent>(eventBean.getEvent()), String.class);
+
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -72,13 +76,16 @@ public class EventNotifyService {
                 } catch (Exception e) {
                 }
             }
-            while (!postToNotificationDestinationSuccessful(ctlSecurityResponse) && (retryAttempts < maxRetryAttempts));
+            while (!postToNotificationDestinationSuccessful(responseEntity) && (retryAttempts < maxRetryAttempts));
 
-            productUserActivityService.persistNotification(postToNotificationDestinationSuccessful(ctlSecurityResponse), configurationItem, notificationDestination);
+            productUserActivityService.persistNotification(postToNotificationDestinationSuccessful(responseEntity), configurationItem, notificationDestination);
         }
     }
 
     private boolean postToNotificationDestinationSuccessful(CtlSecurityResponse ctlSecurityResponse) {
         return (ctlSecurityResponse != null && ctlSecurityResponse.isSuccessful());
+    }
+    private boolean postToNotificationDestinationSuccessful(ResponseEntity<String> responseEntity) {
+        return (responseEntity != null && responseEntity.getStatusCode() != null && responseEntity.getStatusCode().is2xxSuccessful());
     }
 }
