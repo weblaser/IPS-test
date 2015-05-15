@@ -168,8 +168,7 @@ public class DsmTenantClientTest {
     }
 
     //TODO review test after create tenant bug is fixed
-//    @Test(expected = DsmClientException.class)
-    @Test
+    @Test(expected = DsmClientException.class)
     public void createDsmTenant_handlesLoginException() throws DsmClientException {
         SecurityTenant securityTenant = new SecurityTenant();
 
