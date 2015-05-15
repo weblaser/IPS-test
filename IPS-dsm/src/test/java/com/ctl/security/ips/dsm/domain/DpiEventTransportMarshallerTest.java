@@ -1,9 +1,7 @@
 package com.ctl.security.ips.dsm.domain;
 
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
-import junit.framework.TestCase;
 import manager.DPIEventTransport;
-import manager.FirewallEventTransport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

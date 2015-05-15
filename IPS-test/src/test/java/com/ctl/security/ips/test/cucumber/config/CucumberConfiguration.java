@@ -5,7 +5,6 @@ import com.ctl.security.clc.client.test.config.ClcMockConfig;
 import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
 import com.ctl.security.library.common.config.SecurityLibraryCommonAppConfig;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 

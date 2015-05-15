@@ -3,12 +3,11 @@ package com.ctl.security.ips.informant;
 import com.ctl.security.clc.client.core.config.ClcClientCoreAppConfig;
 import com.ctl.security.data.client.config.SecurityDataClientAppConfig;
 import com.ctl.security.ips.dsm.config.DsmConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Created by Sean Robb on 3/24/2015.
