@@ -3,6 +3,7 @@ package com.ctl.security.ips.dsm;
 import manager.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.Optional;
 /**
  * Created by admin on 5/15/2015.
  */
+@Component
 public class DsmAgentClient {
 
     private final String DPI_STATUS = "Intrusion Prevention: On";
