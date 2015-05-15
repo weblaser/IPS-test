@@ -1,8 +1,6 @@
 package com.ctl.security.ips.common.domain.Event;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;

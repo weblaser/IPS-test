@@ -4,7 +4,6 @@ import com.ctl.security.ips.dsm.DsmTenantClient;
 import com.ctl.security.ips.dsm.config.MockDsmBeans;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.apache.http.HttpStatus;
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 
 /**
  * Created by kevin on 3/31/15.
