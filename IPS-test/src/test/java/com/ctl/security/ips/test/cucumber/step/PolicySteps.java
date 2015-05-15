@@ -13,6 +13,7 @@ import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.Policy.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
+import com.ctl.security.ips.dsm.DsmAgentClient;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
@@ -62,6 +63,9 @@ public class PolicySteps {
 
     @Autowired
     private PolicyClient policyClient;
+
+    @Autowired
+    private DsmAgentClient dsmAgentClient;
 
     @Autowired
     private DsmClientComponent dsmClientComponent;
@@ -199,6 +203,7 @@ public class PolicySteps {
     public void I_receive_a_response_that_contains_a_uuid_for_the_created_policy() throws DsmClientException, InterruptedException {
         dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, true);
         verifyCmdbCreation(true);
+        assertTrue(dsmAgentClient.verifyAgentInstall(accountId,hostName));
     }
 
     @Then("^I receive a response that does not contain an error message$")

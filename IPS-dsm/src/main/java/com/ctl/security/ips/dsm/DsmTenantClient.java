@@ -1,8 +1,9 @@
 package com.ctl.security.ips.dsm;
 
-import com.ctl.security.ips.common.domain.Policy.Policy;
 import com.ctl.security.ips.common.domain.SecurityTenant;
-import com.ctl.security.ips.dsm.domain.*;
+import com.ctl.security.ips.dsm.domain.CreateOptions;
+import com.ctl.security.ips.dsm.domain.CreateTenantRequest;
+import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.library.common.httpclient.CtlSecurityClient;
 import com.ctl.security.library.common.httpclient.CtlSecurityRequest;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.xml.bind.JAXBContext;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.valueOf;
 
 /**
  * Created by Chad.Middleton on 1/15/2015.

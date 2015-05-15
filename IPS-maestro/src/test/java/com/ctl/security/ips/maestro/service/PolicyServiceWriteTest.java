@@ -112,7 +112,7 @@ public class PolicyServiceWriteTest {
     public void testCreatePolicy_createsPolicyWithTenant() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
 
         //arrange
-        Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
+        Policy policyToBeCreated = new Policy().setUsername("This is my test");
         PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
@@ -139,7 +139,7 @@ public class PolicyServiceWriteTest {
     public void testCreatePolicy_createsPolicyWithTenantAndPackageInstall() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
 
         //arrange
-        Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
+        Policy policyToBeCreated = new Policy().setUsername("This is my test");
         PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);
@@ -161,7 +161,7 @@ public class PolicyServiceWriteTest {
     public void testCreatePolicy_createsPolicyWithTenantAndPackageInstallOnLinux() throws ManagerLockoutException_Exception, ManagerAuthenticationException_Exception, ManagerAuthorizationException_Exception, ManagerException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerSecurityException_Exception, ManagerTimeoutException_Exception, DsmClientException, AgentInstallException {
 
         //arrange
-        Policy policyToBeCreated = new Policy().setUsername("This is my test createTenant");
+        Policy policyToBeCreated = new Policy().setUsername("This is my test");
         PolicyBean policyToBeCreatedBean = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         PolicyBean expectedNewlyCreatedPolicy = new PolicyBean(VALID_ACCOUNT, policyToBeCreated, TOKEN);
         SecurityTenant createdSecurityTenant = new SecurityTenant().setTenantId(1);

@@ -22,8 +22,6 @@ import java.util.Arrays;
 public class PolicyServiceWrite extends PolicyService {
 
     private static final Logger logger = LogManager.getLogger(PolicyServiceWrite.class);
-    public static final String CREATE_TENANT = "createTenant";
-
 
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
@@ -42,33 +40,24 @@ public class PolicyServiceWrite extends PolicyService {
 
     public Policy createPolicyForAccount(PolicyBean policyBean) throws DsmClientException, AgentInstallException {
         logger.info("Creating policy for account " + policyBean.getPolicy().getName());
-
         PolicyBean newlyCreatedPolicyBean = dsmPolicyClient.createPolicyWithParentPolicy(policyBean);
-        InstallationBean installationBean = buildInstallationBean(newlyCreatedPolicyBean);
 
+        SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
+        logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
 
-//TODO This Major Comment Below is a quick and Dirty Bug Fix.  This should be uncommented for production
-        String tenantId = "New Tenant Id " + System.currentTimeMillis();
+        installAgentForTenantUsingPolicy(createdSecurityTenant, newlyCreatedPolicyBean);
 
-//        if (policyBean.getPolicy().getUsername().contains(CREATE_TENANT) || (
-//                policyBean.getPolicy().getUsername().contains("STS") &&
-//                        policyBean.getPolicy().getUsername().length() < 5
-//        )) {
-            SecurityTenant createdSecurityTenant = dsmTenantClient.createDsmTenant(buildSecurityTenant(policyBean));
-            logger.info("Tenant " + createdSecurityTenant.getTenantId() + " was created");
+        return newlyCreatedPolicyBean.getPolicy().setTenantId(createdSecurityTenant.getTenantId().toString());
+    }
 
-            packageInstallationService.installClcPackage(
-                    dsmAgentInstallPackageFactory.configurePackageRequest(createdSecurityTenant, newlyCreatedPolicyBean),
-                    newlyCreatedPolicyBean.getAccountAlias(),
-                    newlyCreatedPolicyBean.getBearerToken());
+    private void installAgentForTenantUsingPolicy(SecurityTenant tenant, PolicyBean policyBean) throws AgentInstallException {
+        packageInstallationService.installClcPackage(
+                dsmAgentInstallPackageFactory.configurePackageRequest(tenant, policyBean),
+                policyBean.getAccountAlias(),
+                policyBean.getBearerToken());
 
-            tenantId = createdSecurityTenant.getTenantId().toString();
-//        }
-
-        //TODO: This needs to be the final step. It is only being done here so that tests will pass in TS
+        InstallationBean installationBean = buildInstallationBean(policyBean);
         cmdbService.installProduct(installationBean);
-
-        return newlyCreatedPolicyBean.getPolicy().setTenantId(tenantId);
     }
 
     private SecurityTenant buildSecurityTenant(PolicyBean policyBean) {
