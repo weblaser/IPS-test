@@ -6,7 +6,6 @@ import com.ctl.security.data.client.domain.configurationitem.ConfigurationItemRe
 import com.ctl.security.data.common.domain.mongo.*;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -50,9 +48,6 @@ public class EventNotifyServiceTest {
 
     @Mock
     private ResponseEntity responseEntity;
-
-    @Mock
-    private CtlSecurityResponse ctlSecurityResponse;
 
     @Mock
     private ProductUserActivityClient productUserActivityClient;

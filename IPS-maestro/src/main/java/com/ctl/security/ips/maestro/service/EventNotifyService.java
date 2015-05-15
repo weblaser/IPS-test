@@ -6,7 +6,6 @@ import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.ips.common.domain.Event.DpiEvent;
 import com.ctl.security.ips.common.jms.bean.EventBean;
-import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +57,6 @@ public class EventNotifyService {
         for (NotificationDestination notificationDestination : notificationDestinations) {
 
             Integer retryAttempts = 0;
-            CtlSecurityResponse ctlSecurityResponse = null;
             ResponseEntity<String> responseEntity = null;
 
             do {
@@ -82,9 +80,7 @@ public class EventNotifyService {
         }
     }
 
-    private boolean postToNotificationDestinationSuccessful(CtlSecurityResponse ctlSecurityResponse) {
-        return (ctlSecurityResponse != null && ctlSecurityResponse.isSuccessful());
-    }
+
     private boolean postToNotificationDestinationSuccessful(ResponseEntity<String> responseEntity) {
         return (responseEntity != null && responseEntity.getStatusCode() != null && responseEntity.getStatusCode().is2xxSuccessful());
     }
