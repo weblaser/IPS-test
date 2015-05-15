@@ -12,6 +12,8 @@ import com.ctl.security.ips.common.jms.bean.EventBean;
 import com.ctl.security.ips.dsm.DsmEventClient;
 import com.ctl.security.ips.dsm.exception.DsmEventClientException;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,7 @@ import java.util.List;
 
 @Component
 public class Informant {
+    private static final Logger logger = LogManager.getLogger(Informant.class);
     private static final String USERNAME = "Bugs";
     private static final String PASSWORD = "vZb]9yKv==Bnmozn";
     public static final String ACCOUNT = "TCCD";
@@ -72,7 +75,7 @@ public class Informant {
 
     @Scheduled(cron = "${${spring.profiles.active}.informant.cron}")
     public void inform() {
-
+        logger.info("Informing...");
         Date fromDate = new Date();
         Date toDate = DateTime.now().minusMinutes(DSM_LAGTIME_MIN).toDate();
         try {
@@ -122,7 +125,7 @@ public class Informant {
             e.printStackTrace();
             //TODO log that file failed to write the to date
         }
-
+        logger.info("Informing Complete...");
     }
 
 }
