@@ -4,7 +4,6 @@ import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.common.domain.mongo.ConfigurationItem;
 import com.ctl.security.data.common.domain.mongo.NotificationDestination;
 import com.ctl.security.data.common.domain.mongo.ProductUserActivity;
-import com.ctl.security.library.common.httpclient.CtlSecurityResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

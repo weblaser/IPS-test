@@ -37,6 +37,8 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     private static final Logger logger = LogManager.getLogger(MockDsmBeans.class);
 
+    private final String GOOD_STATUS = "Managed (Online)";
+    private final String GOOD_DPI_STATUS = "Intrusion Prevention: On, Prevent, 310 rules";
     public static final String EXPECTED_POLICY = "expectedPolicy";
     public static final String EXPECTED_DELETED_POLICY = "expectedDeletedPolicy";
     public static final String CURRENT_EXPECTED_POLICY = "currentExpectedPolicy";
@@ -166,10 +168,30 @@ public class MockDsmBeans extends BaseDsmBeans {
                 Object[] arguments = invocationOnMock.getArguments();
                 String accountId = arguments[argumentAccountId].toString();
                 String sessionId = createSessionId(accountId);
-                createDpiEventRetrieveMock(sessionId,accountId);
+                createDpiEventRetrieveMock(sessionId, accountId);
+                createHostStatusMocks(sessionId);
                 return sessionId;
             }
         });
+    }
+
+    private void createHostStatusMocks(String sessionId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
+        HostTransport hostTransport = new HostTransport();
+        hostTransport.setID(007);
+
+        ProtectionStatusTransport protectionStatusTransport = new ProtectionStatusTransport();
+        protectionStatusTransport.setProtectionType(EnumProtectionType.AGENT);
+        protectionStatusTransport.setStatus(GOOD_STATUS);
+        protectionStatusTransport.setDpiStatus(GOOD_DPI_STATUS);
+
+        ArrayOfProtectionStatusTransport protectionStatusTransportArray = new ArrayOfProtectionStatusTransport();
+        protectionStatusTransportArray.getItem().add(protectionStatusTransport);
+
+        HostStatusTransport hostStatusTransport = new HostStatusTransport();
+        hostStatusTransport.setProtectionStatusTransports(protectionStatusTransportArray);
+
+        when(manager.hostRetrieveByName(anyString(), eq(sessionId))).thenReturn(hostTransport);
+        when(manager.hostGetStatus(hostTransport.getID(), sessionId)).thenReturn(hostStatusTransport);
     }
 
     private void createDpiEventRetrieveMock(String sessionId, String accountId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerValidationException_Exception, ManagerException_Exception {

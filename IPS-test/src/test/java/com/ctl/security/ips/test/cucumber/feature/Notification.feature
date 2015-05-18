@@ -1,4 +1,4 @@
-@REGRESSION @WIP
+@REGRESSION
 Feature:  Security - Notification
 
   Scenario: Update the notification destination

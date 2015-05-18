@@ -42,7 +42,7 @@ public class EventClient {
                 HttpMethod.POST, new HttpEntity<>(eventBean.getEvent(), httpHeaders), String.class);
 
         if(!responseEntity.getStatusCode().is2xxSuccessful()){
-            throw new IpsException("Failed to Post FirewallEvent to " + address);
+            throw new IpsException("Failed to Post DPI Event to " + address);
         }
     }
 }
