@@ -21,6 +21,7 @@ public class PackageInstallationService {
 
     public static final String SUCCEEDED = "succeeded";
     public static final String FAILED = "failed";
+
     @Autowired
     private ServerClient serverClient;
 

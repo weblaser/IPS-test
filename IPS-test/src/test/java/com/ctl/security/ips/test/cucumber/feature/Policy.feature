@@ -4,13 +4,21 @@ Feature:  Security - policy
 
   Scenario: Get valid response when creating a policy for an account
     Given I have a valid account
-    When I POST a policy
+    When I POST a linux policy
     Then I receive a response that contains a uuid for the created policy
 
 
+  Scenario: Install a policy on a windows server
+    Given I have a valid account
+    When I POST a windows policy
+    Then a security profile is created in the DSM
+    And a Tenant is created in the REST DSM
+    And a policy is created in our CMDB
+    And the agent is activated on the server
+
   Scenario: Get invalid response when creating a policy for an account
     Given I have an invalid account
-    When I POST a policy
+    When I POST a linux policy
     Then I receive a response with error message 403 Forbidden.
 
 
@@ -46,14 +54,14 @@ Feature:  Security - policy
 
   Scenario: Get valid response when deleting a policy for an account
     Given I have an valid account
-    And I POST a policy
+    And I POST a linux policy
     When I DELETE a valid policy
     Then I see that the policy has been deleted
 
 
   Scenario: Get invalid response when deleting a policy for an account when ???
     Given I have an invalid account
-    And I POST a policy
+    And I POST a linux policy
     When I DELETE a invalid policy
     Then I receive a response with error message 403 Forbidden.
 

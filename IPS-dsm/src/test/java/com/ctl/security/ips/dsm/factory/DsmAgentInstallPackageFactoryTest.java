@@ -31,7 +31,9 @@ public class DsmAgentInstallPackageFactoryTest {
 
     private static final String SERVER = "VM2BUSED";
     private static final String REDHAT = "redHat6_64Bit";
+    private static final String WINDOWS = "windows2008_64Bit";
     private static final String REDHAT_6_UUID = "redHat6_uuid";
+    private static final String WINDOWS_2008_UUID = "windows2008_uuid";
     private static final String DSM_MOTHERSHIP = "DSM Mothership";
 
     @Mock
@@ -47,6 +49,7 @@ public class DsmAgentInstallPackageFactoryTest {
     public void init(){
         HashMap<String, String> osOptions= new HashMap<>();
         osOptions.put(REDHAT, REDHAT_6_UUID);
+        osOptions.put(WINDOWS, WINDOWS_2008_UUID);
         ReflectionTestUtils.setField(classUnderTest, "osOptions", osOptions);
         ReflectionTestUtils.setField(classUnderTest, "dsmMothership", DSM_MOTHERSHIP);
     }
@@ -129,4 +132,22 @@ public class DsmAgentInstallPackageFactoryTest {
         assertNull(result);
     }
 
+    @Test
+    public void testConfigurePackageRequest_GetsWindowsPackageId() throws Exception {
+        //arrange
+        Policy pulledInPolicy = new Policy().setHostName(SERVER);
+        PolicyBean policyBean = new PolicyBean(null,pulledInPolicy,null);
+        SecurityTenant securityTenant = new SecurityTenant();
+        ClcExecutePackageRequest expected = new ClcExecutePackageRequest().addServer(SERVER);
+        expected.getSoftwarePackage().setPackageId(WINDOWS_2008_UUID);
+
+        when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
+        when(serverDetailsResponse.getOs()).thenReturn(WINDOWS);
+
+        //act
+        ClcExecutePackageRequest result = classUnderTest.configurePackageRequest(securityTenant, policyBean);
+        //assert
+        assertNotNull(result);
+        assertEquals(expected.getSoftwarePackage().getPackageId(), result.getSoftwarePackage().getPackageId());
+    }
 }

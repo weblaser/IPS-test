@@ -1,5 +1,6 @@
 package com.ctl.security.ips.test.cucumber.step;
 
+import com.ctl.security.clc.client.common.domain.ClcAuthenticationResponse;
 import com.ctl.security.data.client.cmdb.ConfigurationItemClient;
 import com.ctl.security.data.client.cmdb.ProductUserActivityClient;
 import com.ctl.security.data.client.cmdb.UserClient;
@@ -14,8 +15,12 @@ import com.ctl.security.ips.common.domain.Policy.PolicyStatus;
 import com.ctl.security.ips.common.exception.NotAuthorizedException;
 import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
+import com.ctl.security.ips.dsm.DsmTenantClient;
+import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -70,6 +75,9 @@ public class PolicySteps {
     private DsmPolicyClient dsmPolicyClient;
 
     @Autowired
+    private DsmTenantClient dsmTenantClient;
+
+    @Autowired
     private ConfigurationItemClient configurationItemClient;
 
     @Autowired
@@ -84,9 +92,11 @@ public class PolicySteps {
     @Autowired
     private Environment environment;
 
+    @Value("${clc.client.test.package.linux.server}")
+    private String clcLinuxServerName;
 
-    @Value("${clc.client.test.package.server}")
-    private String clcServerName;
+    @Value("${clc.client.test.package.windows.server}")
+    private String clcWindowsServerName;
 
     private String createTenant;
 
@@ -95,7 +105,8 @@ public class PolicySteps {
         if (VALID.equalsIgnoreCase(validity)) {
             accountId = ClcAuthenticationComponent.VALID_AA;
 
-            bearerToken = clcAuthenticationComponent.authenticate().getBearerToken();
+            ClcAuthenticationResponse authenticationResponse = clcAuthenticationComponent.authenticate();
+            bearerToken = authenticationResponse.getBearerToken();
         } else {
             accountId = INVALID_AA;
             bearerToken = INVALID_TOKEN;
@@ -108,8 +119,8 @@ public class PolicySteps {
     }
 
 
-    @When("^I POST a policy$")
-    public void I_POST_a_policy() {
+    @When("^I POST a (.*) policy$")
+    public void I_POST_a_policy(String osType) {
         try {
             policy = new Policy();
 
@@ -119,7 +130,11 @@ public class PolicySteps {
                 hostName = "server.host.name." + System.currentTimeMillis();
             }
             else{
-                hostName = clcServerName;
+                if (osType.contains("windows")){
+                    hostName = clcWindowsServerName;
+                }else {
+                    hostName = clcLinuxServerName;
+                }
             }
 
             String userName = "userName" + System.currentTimeMillis() + createTenant;
@@ -148,11 +163,6 @@ public class PolicySteps {
             } else if ("PUT".equals(method)) {
                 policyClient.updatePolicyForAccount(accountId, id, new Policy(), bearerToken);
             } else {
-
-
-//                String policyName = policy.getName();
-//                Policy retrievedPolicy = getPolicyWithWait(policyName);
-//                id = retrievedPolicy.getVendorPolicyId();
 
                 if (VALID.equalsIgnoreCase(validity)) {
                     dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, false);
@@ -201,6 +211,26 @@ public class PolicySteps {
         verifyCmdbCreation(true);
     }
 
+    @Then("^a security profile is created in the DSM$")
+    public void a_security_profile_is_created_in_the_DSM() throws DsmClientException, InterruptedException {
+        dsmClientComponent.verifyDsmPolicyCreation(dsmPolicyClient, policy, true);
+    }
+
+    @And("^a Tenant is created in the REST DSM$")
+    public void a_Tenant_is_created_in_the_REST_DSM() throws DsmClientException {
+        dsmClientComponent.verifyDsmTenantCreation(dsmTenantClient, policy.getTenantId(), true);
+    }
+
+    @And("^a policy is created in our CMDB$")
+    public void a_policy_is_created_in_our_CMDB() throws InterruptedException {
+        verifyCmdbCreation(true);
+    }
+
+    @And("^the agent is activated on the server$")
+    public void the_agent_is_activated_on_the_server() {
+
+    }
+
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
     }
@@ -223,22 +253,6 @@ public class PolicySteps {
         assert products.toString().contains("status=INACTIVE");
 
         verifyCmdbCreation(true);
-
-
-        //TODO: We need the GET operation to work before we can test it in this way.
-//        boolean isDeleted = false;
-//
-//        int i = 0;
-//        int maxTries = 10;
-//        while(i < maxTries && !isDeleted){
-//            Policy retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policy.getName());
-//            if(retrievedPolicy == null || retrievedPolicy.getName() == null){
-//                isDeleted = true;
-//            }
-//            Thread.sleep(1000);
-//            i++;
-//        }
-//        assertTrue(isDeleted);
     }
 
     @Then("^I receive a response with error message (.*)$")
@@ -254,24 +268,6 @@ public class PolicySteps {
             fail();
         }
     }
-
-//    private Policy getPolicyWithWait(String policyName) throws DsmPolicyClientException, InterruptedException {
-//        Policy retrievedPolicy = null;
-//        int i = 0;
-//        int maxTries = MAX_WAIT_TIME;
-//        while(i < maxTries && retrievedPolicy == null){
-//            retrievedPolicy = dsmPolicyClient.retrieveSecurityProfileByName(policyName);
-//            Thread.sleep(1000);
-//            i++;
-//            logger.log(Level.INFO, "getPolicyWithWait: Waiting to retrieve policy with name: " + policyName  );
-//        }
-//
-//        String message = "Failure in getting policy with name: " + policyName;
-//        assertNotNull(message, retrievedPolicy);
-//        assertNotNull(message, retrievedPolicy.getVendorPolicyId());
-//
-//        return retrievedPolicy;
-//    }
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(VALID_POLICY_ID).setStatus(PolicyStatus.ACTIVE);
