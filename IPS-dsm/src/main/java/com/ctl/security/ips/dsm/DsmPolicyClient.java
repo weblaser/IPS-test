@@ -115,13 +115,17 @@ public class DsmPolicyClient {
     }
 
     public void securityProfileDelete(List<Integer> ids) throws DsmClientException {
+        String sessionId=null;
         try {
-            String sessionId = dsmLogInClient.connectToDSMClient(username, password);
+            sessionId = dsmLogInClient.connectToDSMClient(username, password);
             logger.info("deleting security policies with ids: " + ids.toString());
             manager.securityProfileDelete(ids, sessionId);
             dsmLogInClient.endSession(sessionId);
         } catch (ManagerSecurityException_Exception | ManagerLockoutException_Exception | ManagerMaxSessionsException_Exception | ManagerCommunicationException_Exception | ManagerAuthenticationException_Exception | ManagerException_Exception | ManagerTimeoutException_Exception | ManagerAuthorizationException_Exception e) {
             throw new DsmClientException(e);
+        }
+        finally {
+            dsmLogInClient.endSession(sessionId);
         }
     }
 

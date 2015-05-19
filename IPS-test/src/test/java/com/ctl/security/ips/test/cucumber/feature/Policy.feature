@@ -7,7 +7,7 @@ Feature:  Security - policy
     When I POST a linux policy
     Then I receive a response that contains a uuid for the created policy
 
-  @WIP
+
   Scenario: Install a policy on a windows server
     Given I have a valid account
     When I POST a windows policy

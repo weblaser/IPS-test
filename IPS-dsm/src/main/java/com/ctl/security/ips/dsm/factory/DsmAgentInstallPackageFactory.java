@@ -29,17 +29,14 @@ public class DsmAgentInstallPackageFactory {
     @Value("#{SecurityLibraryPropertySplitter.map('${ips.clc.packageExecution.osLinks}')}")
     private HashMap<String, String> osOptions;
 
-    public ClcExecutePackageRequest configurePackageRequest(SecurityTenant createdSecurityTenant, PolicyBean newlyCreatedPolicyBean) throws AgentInstallException {
+    public ClcExecutePackageRequest configurePackageRequest(SecurityTenant createdSecurityTenant, PolicyBean policyBean) throws AgentInstallException {
         ClcExecutePackageRequest clcExecutePackageRequest = new ClcExecutePackageRequest()
-                .addServer(newlyCreatedPolicyBean.getPolicy().getHostName());
-        clcExecutePackageRequest.getSoftwarePackage().setPackageId(configurePackageId(newlyCreatedPolicyBean));
+                .addServer(policyBean.getPolicy().getHostName());
 
-        if (clcExecutePackageRequest.getSoftwarePackage().getPackageId().contains("windows")){
-            configureWindowsParameters(clcExecutePackageRequest, newlyCreatedPolicyBean, createdSecurityTenant);
-            return clcExecutePackageRequest;
-        }
+        clcExecutePackageRequest.getSoftwarePackage().setPackageId(configurePackageId(policyBean));
 
-        configureLinuxParameters(clcExecutePackageRequest, newlyCreatedPolicyBean, createdSecurityTenant);
+        configureParameters(clcExecutePackageRequest, policyBean, createdSecurityTenant);
+
         return clcExecutePackageRequest;
     }
 
@@ -56,17 +53,7 @@ public class DsmAgentInstallPackageFactory {
         return uuidForOs;
     }
 
-    private void configureLinuxParameters(ClcExecutePackageRequest clcExecutePackageRequest, PolicyBean policyBean, SecurityTenant createdSecurityTenant) {
-        clcExecutePackageRequest.getSoftwarePackage()
-                .addParameter("DSM.Tenant.ID", createdSecurityTenant.getGuid())
-                .addParameter("DSM.Agent.Activation.Password", createdSecurityTenant.getAgentInitiatedActivationPassword())
-                .addParameter("DSM.Policy.ID", policyBean.getPolicy().getVendorPolicyId())
-                .addParameter("DSM.Name", dsmMothership)
-                .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
-                .addParameter("T3.Account.Alias", policyBean.getAccountAlias());
-    }
-
-    private void configureWindowsParameters(ClcExecutePackageRequest clcExecutePackageRequest, PolicyBean policyBean, SecurityTenant createdSecurityTenant) {
+    private void configureParameters(ClcExecutePackageRequest clcExecutePackageRequest, PolicyBean policyBean, SecurityTenant createdSecurityTenant){
         clcExecutePackageRequest.getSoftwarePackage()
                 .addParameter("tenantId", createdSecurityTenant.getGuid())
                 .addParameter("activationPassword", createdSecurityTenant.getAgentInitiatedActivationPassword())
@@ -75,5 +62,6 @@ public class DsmAgentInstallPackageFactory {
                 .addParameter("bearerToken", policyBean.getBearerToken())
                 .addParameter("accountAlias", policyBean.getAccountAlias());
     }
+
 }
 

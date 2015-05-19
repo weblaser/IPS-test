@@ -74,7 +74,7 @@ public class DsmAgentInstallPackageFactoryTest {
     }
 
     @Test
-    public void testConfigurePackageRequest_GetsCorrectParameters() throws Exception {
+    public void testConfigurePackageRequest_GetsCorrectParametersRedhatLinux() throws Exception {
         //arrange
         Policy pulledInPolicy = new Policy().setHostName(SERVER);
         PolicyBean policyBean = new PolicyBean(null,pulledInPolicy,null);
@@ -82,15 +82,42 @@ public class DsmAgentInstallPackageFactoryTest {
         ClcExecutePackageRequest expected = new ClcExecutePackageRequest().addServer(SERVER);
         expected.getSoftwarePackage().setPackageId(REDHAT_6_UUID);
         expected.getSoftwarePackage()
-                .addParameter("DSM.Tenant.ID", securityTenant.getGuid())
-                .addParameter("DSM.Agent.Activation.Password", securityTenant.getAgentInitiatedActivationPassword())
-                .addParameter("DSM.Policy.ID", pulledInPolicy.getVendorPolicyId())
-                .addParameter("DSM.Name", DSM_MOTHERSHIP)
-                .addParameter("T3.Bearer.Token", policyBean.getBearerToken())
-                .addParameter("T3.Account.Alias", policyBean.getAccountAlias());
+                .addParameter("tenantId", securityTenant.getGuid())
+                .addParameter("activationPassword", securityTenant.getAgentInitiatedActivationPassword())
+                .addParameter("policyId", pulledInPolicy.getVendorPolicyId())
+                .addParameter("dsmName", DSM_MOTHERSHIP)
+                .addParameter("bearerToken", policyBean.getBearerToken())
+                .addParameter("accountAlias", policyBean.getAccountAlias());
 
         when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
         when(serverDetailsResponse.getOs()).thenReturn(REDHAT);
+
+        //act
+        ClcExecutePackageRequest result = classUnderTest.configurePackageRequest(securityTenant, policyBean);
+        //assert
+        assertNotNull(result);
+        assertEquals(expected.getSoftwarePackage().getParameters(), result.getSoftwarePackage().getParameters());
+    }
+
+
+    @Test
+    public void testConfigurePackageRequest_GetsCorrectParametersWindows() throws Exception {
+        //arrange
+        Policy pulledInPolicy = new Policy().setHostName(SERVER);
+        PolicyBean policyBean = new PolicyBean(null,pulledInPolicy,null);
+        SecurityTenant securityTenant = new SecurityTenant();
+        ClcExecutePackageRequest expected = new ClcExecutePackageRequest().addServer(SERVER);
+        expected.getSoftwarePackage().setPackageId(WINDOWS_2008_UUID);
+        expected.getSoftwarePackage()
+                .addParameter("tenantId", securityTenant.getGuid())
+                .addParameter("activationPassword", securityTenant.getAgentInitiatedActivationPassword())
+                .addParameter("policyId", pulledInPolicy.getVendorPolicyId())
+                .addParameter("dsmName", DSM_MOTHERSHIP)
+                .addParameter("bearerToken", policyBean.getBearerToken())
+                .addParameter("accountAlias", policyBean.getAccountAlias());
+
+        when(serverClient.getServerDetails(anyString(), eq(SERVER), anyString())).thenReturn(serverDetailsResponse);
+        when(serverDetailsResponse.getOs()).thenReturn(WINDOWS);
 
         //act
         ClcExecutePackageRequest result = classUnderTest.configurePackageRequest(securityTenant, policyBean);

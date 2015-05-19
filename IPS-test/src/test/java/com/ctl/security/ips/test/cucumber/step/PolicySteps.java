@@ -50,7 +50,6 @@ public class PolicySteps {
     private static final String INVALID_AA = "TCCX";
     public static final String VALID_POLICY_ID = "12345";
     private static final String INVALID_POLICY_ID = "45678";
-    public static final String CREATE_TENANT = "createTenant";
     private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
 
     private Policy policy;
@@ -98,7 +97,6 @@ public class PolicySteps {
     @Value("${clc.client.test.package.windows.server}")
     private String clcWindowsServerName;
 
-    private String createTenant;
 
     @Given("^I have an? (.*) account$")
     public void I_have_validity_account(String validity) throws ManagerSecurityException_Exception, ManagerAuthenticationException_Exception, ManagerLockoutException_Exception, ManagerCommunicationException_Exception, ManagerMaxSessionsException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception, ManagerTimeoutException_Exception, ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception {
@@ -112,12 +110,6 @@ public class PolicySteps {
             bearerToken = INVALID_TOKEN;
         }
     }
-
-    @Given("^a tenant will be created$")
-    public void a_tenant_will_be_created() throws Throwable {
-        createTenant = " " + CREATE_TENANT;
-    }
-
 
     @When("^I POST a (.*) policy$")
     public void I_POST_a_policy(String osType) {
@@ -137,7 +129,7 @@ public class PolicySteps {
                 }
             }
 
-            String userName = "userName" + System.currentTimeMillis() + createTenant;
+            String userName = "userName" + System.currentTimeMillis();
 
             policy.setName("name" + System.currentTimeMillis()).
                     setHostName(hostName).
