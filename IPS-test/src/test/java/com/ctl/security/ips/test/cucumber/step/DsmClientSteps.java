@@ -32,18 +32,14 @@ public class DsmClientSteps {
     private DsmTenantClient dsmTenantClient;
     @Autowired
     private ClcAuthenticationComponent clcAuthenticationComponent;
-
     @Autowired
     private DsmClientComponent dsmClientComponent;
 
     private Policy policy;
     private PolicyBean policyBean;
-
     private Policy newlyCreatedCtlPolicy;
-
     private SecurityTenant securityTenant;
     private SecurityTenant newlyCreateSecurityTenant;
-
     private SecurityTenant retrievedNewlyCreateSecurityTenant;
 
 
@@ -99,7 +95,6 @@ public class DsmClientSteps {
 
     @Then("^I receive a new policy response$")
     public void i_receive_a_new_policy_response() throws Throwable {
-
         assertNotNull(newlyCreatedCtlPolicy);
     }
 

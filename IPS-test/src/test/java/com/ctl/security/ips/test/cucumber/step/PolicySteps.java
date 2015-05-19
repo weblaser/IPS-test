@@ -45,25 +45,21 @@ public class PolicySteps {
 
     private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(PolicySteps.class);
 
-    public static final String VALID_POLICY_ID = "12345";
     private static final String VALID = "valid";
-    private static final String INVALID_AA = "TCCX";
-    private static final String INVALID_POLICY_ID = "45678";
-
-
-    private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
     public static final int MAX_WAIT_TIME = 300;
-
+    private static final String INVALID_AA = "TCCX";
+    public static final String VALID_POLICY_ID = "12345";
+    private static final String INVALID_POLICY_ID = "45678";
     public static final String CREATE_TENANT = "createTenant";
+    private static final String INVALID_TOKEN = "Bearer SomeinvalidToken";
 
-    private Exception exception;
-    private List<Policy> policyList;
     private Policy policy;
-
-    private String accountId;
-    private String bearerToken;
     private String hostName;
     private String username;
+    private String accountId;
+    private String bearerToken;
+    private Exception exception;
+    private List<Policy> policyList;
 
 
     @Autowired
@@ -234,7 +230,7 @@ public class PolicySteps {
 
     @And("^the agent is activated on the server$")
     public void the_agent_is_activated_on_the_server() {
-
+        assertTrue(dsmAgentClient.verifyAgentInstall(policy.getUsername(), policy.getHostName()));
     }
 
     @Then("^I receive a response that does not contain an error message$")

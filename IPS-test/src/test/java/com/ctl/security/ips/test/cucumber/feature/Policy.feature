@@ -7,12 +7,12 @@ Feature:  Security - policy
     When I POST a linux policy
     Then I receive a response that contains a uuid for the created policy
 
-
+  @WIP
   Scenario: Install a policy on a windows server
     Given I have a valid account
     When I POST a windows policy
     Then a security profile is created in the DSM
-    And a Tenant is created in the REST DSM
+#    And a Tenant is created in the REST DSM
     And a policy is created in our CMDB
     And the agent is activated on the server
 
@@ -45,7 +45,7 @@ Feature:  Security - policy
     When I GET a valid policy
     Then I receive a response with error message 403 Forbidden.
 
-@SMOKE
+  @SMOKE
   Scenario: Get valid response when updating a policy for an account
     Given I have an valid account
     When I PUT a valid policy

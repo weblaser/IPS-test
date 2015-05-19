@@ -24,7 +24,7 @@ public class MockDsmRest {
     public static final String TENANT_ID = "42";
     private static final String active = "ACTIVE";
     private static final String pending_deletion = "PENDING_DELETION";
-    private final String tenantScenario = "Tenant";
+    private final String tenantScenario = "Tenant Scenario";
     private final String velocityTenantIdKey = "tenantId";
     private final String velocityStateKey = "state";
 
