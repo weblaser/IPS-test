@@ -191,7 +191,7 @@ public class PolicyServiceWriteTest {
         ClcExecutePackageRequest expectedPackageRequest = new ClcExecutePackageRequest();
         expectedPackageRequest.addServer(HOSTNAME);
         expectedPackageRequest.setSoftwarePackage(new SoftwarePackage().setPackageId(DELETE_PACKAGE_ID));
-        ReflectionTestUtils.setField(classUnderTest, "deleteAgentId", DELETE_PACKAGE_ID);
+        ReflectionTestUtils.setField(classUnderTest, "deleteAgentPackageId", DELETE_PACKAGE_ID);
 
         //act
         PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, buildPolicy().setUsername(USERNAME).setHostName(HOSTNAME), TOKEN);
