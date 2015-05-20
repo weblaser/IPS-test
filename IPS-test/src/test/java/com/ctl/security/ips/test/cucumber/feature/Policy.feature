@@ -12,9 +12,7 @@ Feature:  Security - policy
     Given I have a valid account
     When I POST a windows policy
     Then a security profile is created in the DSM
-#    And a Tenant is created in the REST DSM
     And a policy is created in our CMDB
-    And the agent is activated on the server
 
   Scenario: Get invalid response when creating a policy for an account
     Given I have an invalid account
