@@ -17,10 +17,8 @@ import com.ctl.security.ips.common.exception.PolicyNotFoundException;
 import com.ctl.security.ips.dsm.DsmAgentClient;
 import com.ctl.security.ips.dsm.DsmPolicyClient;
 import com.ctl.security.ips.dsm.DsmTenantClient;
-import com.ctl.security.ips.dsm.domain.DsmTenant;
 import com.ctl.security.ips.dsm.exception.DsmClientException;
 import com.ctl.security.ips.test.cucumber.config.CucumberConfiguration;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -227,6 +225,11 @@ public class PolicySteps {
 
     @Then("^I receive a response that does not contain an error message$")
     public void I_receive_a_response_that_does_not_contain_an_error_message() {
+    }
+
+    @Then("^I see that the agent has been deleted$")
+    public void i_see_that_the_agent_has_been_deleted() throws Throwable {
+        assertFalse(dsmAgentClient.verifyAgentInstall(accountId, hostName));
     }
 
     @Then("^I see that the policy has been deleted$")
