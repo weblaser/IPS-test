@@ -22,7 +22,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PackageInstallationServiceTest {
+public class PackageExecutionServiceTest {
 
     private static final String TEST_ALIAS = "SCDV";
     private static final String TEST_TOKEN = "someToken";
@@ -31,7 +31,7 @@ public class PackageInstallationServiceTest {
     public static final int PACKAGE_STATUS_CHECK_MAX_RETRY_ATTEMPTS = 20;
     public static final int PACKAGE_STATUS_CHECK_MAX_WAIT_TIME = 0;
     @InjectMocks
-    private PackageInstallationService classUnderTest;
+    private PackageExecutionService classUnderTest;
 
     @Mock
     private ServerClient serverClient;
@@ -54,7 +54,7 @@ public class PackageInstallationServiceTest {
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
 
         //act
-        String result = classUnderTest.installClcPackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
+        String result = classUnderTest.executePackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
 
         //assert
         assertEquals("succeeded", result);
@@ -67,7 +67,7 @@ public class PackageInstallationServiceTest {
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
 
         //act
-        classUnderTest.installClcPackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
+        classUnderTest.executePackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
     }
 
     @Test(expected = RestClientException.class)
@@ -77,6 +77,6 @@ public class PackageInstallationServiceTest {
         when(serverClient.getPackageStatus(TEST_ID, TEST_ALIAS, TEST_TOKEN)).thenReturn("notStarted", "succeeded");
 
         //act
-        classUnderTest.installClcPackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
+        classUnderTest.executePackage(new ClcExecutePackageRequest(), TEST_ALIAS, TEST_TOKEN);
     }
 }

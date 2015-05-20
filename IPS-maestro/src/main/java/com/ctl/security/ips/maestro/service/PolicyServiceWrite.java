@@ -1,5 +1,7 @@
 package com.ctl.security.ips.maestro.service;
 
+import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
+import com.ctl.security.clc.client.common.domain.SoftwarePackage;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.bean.InstallationBean;
 import com.ctl.security.ips.common.domain.Policy.Policy;
@@ -14,6 +16,7 @@ import com.ctl.security.ips.service.PolicyService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -22,6 +25,9 @@ import java.util.Arrays;
 public class PolicyServiceWrite extends PolicyService {
 
     private static final Logger logger = LogManager.getLogger(PolicyServiceWrite.class);
+
+    @Value("${ips.packageExecution.deleteAgent}")
+    private String deleteAgentPackageId;
 
     @Autowired
     private DsmPolicyClient dsmPolicyClient;
@@ -33,7 +39,7 @@ public class PolicyServiceWrite extends PolicyService {
     private DsmTenantClient dsmTenantClient;
 
     @Autowired
-    private PackageInstallationService packageInstallationService;
+    private PackageExecutionService packageExecutionService;
 
     @Autowired
     private DsmAgentInstallPackageFactory dsmAgentInstallPackageFactory;
@@ -51,7 +57,7 @@ public class PolicyServiceWrite extends PolicyService {
     }
 
     private void installAgentForTenantUsingPolicy(SecurityTenant tenant, PolicyBean policyBean) throws AgentInstallException {
-        packageInstallationService.installClcPackage(
+        packageExecutionService.executePackage(
                 dsmAgentInstallPackageFactory.configurePackageRequest(tenant, policyBean),
                 policyBean.getAccountAlias(),
                 policyBean.getBearerToken());
@@ -67,7 +73,14 @@ public class PolicyServiceWrite extends PolicyService {
 
     public void deletePolicyForAccount(PolicyBean policyBean) throws DsmClientException {
         dsmPolicyClient.securityProfileDelete(Arrays.asList(Integer.parseInt(policyBean.getPolicy().getVendorPolicyId())));
+        packageExecutionService.executePackage(createDeletePackageRequest(policyBean.getPolicy()), policyBean.getAccountAlias(), policyBean.getBearerToken());
         cmdbService.uninstallProduct(buildInstallationBean(policyBean));
     }
 
+    private ClcExecutePackageRequest createDeletePackageRequest(Policy policy) {
+        ClcExecutePackageRequest packageRequest = new ClcExecutePackageRequest();
+        packageRequest.addServer(policy.getHostName());
+        packageRequest.setSoftwarePackage(new SoftwarePackage().setPackageId(deleteAgentPackageId));
+        return packageRequest;
+    }
 }

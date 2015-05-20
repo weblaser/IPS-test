@@ -28,8 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.valueOf;
-
 /**
  * Created by Chad.Middleton on 1/15/2015.
  *

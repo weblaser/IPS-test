@@ -2,6 +2,7 @@ package com.ctl.security.ips.maestro.service;
 
 import com.ctl.security.clc.client.common.domain.ClcExecutePackageRequest;
 import com.ctl.security.clc.client.common.domain.ClcServerDetailsResponse;
+import com.ctl.security.clc.client.common.domain.SoftwarePackage;
 import com.ctl.security.clc.client.core.bean.ServerClient;
 import com.ctl.security.data.client.service.CmdbService;
 import com.ctl.security.data.common.domain.mongo.Product;
@@ -23,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class PolicyServiceWriteTest {
     private static final String TOKEN = "Token";
     private static final String USERNAME = "Bob Loblaw";
     private static final String HOSTNAME = "VM2BINSTLD";
+    private static final String DELETE_PACKAGE_ID = "id";
 
     @InjectMocks
     private PolicyServiceWrite classUnderTest;
@@ -58,7 +61,7 @@ public class PolicyServiceWriteTest {
     private DsmTenantClient dsmTenantClient;
 
     @Mock
-    private PackageInstallationService packageInstallationService;
+    private PackageExecutionService packageExecutionService;
 
     @Mock
     private ClcExecutePackageRequest clcExecutePackageRequest;
@@ -153,7 +156,7 @@ public class PolicyServiceWriteTest {
         classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
 
         //assert
-        verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
+        verify(packageExecutionService).executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
     }
 
     @Test
@@ -179,12 +182,16 @@ public class PolicyServiceWriteTest {
         classUnderTest.createPolicyForAccount(policyToBeCreatedBean);
 
         //assert
-        verify(packageInstallationService).installClcPackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
+        verify(packageExecutionService).executePackage(any(ClcExecutePackageRequest.class), anyString(), anyString());
     }
 
     @Test
     public void testDeletePolicyForAccount() throws DsmClientException {
         //arrange
+        ClcExecutePackageRequest expectedPackageRequest = new ClcExecutePackageRequest();
+        expectedPackageRequest.addServer(HOSTNAME);
+        expectedPackageRequest.setSoftwarePackage(new SoftwarePackage().setPackageId(DELETE_PACKAGE_ID));
+        ReflectionTestUtils.setField(classUnderTest, "deleteAgentId", DELETE_PACKAGE_ID);
 
         //act
         PolicyBean policyBean = new PolicyBean(VALID_ACCOUNT, buildPolicy().setUsername(USERNAME).setHostName(HOSTNAME), TOKEN);
@@ -192,9 +199,9 @@ public class PolicyServiceWriteTest {
 
         //assert
         verify(dsmPolicyClient).securityProfileDelete(any(List.class));
+        verify(packageExecutionService).executePackage(expectedPackageRequest, VALID_ACCOUNT, TOKEN);
         verify(cmdbService).uninstallProduct(new InstallationBean(USERNAME, VALID_ACCOUNT, HOSTNAME, buildProduct()));
     }
-
 
     private Policy buildPolicy() {
         return new Policy().setVendorPolicyId(TEST_ID).setStatus(PolicyStatus.ACTIVE).setUsername(USERNAME).setHostName(HOSTNAME);

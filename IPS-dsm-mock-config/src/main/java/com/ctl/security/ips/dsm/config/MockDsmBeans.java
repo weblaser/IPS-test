@@ -5,7 +5,6 @@ import com.ctl.security.ips.dsm.domain.DpiEventTransportMarshaller;
 import manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
@@ -37,6 +36,7 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     private static final Logger logger = LogManager.getLogger(MockDsmBeans.class);
 
+    private final int HOST_ID = 007;
     private final String GOOD_STATUS = "Managed (Online)";
     private final String GOOD_DPI_STATUS = "Intrusion Prevention: On, Prevent, 310 rules";
     public static final String EXPECTED_POLICY = "expectedPolicy";
@@ -140,7 +140,7 @@ public class MockDsmBeans extends BaseDsmBeans {
     }
 
     private void setupPolicySave(SecurityProfileTransport expectedSecurityProfileTransport) throws ManagerIntegrityConstraintException_Exception, ManagerValidationException_Exception, ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception, ManagerAuthorizationException_Exception {
-        when(manager.securityProfileSave(Matchers.any(SecurityProfileTransport.class), anyString()))
+        when(manager.securityProfileSave(any(SecurityProfileTransport.class), anyString()))
                 .thenReturn(expectedSecurityProfileTransport);
     }
 
@@ -177,7 +177,7 @@ public class MockDsmBeans extends BaseDsmBeans {
 
     private void createHostStatusMocks(String sessionId) throws ManagerAuthenticationException_Exception, ManagerTimeoutException_Exception, ManagerException_Exception {
         HostTransport hostTransport = new HostTransport();
-        hostTransport.setID(007);
+        hostTransport.setID(HOST_ID);
 
         ProtectionStatusTransport protectionStatusTransport = new ProtectionStatusTransport();
         protectionStatusTransport.setProtectionType(EnumProtectionType.AGENT);

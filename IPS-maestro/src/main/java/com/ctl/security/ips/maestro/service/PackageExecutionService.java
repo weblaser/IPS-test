@@ -17,7 +17,7 @@ import java.util.List;
  * Created by Chad.Middleton on 3/25/2015
  */
 @Service
-public class PackageInstallationService {
+public class PackageExecutionService {
 
     public static final String SUCCEEDED = "succeeded";
     public static final String FAILED = "failed";
@@ -32,21 +32,20 @@ public class PackageInstallationService {
     private Integer packageStatusCheckRetryWaitTime;
 
 
-    private static final Logger logger = LogManager.getLogger(PackageInstallationService.class);
+    private static final Logger logger = LogManager.getLogger(PackageExecutionService.class);
 
-    public String installClcPackage(ClcExecutePackageRequest clcExecutePackageRequest, String accountAlias, String bearerToken) {
+    public String executePackage(ClcExecutePackageRequest clcExecutePackageRequest, String accountAlias, String bearerToken) {
         logger.info("Installing CLC Package: "+clcExecutePackageRequest.getSoftwarePackage().getPackageId());
         List<ClcExecutePackageResponse> clcExecutePackageResponses = serverClient.executePackage(clcExecutePackageRequest, accountAlias, bearerToken);
         int counter = 0;
-        String response;
-        do {
+        String response = new String();
+        while (!SUCCEEDED.equals(response) && !FAILED.equals(response) && counter < packageStatusCheckMaxRetryAttempts) {
             if(counter > 0){
                 sleep();
             }
             response = serverClient.getPackageStatus(clcExecutePackageResponses.get(0).getLinks().get(0).getId(), accountAlias, bearerToken);
             counter++;
         }
-        while (!SUCCEEDED.equals(response) && !FAILED.equals(response) && counter < packageStatusCheckMaxRetryAttempts);
         return response;
     }
 

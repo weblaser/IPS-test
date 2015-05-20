@@ -108,7 +108,6 @@ public class PolicyClient {
         }
     }
 
-
     private void fail(RestClientException rce) {
         logger.error(rce.getMessage(), rce);
         String message = rce.getMessage();

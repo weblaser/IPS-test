@@ -1,7 +1,6 @@
 @REGRESSION
 Feature:  Security - policy
 
-
   Scenario: Get valid response when creating a policy for an account
     Given I have a valid account
     When I POST a linux policy
@@ -55,7 +54,7 @@ Feature:  Security - policy
     And I POST a linux policy
     When I DELETE a valid policy
     Then I see that the policy has been deleted
-
+    #And I see that the agent has been deleted
 
   Scenario: Get invalid response when deleting a policy for an account when ???
     Given I have an invalid account
